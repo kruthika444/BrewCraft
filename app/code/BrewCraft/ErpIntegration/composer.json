@@ -1,0 +1,14 @@
+{
+    "name": "brewcraft/module-erp-integration",
+    "description": "ERP Integration Module",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "BrewCraft\\ErpIntegration\\": ""
+        }
+    }
+}
