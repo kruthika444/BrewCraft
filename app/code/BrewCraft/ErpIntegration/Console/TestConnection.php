@@ -61,14 +61,16 @@ class TestConnection extends Command
         try {
             $products = $this->productService->getProducts();
 
-            $this->productImportService->import($products);
+            $result = $this->productImportService->import($products);
 
-            $output->writeln(
-                sprintf(
-                    '<info>%d Products Imported Successfully.</info>',
-                    count($products)
-                )
-            );
+            $output->writeln('');
+
+            $output->writeln('<info>Synchronization Summary</info>');
+            $output->writeln('--------------------------------');
+            $output->writeln('Created : ' . $result['created']);
+            $output->writeln('Updated : ' . $result['updated']);
+            $output->writeln('Failed  : ' . $result['failed']);
+            $output->writeln('Total   : ' . count($products));
         } catch (\Throwable $e) {
 
             $output->writeln(

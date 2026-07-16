@@ -10,6 +10,7 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
+use BrewCraft\ErpIntegration\Model\Service\CategoryService;
 
 class ProductImportService
 {
@@ -22,23 +23,49 @@ class ProductImportService
         private readonly ProductRepositoryInterface $productRepository,
         private readonly ProductFactory $productFactory,
         private readonly StoreManagerInterface $storeManager,
-        private readonly Logger $logger
+        private readonly Logger $logger,
+        private readonly CategoryService $categoryService
     ) {}
 
-    public function import(array $products): void
+    public function import(array $products): array
     {
-        foreach ($products as $erpProduct) {
-            $this->importProduct($erpProduct);
-        }
-    }
+        $result = [
+            'created' => 0,
+            'updated' => 0,
+            'failed' => 0
+        ];
 
-    private function importProduct(array $erpProduct): void
+        foreach ($products as $erpProduct) {
+            try {
+                $isNew = $this->importProduct($erpProduct);
+
+                if ($isNew) {
+                    $result['created']++;
+                } else {
+                    $result['updated']++;
+                }
+            } catch (\Throwable $exception) {
+                $result['failed']++;
+
+                $this->logger->error(sprintf(
+                    'Failed importing %s : %s',
+                    $erpProduct['sku'] ?? 'UNKNOWN',
+                    $exception->getMessage()
+                ));
+            }
+        }
+
+        return $result;
+    }
+    private function importProduct(array $erpProduct): bool
     {
+        $isNew = false;
+
         try {
             $product = $this->getExistingProduct($erpProduct['sku']);
         } catch (NoSuchEntityException $exception) {
+            $isNew = true;
             $product = $this->productFactory->create();
-
             $product->setSku($erpProduct['sku']);
             $product->setTypeId('simple');
             $product->setAttributeSetId(self::DEFAULT_ATTRIBUTE_SET_ID);
@@ -76,6 +103,7 @@ class ProductImportService
                 )
             );
         }
+        return $isNew;
     }
 
     private function mapProduct(
@@ -94,6 +122,10 @@ class ProductImportService
                 ? self::STATUS_ENABLED
                 : self::STATUS_DISABLED
         );
+        $categoryId = $this->categoryService->getCategoryId(
+            $erpProduct['category_code']
+        );
+        $product->setCategoryIds([$categoryId]);
     }
 
     private function getExistingProduct(string $sku): ProductInterface

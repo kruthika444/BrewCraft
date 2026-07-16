@@ -14,23 +14,16 @@ class Client
         private readonly Curl $curl,
         private readonly Config $config,
         private readonly Logger $logger
-    ) {
-    }
+    ) {}
 
-    public function getProducts(): string
+    private function get(string $endpoint): string
     {
         $url = rtrim($this->config->getBaseUrl(), '/')
             . '/api/'
             . $this->config->getApiVersion()
-            . '/products';
+            . '/'
+            . ltrim($endpoint, '/');
 
-//         $url = rtrim($this->config->getBaseUrl(), '/')
-//     . '/api/'
-//     . $this->config->getApiVersion()
-//     . '/products';
-
-// var_dump($url);
-// die();
         $this->curl->setTimeout($this->config->getTimeout());
 
         $this->logger->info('Calling ERP');
@@ -44,5 +37,20 @@ class Client
         $this->logger->info($response);
 
         return $response;
+    }
+
+    public function getProducts(): string
+    {
+        return $this->get('products');
+    }
+
+    public function getInventory(): string
+    {
+        return $this->get('inventory');
+    }
+
+    public function getPrices(): string
+    {
+        return $this->get('prices');
     }
 }

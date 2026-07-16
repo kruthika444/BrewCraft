@@ -581,3 +581,524 @@ This marks the **first successful end-to-end synchronization** between the mock 
 - Application Areas — Frontend vs Adminhtml vs CLI
 - Structured logging for integrations
 - Debugging Docker-to-host communication
+
+
+---
+---
+   
+# BrewCraft Supply — Development Log
+
+## Day 03: Category Sync, Inventory Sync & Inventory Cron
+
+**Date:** 16 July 2026
+
+---
+
+## Objective
+
+Continue building the ERP Integration module by synchronizing additional master data from the ERP into Magento.
+
+**Completed features:**
+- Category Synchronization
+- Inventory Synchronization
+- Inventory Cron
+- ERP Integration Architecture Improvements
+
+---
+
+## 1. Category Synchronization
+
+### Why?
+
+The Business Requirements specify that ERP is the master system for product information. While products reference categories, those categories must already exist inside Magento before products are imported.
+
+**Without category sync:**
+
+```
+ERP
+ ↓
+Coffee Beans
+ ↓
+Magento
+(Category doesn't exist)
+ ↓
+Product import fails
+or
+Product assigned incorrectly
+```
+
+Therefore categories must always be synchronized **before** products.
+
+---
+
+### ERP API
+
+```
+GET /api/v1/categories
+```
+
+**Sample Response:**
+
+```json
+[
+    { "code": "COFFEE_BEANS", "name": "Coffee Beans" },
+    { "code": "COFFEE_MACHINES", "name": "Coffee Machines" }
+]
+```
+
+---
+
+### Components Created
+
+**Client — `getCategories()`**
+- Calls ERP endpoint
+- Returns raw JSON
+
+**`CategoryService`**
+
+Responsibilities:
+- Fetch categories from ERP
+- Decode JSON
+- Validate payload
+- Verify mandatory fields (`code`, `name`)
+- Throws `RuntimeException` if validation fails
+
+**`CategoryImportService`**
+
+Import logic:
+
+```
+For each ERP category
+ ↓
+Category exists?
+ ├── YES → Update Name
+ └── NO  → Create Category
+```
+
+Magento interfaces used:
+- `CategoryRepositoryInterface`
+- `CategoryFactory`
+
+---
+
+### Current Behaviour
+
+Every imported category is created beneath the Magento Root Category:
+
+```
+Default Category
+ ├── Coffee Beans
+ ├── Coffee Machines
+ └── Accessories
+```
+
+### Discussion — Parent-Child Hierarchy
+
+We observed that every category becomes a direct child of Root Category.
+
+**Decision:** No hierarchy in Version 1.
+
+**Reason:** The current ERP payload only provides `code` and `name` — no parent information exists.
+
+**Future Enhancement:** ERP may provide a `parent_code` field, enabling automatic Magento category tree generation:
+
+```
+Coffee
+ ├── Coffee Beans
+ ├── Ground Coffee
+ └── Capsules
+```
+
+---
+
+### Result
+
+- New categories imported successfully
+- Existing categories updated
+- No duplicates created
+
+---
+
+## 2. Inventory Synchronization
+
+### Business Requirement
+
+ERP owns inventory. Magento only displays current stock.
+
+```
+ERP (Quantity)
+ ↓
+Magento (Stock)
+```
+
+---
+
+### ERP Endpoint
+
+```
+GET /api/v1/inventory
+```
+
+**Sample Response:**
+
+```json
+[
+    {
+        "sku": "ESP001",
+        "warehouse": "BLR",
+        "qty": 18
+    }
+]
+```
+
+---
+
+### Initial Issue — Validation Mismatch
+
+**Problem:** Validation expected `sku`, `qty`, and `is_in_stock`. ERP returned only `sku`, `warehouse`, and `qty`.
+
+**Error:** `Missing "is_in_stock"`
+
+**Discussion:** Should ERP decide stock status?
+
+**Decision:** No.
+
+**Reason:** ERP should only send facts. Magento derives simple business rules. This reduces unnecessary API fields.
+
+**Stock status logic:**
+
+```
+qty > 0  → IN STOCK
+qty = 0  → OUT OF STOCK
+```
+
+---
+
+### `InventoryService`
+
+**Responsibilities:**
+- Fetch inventory from ERP
+- Validate JSON
+- Validate required fields (`sku`, `qty`)
+- Record job history (`INVENTORY_SYNC`) inside `erp_job` table
+
+---
+
+### `InventoryImportService`
+
+**Purpose:** Update Magento inventory using MSI (Multi Source Inventory)
+
+**Magento interfaces used:**
+- `GetSourceItemsBySkuInterface`
+- `SourceItemsSaveInterface`
+- `SourceItemInterfaceFactory`
+
+**Import logic:**
+
+```
+ERP Inventory
+ ↓
+Find SKU
+ ↓
+Inventory Exists?
+ ├── YES → Update Quantity
+ └── NO  → Create Source Item
+ ↓
+Save
+```
+
+**Stock status derivation:**
+
+```
+qty > 0  → STATUS_IN_STOCK
+qty = 0  → STATUS_OUT_OF_STOCK
+```
+
+---
+
+### Warehouse Field
+
+ERP sends a `warehouse` field (e.g. `BLR`). This is currently **ignored** — inventory is stored in the Default Source.
+
+**Future Enhancement — Warehouse Mapping:**
+
+```
+ERP Warehouse  →  Magento Source
+BLR            →  blr
+CHE            →  che
+DEL            →  del
+```
+
+This will support full Multi Source Inventory across warehouse locations.
+
+---
+
+### Testing
+
+Changed ERP quantity from `18` to `99`, then executed:
+
+```bash
+php bin/magento brewcraft:erp:inventory:test
+```
+
+Magento Catalog → Product → Quantity updated successfully.
+
+---
+
+## 3. Inventory CLI Command
+
+**Command:**
+
+```bash
+php bin/magento brewcraft:erp:inventory:test
+```
+
+**Purpose:** Manual testing without waiting for cron.
+
+**Flow:**
+
+```
+ERP
+ ↓
+InventoryService
+ ↓
+InventoryImportService
+ ↓
+Magento
+```
+
+**Console output example:**
+
+```
+Synchronization Summary
+-----------------------
+Updated : 2
+Failed  : 0
+Total   : 2
+```
+
+---
+
+## 4. Inventory Cron
+
+**Business Requirement:** Inventory updates every 15 minutes.
+
+**File created:** `Cron/InventorySync.php`
+
+**Registered in:** `etc/crontab.xml`
+
+| Setting | Value |
+|---|---|
+| Job Name | `brewcraft_inventory_sync` |
+| Production Schedule | `*/15 * * * *` |
+| Testing Schedule | `* * * * *` |
+
+**Cron flow:**
+
+```
+Magento Cron
+ ↓
+InventorySync
+ ↓
+InventoryService
+ ↓
+InventoryImportService
+ ↓
+Magento Inventory
+```
+
+**Verification:**
+
+Checked `cron_schedule` table — observed status moving from `Pending` to `Success`. Ran `bin/magento cron:run` and confirmed inventory updated automatically.
+
+---
+
+## 5. Cron vs `erp_job` Table
+
+### Why maintain a separate `erp_job` table?
+
+Magento already provides `cron_schedule` for cron execution history, which captures job name, status, schedule time, and finish time. However it does not store business-specific information.
+
+Our module maintains a separate `erp_job` table for ERP integration history:
+
+| Job Type | Status | Records Processed |
+|---|---|---|
+| PRODUCT_SYNC | SUCCESS | 3 |
+| CATEGORY_SYNC | SUCCESS | 5 |
+| INVENTORY_SYNC | SUCCESS | 2 |
+
+This provides business-level visibility into synchronization activity beyond what `cron_schedule` offers.
+
+---
+
+## 6. Architecture After Today's Work
+
+```
+            Mock ERP
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+Products   Categories  Inventory
+    │          │          │
+    ▼          ▼          ▼
+ProductService  CategoryService  InventoryService
+    │          │          │
+    ▼          ▼          ▼
+ProductImport  CategoryImport  InventoryImport
+    │          │          │
+    ▼          ▼          ▼
+       Magento Catalog & Inventory
+    │          │          │
+    ▼          ▼          ▼
+       CLI Commands + Cron Jobs
+```
+
+---
+
+## Key Magento Concepts Learned
+
+### 1. Master Data Synchronization
+ERP owns business data. Magento consumes it.
+
+### 2. Multi Source Inventory (MSI)
+Inventory is managed using Magento's MSI APIs rather than directly updating legacy stock tables.
+
+### 3. Repository Pattern
+Magento entities are created and updated using Repository interfaces instead of direct database access.
+
+### 4. Cron Architecture
+Cron automates synchronization according to business schedules defined in the BRD — every 15 minutes for inventory.
+
+### 5. Separation of Responsibilities
+
+Each layer has a single, clearly defined purpose:
+
+| Layer | Responsibility |
+|---|---|
+| Client | Communicates with the ERP API |
+| Service | Fetches, validates, and prepares ERP data |
+| Import Service | Maps ERP data to Magento entities and saves them |
+| CLI | Manual execution for testing and debugging |
+| Cron | Automated execution based on schedule |
+
+This separation keeps the module maintainable, testable, and easy to extend.
+
+
+## ERP → Magento Price Synchronization
+
+## Objective
+
+Implemented synchronization of product pricing from the ERP system into Magento. As per the BRD, ERP is the master source for pricing and prices must never be manually maintained in Magento Admin.
+
+---
+
+## Development Completed
+
+### 1. ERP API Integration
+
+Extended the ERP API client with a new `getPrices()` method.
+
+**Endpoint consumed:**
+
+```
+GET /api/v1/prices
+```
+
+Retrieved pricing data successfully from the mock ERP.
+
+---
+
+### 2. Price Validation Service
+
+**Class created:** `PriceService`
+
+**Responsibilities:**
+- Fetch price data from ERP
+- Decode and validate the JSON response
+- Ensure mandatory fields (`sku`, `price`) are present
+- Log the synchronization job in the custom `erp_job` table
+
+---
+
+### 3. Price Import Service
+
+**Class created:** `PriceImportService`
+
+**Responsibilities:**
+- Find Magento products by SKU
+- Update the following price fields:
+  - Regular Price
+  - Special Price
+  - Special Price Start Date
+  - Special Price End Date
+- Save the updated product using `ProductRepository`
+- Log successful and failed imports
+
+---
+
+### 4. CLI Command
+
+**Command:**
+
+```bash
+php bin/magento brewcraft:erp:price:test
+```
+
+**The command:**
+- Fetches pricing data from ERP
+- Imports prices into Magento
+- Displays a synchronization summary showing updated, failed, and total records
+
+---
+
+### 5. Cron Job
+
+**Job registered:** `brewcraft_price_sync`
+
+**The cron:**
+- Executes price synchronization automatically
+- Supports the BRD requirement of hourly price synchronization
+- Can be configured to run every minute during development for testing
+
+---
+
+## Business Rules Implemented
+
+- ERP is the single source of truth for all product pricing
+- Magento updates product prices based on ERP data only
+- Manual price maintenance in Magento is not part of the integration flow
+- Supports promotional pricing via:
+  - Special Price
+  - Special Price From Date
+  - Special Price To Date
+
+---
+
+## Testing Performed
+
+- [x] Verified ERP `/prices` endpoint returns valid data
+- [x] Successfully updated existing Magento product prices
+- [x] Verified special pricing and date ranges in Magento Admin
+- [x] Tested CLI execution
+- [x] Tested cron execution
+- [x] Confirmed successful job logging and application logging
+
+---
+
+## Current Project Status
+
+| Feature | Status |
+|---|---|
+| Product Sync | ✅ Complete |
+| Category Sync | ✅ Complete |
+| Inventory Sync | ✅ Complete |
+| Price Sync | ✅ Complete |
+| Order Integration | 🔜 Next Phase |
+
+---
+
+## Next Phase
+
+**Magento → ERP Order Integration** using the Magento Message Queue Framework.
+
+Newly placed orders will be published to a queue and asynchronously sent to the ERP system.
