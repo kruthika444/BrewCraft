@@ -1102,3 +1102,960 @@ php bin/magento brewcraft:erp:price:test
 **Magento → ERP Order Integration** using the Magento Message Queue Framework.
 
 Newly placed orders will be published to a queue and asynchronously sent to the ERP system.
+
+
+# BrewCraft ERP Integration — Development Log
+
+## Day 04: Order Synchronization via Magento Message Queue Framework
+
+**Date:** 17 July 2026
+
+---
+
+## Objective
+
+Begin implementing the Order Synchronization feature using Magento's Message Queue Framework. The goal was to decouple order export from the checkout process by publishing a queue message when an order is placed and processing it asynchronously.
+
+---
+
+## What We Built
+
+### 1. Studied Magento Message Queue Architecture
+
+Before writing code, we understood how Magento's Queue Framework works internally.
+
+**Components learned:**
+- Topic
+- Publisher
+- Exchange
+- Queue
+- Binding
+- Consumer
+
+Instead of simply copying XML files, we discussed how a message travels inside Magento.
+
+**Final architecture:**
+
+```
+Customer Places Order
+        │
+        ▼
+    Observer
+        │
+        ▼
+    Publisher
+        │
+        ▼
+      Topic
+        │
+        ▼
+Exchange (magento)
+        │
+        ▼
+      Queue
+        │
+        ▼
+    Consumer
+        │
+        ▼
+ ERP Integration
+```
+
+---
+
+### 2. Implemented Queue Configuration
+
+Created the required Magento queue configuration files.
+
+**`communication.xml`**
+- Declares the topic
+- Defines the message data type
+
+**`queue_publisher.xml`**
+- Maps topic to the Magento exchange
+- Uses the default database queue connection
+
+```
+Topic      → brewcraft.order.export
+Exchange   → magento
+Connection → db
+```
+
+**`queue_topology.xml`**
+- Maps topic to queue
+
+```
+brewcraft.order.export
+        │
+        ▼
+brewcraft.order.queue
+```
+
+**`queue_consumer.xml`**
+- Registers the consumer
+- Whenever a message reaches `brewcraft.order.queue`, Magento executes `TestConsumer::process()`
+
+---
+
+### 3. Created Queue Publisher
+
+Implemented a custom `Publisher` class.
+
+**Responsibilities:**
+- Receive message
+- Log publishing activity
+- Publish to Magento topic
+
+**Flow:**
+
+```
+Observer
+    │
+    ▼
+Publisher::publish()
+    │
+    ▼
+PublisherInterface
+    │
+    ▼
+Magento Queue
+```
+
+**Log entry added:** `Publishing message to queue:`
+
+---
+
+### 4. Created Queue Consumer
+
+Implemented the consumer.
+
+**Initial responsibility:** Receive message and log it.
+
+**Later enhanced to:**
+- Load Magento order
+- Display processing information
+
+---
+
+### 5. Built Queue Test Command
+
+Created a console command to publish a sample message independently of order placement.
+
+```bash
+php bin/magento brewcraft:queue:test
+```
+
+**Published:** `Hello Queue!`
+
+**Consumer output:** `QUEUE RECEIVED : Hello Queue!`
+
+This validated the complete queue configuration end-to-end.
+
+---
+
+### 6. Understood Consumer Behaviour
+
+One important observation — running:
+
+```bash
+bin/magento queue:consumers:start brewcraft.order.consumer
+```
+
+does **not** process messages once and exit. Instead:
+
+```
+Consumer Starts
+      │
+      ▼
+    Waits
+      │
+      ▼
+Listens Forever
+      │
+      ▼
+Processes Incoming Messages
+      │
+      ▼
+  Keeps Waiting
+```
+
+A consumer behaves like a **background worker/service**, not a one-time command.
+
+---
+
+### 7. Integrated Queue with Order Placement
+
+The Observer now publishes an order identifier when an order is placed instead of a test message.
+
+**Current flow:**
+
+```
+Customer Places Order
+        │
+        ▼
+    Observer
+        │
+        ▼
+    Publisher
+        │
+        ▼
+      Queue
+```
+
+---
+
+### 8. Investigated Magento Order Events
+
+We experimented with different Magento events to determine the most suitable trigger point.
+
+**`sales_order_place_after`**
+
+| Field | Result |
+|---|---|
+| Increment ID | ✅ Available |
+| Entity ID | ❌ NULL |
+
+**`sales_order_save_after`**
+
+| Field | Result |
+|---|---|
+| Entity ID | ✅ Available |
+| Queue processing | ✅ Successful |
+| Checkout behaviour | ❌ `No such entity with cartId...` error |
+
+**Conclusion:** Although `sales_order_save_after` worked technically, it interfered with the checkout lifecycle and is not appropriate for initiating ERP export.
+
+---
+
+### 9. Design Decision — Use Increment ID
+
+Rather than relying on Magento's internal `entity_id`, we redesigned the integration to use the business-facing **Increment ID**.
+
+**Reason:** ERP systems identify orders using business order numbers, not internal database IDs.
+
+| Approach | Value |
+|---|---|
+| Internal entity ID | `7` |
+| Business Increment ID | `000000014` |
+
+**Benefits of Increment ID:**
+- Business-friendly and human readable
+- Stable across systems
+- Matches invoices and customer communication
+- Suitable for ERP integration
+
+---
+
+### 10. Updated Consumer
+
+The consumer was modified to load orders using the increment ID instead of the internal entity ID.
+
+**Processing flow:**
+
+```
+Queue Message
+      │
+      ▼
+Increment ID
+      │
+      ▼
+Load Magento Order
+      │
+      ▼
+Process Order
+```
+
+---
+
+### 11. Cache-Related Debugging
+
+During testing, queue messages were being published but initially appeared not to be processed.
+
+**Logs showed:**
+```
+Publishing message to queue: 000000014
+```
+
+After clearing Magento cache and rebuilding generated metadata, the consumer immediately began processing messages correctly.
+
+**Final logs:**
+```
+Increment ID: 000000014
+Publishing message to queue: 000000014
+Received message from queue: 000000014
+Processing Order 000000014
+```
+
+> **Key Magento lesson:** Changes to XML, DI configuration, or queue setup may not be reflected immediately due to cached or generated metadata. Always clear cache after configuration changes.
+
+---
+
+### 12. Final Working Flow
+
+The complete asynchronous order processing pipeline is now operational.
+
+```
+Customer Places Order
+        │
+        ▼
+sales_order_place_after
+        │
+        ▼
+OrderPlacedObserver
+        │
+        ▼
+Publish Increment ID
+        │
+        ▼
+Magento Message Queue
+        │
+        ▼
+      Consumer
+        │
+        ▼
+Load Order by Increment ID
+        │
+        ▼
+  Process Order
+```
+
+---
+
+## How the Queue Works — Step by Step
+
+### Step 1 — CLI Command Triggers Publisher
+
+You execute:
+
+```bash
+bin/magento brewcraft:queue:test
+```
+
+Magento executes `QueueTest::execute()`, which calls:
+
+```php
+$this->publisher->publish('Hello Kruthi!');
+```
+
+---
+
+### Step 2 — Your Publisher Class
+
+```php
+public function publish(string $message): void
+{
+    $this->publisher->publish(
+        self::TOPIC,  // "brewcraft.order.export"
+        $message
+    );
+}
+```
+
+Your code is now finished. Nothing else from your module is called. **Magento Framework takes over.**
+
+---
+
+### Step 3 — Magento Receives the Topic
+
+Magento Framework receives:
+
+```
+publish("brewcraft.order.export", "Hello Kruthi!")
+```
+
+Magento asks: *I received a topic — where should I send it?*
+
+It looks inside `queue_publisher.xml`.
+
+---
+
+### Step 4 — `queue_publisher.xml` Resolves the Exchange
+
+```xml
+<publisher topic="brewcraft.order.export">
+    <connection name="db" exchange="magento"/>
+</publisher>
+```
+
+Magento now knows: topic `brewcraft.order.export` uses exchange `magento`.
+
+---
+
+### Step 5 — `queue_topology.xml` Resolves the Queue
+
+```xml
+<binding
+    topic="brewcraft.order.export"
+    destination="brewcraft.order.queue"/>
+```
+
+Magento stores the message inside `brewcraft.order.queue`:
+
+```
+Queue
+--------------------
+  Hello Kruthi!
+--------------------
+```
+
+Nobody has processed it yet. It is simply **waiting**.
+
+---
+
+### Step 6 — Consumer is Started
+
+You run:
+
+```bash
+bin/magento queue:consumers:start brewcraft.order.consumer
+```
+
+Magento reads `queue_consumer.xml`:
+
+```xml
+<consumer
+    name="brewcraft.order.consumer"
+    queue="brewcraft.order.queue"
+    handler="TestConsumer::process"/>
+```
+
+Magento knows: consumer `brewcraft.order.consumer` must listen to `brewcraft.order.queue`.
+
+---
+
+### Step 7 — Consumer Picks Up the Message
+
+Consumer starts. Magento immediately checks `brewcraft.order.queue`.
+
+Message found: `Hello Kruthi!`
+
+---
+
+### Step 8 — Magento Calls Your Consumer
+
+```php
+TestConsumer::process("Hello Kruthi!")
+```
+
+> **Important:** You never called `process()`. **Magento did.**
+
+---
+
+## Complete Queue Flow
+
+```
+QueueTest Command
+        │
+        ▼
+  Publisher Class
+        │
+        ▼
+PublisherInterface::publish()
+        │
+        ▼
+================================
+      MAGENTO FRAMEWORK
+================================
+        │
+        ▼
+ queue_publisher.xml
+ (Which Exchange?)
+        │
+        ▼
+ queue_topology.xml
+ (Which Queue?)
+        │
+        ▼
+  Store Message in Queue
+        │
+        ▼
+================================
+        WAITING...
+================================
+        │
+        ▼
+queue:consumers:start
+        │
+        ▼
+ queue_consumer.xml
+ (Which Consumer?)
+        │
+        ▼
+TestConsumer::process()
+        │
+        ▼
+      Logger
+```
+
+---
+
+## Key Magento Concepts Learned
+
+- Magento Message Queue Framework architecture
+- Role of each XML configuration file (`communication.xml`, `queue_publisher.xml`, `queue_topology.xml`, `queue_consumer.xml`)
+- How a message travels from publisher to consumer without direct PHP calls
+- Consumer behaviour as a persistent background worker
+- Why `sales_order_place_after` is the correct event for ERP order export
+- Using Increment ID as the business-facing order identifier for ERP integration
+- Importance of cache clearing after XML and DI configuration changes
+
+
+# BrewCraft ERP Integration — Development Log
+
+## Feature: Category Hierarchy Synchronization & Product Category Assignment
+
+**Date:** 18-19 July 2026
+
+---
+
+## Objective
+
+Implement a production-ready category synchronization mechanism between the ERP system and Magento.
+
+**Goals:**
+- Import categories from ERP
+- Preserve the ERP category hierarchy
+- Automatically create parent categories before child categories
+- Prevent duplicate categories on subsequent synchronizations
+- Allow products to be assigned using ERP category codes instead of Magento IDs
+- Make the solution scalable for future ERP category changes
+
+---
+
+## Initial Problem
+
+Initially, the category import logic simply created all categories directly under Magento's root category.
+
+**Result:**
+
+```
+Default Category
+ ├── Coffee Machines
+ ├── Coffee Beans
+ ├── Espresso Machines
+ └── Automatic Machines
+```
+
+Every category became a direct child of the root with no parent-child relationship.
+
+**Issues this caused:**
+- ERP hierarchy was lost
+- Product categories became difficult to manage
+- Future nested categories could not be represented
+- The import logic could not determine where child categories belonged
+
+---
+
+## Root Cause
+
+The ERP originally returned categories without any relationship information:
+
+```json
+[
+    { "code": "COFFEE_MACHINES", "name": "Coffee Machines" },
+    { "code": "COFFEE_BEANS", "name": "Coffee Beans" }
+]
+```
+
+This payload contained only `code` and `name` — no parent reference. Magento therefore had no way to determine which category was the parent and which was the child.
+
+---
+
+## ERP Payload Redesign
+
+To support hierarchical categories, the ERP response was redesigned. Each category now includes a `parent_code` reference.
+
+**Updated payload:**
+
+```json
+{
+    "code": "ESPRESSO",
+    "name": "Espresso Machines",
+    "parent_code": "COFFEE_MACHINES",
+    "status": "ACTIVE"
+}
+```
+
+**Field definitions:**
+
+| Field | Purpose |
+|---|---|
+| `code` | Unique ERP identifier |
+| `name` | Magento category name |
+| `parent_code` | Parent ERP category (`null` for root categories) |
+| `status` | `ACTIVE` or `INACTIVE` |
+
+This change allows Magento to reconstruct the complete category tree.
+
+---
+
+## Sample ERP Hierarchy
+
+```
+Coffee
+ │
+ ├── Coffee Machines
+ │     ├── Espresso Machines
+ │     └── Automatic Machines
+ │
+ └── Coffee Beans
+       └── Arabica Beans
+```
+
+---
+
+## New Category Synchronization Design
+
+The synchronization process was redesigned into four separate responsibilities.
+
+### 1. Client
+
+Responsible only for communicating with the ERP.
+
+**Responsibilities:**
+- Build ERP URL
+- Call REST endpoint
+- Return JSON response
+
+```
+GET /api/v1/categories
+```
+
+No business logic exists inside the client.
+
+---
+
+### 2. `CategoryService`
+
+**Responsibilities:**
+- Call the ERP client
+- Parse JSON
+- Validate required fields
+- Return a clean PHP array
+
+**Validation performed:**
+- `code` exists
+- `name` exists
+- `parent_code` exists
+- `status` exists
+
+No Magento logic is implemented here.
+
+---
+
+### 3. `CategoryImportService`
+
+Responsible for synchronizing ERP categories into Magento. This class contains all Magento-specific logic.
+
+**Responsibilities:**
+- Find existing category
+- Create new category if necessary
+- Update category information
+- Save ERP category code as a Magento attribute
+- Maintain parent-child hierarchy
+
+---
+
+### 4. `CategoryResolver`
+
+A new resolver class was introduced. Instead of searching categories by name, products now locate categories using the ERP category code.
+
+**Flow:**
+
+```
+ERP category_code
+        │
+        ▼
+  COFFEE_MACHINES
+        │
+        ▼
+ CategoryResolver
+        │
+        ▼
+Magento Category
+        │
+        ▼
+    ID = 10
+```
+
+Searching by ERP code is significantly safer than searching by category name because **names may change over time**.
+
+---
+
+## Two-Pass Import Algorithm
+
+One of the biggest improvements was redesigning the import algorithm. Instead of creating categories in a single loop, the import now executes in **two passes**.
+
+### Pass 1 — Root Categories
+
+Import only categories where `parent_code = null`.
+
+```
+Default Category
+ ├── Coffee
+ └── Coffee Beans
+```
+
+These become direct children of Magento's Default Category.
+
+### Pass 2 — Child Categories
+
+Import child categories after all parents are guaranteed to exist.
+
+```
+Coffee
+ └── Coffee Machines (parent = Coffee)
+      └── Espresso Machines (parent = Coffee Machines)
+```
+
+This guarantees that every parent already exists before its children are processed.
+
+---
+
+## Category Mapping
+
+Every synchronized category now stores an additional Magento attribute: `erp_category_code`.
+
+This attribute becomes the **permanent mapping** between ERP and Magento.
+
+| Magento Category | ERP Code |
+|---|---|
+| Coffee | `COFFEE` |
+| Coffee Machines | `COFFEE_MACHINES` |
+| Espresso Machines | `ESPRESSO` |
+| Coffee Beans | `COFFEE_BEANS` |
+| Arabica Beans | `ARABICA` |
+
+---
+
+## Product Synchronization Changes
+
+**Previously**, products contained a `category_code` but Magento attempted to locate categories by name — fragile and error-prone.
+
+**Now**, the flow is:
+
+```
+ERP Product
+     │
+     ▼
+category_code
+     │
+     ▼
+CategoryResolver
+     │
+     ▼
+erp_category_code attribute
+     │
+     ▼
+Magento Category
+     │
+     ▼
+  Category ID
+     │
+     ▼
+Assign to Product
+```
+
+This completely removes dependency on category names.
+
+---
+
+## Final Architecture
+
+```
+        ERP
+         │
+         ▼
+      Client
+  (HTTP only, no logic)
+         │
+         ▼
+  CategoryService
+  (Fetch + Validate)
+         │
+         ▼
+CategoryImportService
+  (Magento logic)
+    ┌────┴────┐
+    │         │
+  Pass 1    Pass 2
+  (Root)   (Children)
+    │         │
+    └────┬────┘
+         │
+         ▼
+  erp_category_code
+  (stored on category)
+         │
+         ▼
+  CategoryResolver
+  (used by products)
+         │
+         ▼
+  Product Category
+     Assignment
+```
+
+# BrewCraft Supply — Project Status - as of 19 July
+## Overall Completion
+
+| Module | Completion |
+|---|---|
+| Project Setup | ✅ 100% |
+| ERP Integration | ✅ 95% |
+| Storefront & Catalog | ⚠️ 40% |
+| B2C Store | ⚠️ 35% |
+| B2B Features | ❌ 5% |
+| Admin Features | ❌ 15% |
+| ERP Simulation | ⚠️ 70% |
+
+---
+
+## Phase 1 — Project Setup ✅ 100%
+
+| Item | Status |
+|---|---|
+| Magento installation | ✅ |
+| Development environment | ✅ |
+| Git | ✅ |
+| Docker / Reward | ✅ |
+| Module structure | ✅ |
+| Sample ERP (json-server) | ✅ |
+
+---
+
+## Phase 2 — ERP Integration ✅ 92–95%
+
+### Completed
+
+**Imports**
+| Feature | Status |
+|---|---|
+| Categories | ✅ |
+| Products | ✅ |
+| Inventory | ✅ |
+| Prices | ✅ |
+
+**Exports**
+| Feature | Status |
+|---|---|
+| Orders | ✅ |
+
+**Async**
+| Feature | Status |
+|---|---|
+| RabbitMQ | ✅ |
+| Observer | ✅ |
+| Publisher | ✅ |
+| Consumer | ✅ |
+
+**Scheduling & Monitoring**
+| Feature | Status |
+|---|---|
+| Cron | ✅ |
+| Console Commands | ✅ |
+| Sync History | ✅ |
+
+### Remaining
+
+| Item | Status |
+|---|---|
+| Retry mechanism | ⏳ |
+| Small configuration improvements | ⏳ |
+
+---
+
+## Phase 3 — Storefront & Catalog ⚠️ 40%
+
+### Completed
+
+| Feature | Status |
+|---|---|
+| Product import | ✅ |
+| Category hierarchy | ✅ |
+| Categories visible under Default Category | ✅ |
+
+### Remaining
+
+| Feature | Status |
+|---|---|
+| Theme customization | ❌ |
+| Homepage | ❌ |
+| CMS Pages | ❌ |
+| Navigation | ❌ |
+| Search configuration | ❌ |
+| Layered Navigation | ❌ |
+| Product media import | ❌ |
+
+---
+
+## Phase 4 — B2C Store ⚠️ 35%
+
+### Completed
+
+| Feature | Status |
+|---|---|
+| Checkout | ✅ |
+| Order placement | ✅ |
+| ERP export | ✅ |
+
+### Remaining
+
+| Feature | Status |
+|---|---|
+| Customer registration customization | ❌ |
+| Wishlist | ❌ |
+| Reviews | ❌ |
+| Reward Points (if required) | ❌ |
+| Email customization | ❌ |
+
+---
+
+## Phase 5 — B2B Features ❌ 5%
+
+None of the following have been built yet:
+
+| Feature | Status |
+|---|---|
+| Business Registration | ❌ |
+| Company Approval | ❌ |
+| Gold Partner | ❌ |
+| Quote Request | ❌ |
+| Purchase Order | ❌ |
+| Credit Account | ❌ |
+
+---
+
+## Phase 6 — Admin Features ❌ 15%
+
+| Feature | Status |
+|---|---|
+| ERP Dashboard | ❌ |
+| Import History Grid | ❌ |
+| Manual Sync Buttons | ❌ |
+| Configuration improvements | ❌ |
+| Reports | ❌ |
+
+---
+
+## Phase 7 — ERP Simulation ⚠️ 70%
+
+### Completed
+
+| Feature | Status |
+|---|---|
+| json-server | ✅ |
+| Products | ✅ |
+| Categories | ✅ |
+| Inventory | ✅ |
+| Prices | ✅ |
+| Orders | ✅ |
+
+### Remaining
+
+| Feature | Status |
+|---|---|
+| Customers | ❌ |
+| Quotes | ❌ |
+| Shipments | ❌ |
+| Invoices | ❌ |

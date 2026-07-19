@@ -5,91 +5,79 @@ declare(strict_types=1);
 namespace BrewCraft\ErpIntegration\Model\Service;
 
 use BrewCraft\ErpIntegration\Logger\Logger;
-use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Model\CategoryFactory;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
-use Magento\Store\Model\StoreManagerInterface;
+use BrewCraft\ErpIntegration\Model\Api\Client;
 
 class CategoryService
 {
     public function __construct(
-        private readonly CollectionFactory $categoryCollectionFactory,
-        private readonly CategoryFactory $categoryFactory,
-        private readonly CategoryRepositoryInterface $categoryRepository,
-        private readonly StoreManagerInterface $storeManager,
+        private readonly Client $client,
         private readonly Logger $logger
-    ) {}
+    ) {
+    }
 
-    public function getCategoryId(string $erpCategoryCode): int
+    /**
+     * Fetch all categories from ERP.
+     */
+    public function getCategories(): array
     {
-        $category = $this->findCategory($erpCategoryCode);
+        $response = $this->client->getCategories();
 
-        if ($category) {
-            return (int)$category->getId();
+        $categories = json_decode(
+            $response,
+            true
+        );
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException(
+                'Invalid ERP JSON response: '
+                . json_last_error_msg()
+            );
         }
 
-        return $this->createCategory($erpCategoryCode);
-    }
+        if (!is_array($categories)) {
+            throw new \RuntimeException(
+                'ERP category response must be an array.'
+            );
+        }
 
-    private function findCategory(string $erpCategoryCode)
-    {
-        $categoryName = ucwords(
-            strtolower(
-                str_replace('_', ' ', $erpCategoryCode)
-            )
-        );
+        foreach ($categories as $category) {
 
-        $collection = $this->categoryCollectionFactory->create();
-
-        $collection->addAttributeToSelect('name');
-
-        $collection->addAttributeToFilter(
-            'name',
-            $categoryName
-        );
-
-        return $collection->getFirstItem()->getId()
-            ? $collection->getFirstItem()
-            : null;
-    }
-
-    private function createCategory(string $erpCategoryCode): int
-    {
-        $categoryName = ucwords(
-            strtolower(
-                str_replace('_', ' ', $erpCategoryCode)
-            )
-        );
-
-        $category = $this->categoryFactory->create();
-
-        $rootCategoryId = $this->storeManager
-            ->getStore()
-            ->getRootCategoryId();
-
-        $category->setParentId($rootCategoryId);
-
-        $category->setName($categoryName);
-
-        $category->setIsActive(true);
-
-        $category->setPath("1/{$rootCategoryId}");
-
-        $category->setUrlKey(
-            strtolower(
-                str_replace(' ', '-', $categoryName)
-            )
-        );
-
-        $this->categoryRepository->save($category);
+            $this->validateCategory($category);
+        }
 
         $this->logger->info(
             sprintf(
-                'Created category %s',
-                $categoryName
+                'Fetched %d categories from ERP.',
+                count($categories)
             )
         );
 
-        return (int)$category->getId();
+        return $categories;
+    }
+
+    /**
+     * Validate one ERP category.
+     */
+    private function validateCategory(array $category): void
+    {
+        foreach (
+            [
+                'code',
+                'name',
+                'parent_code',
+                'status'
+            ] as $field
+        ) {
+
+            if (!array_key_exists($field, $category)) {
+
+                throw new \RuntimeException(
+                    sprintf(
+                        'Category payload missing "%s".',
+                        $field
+                    )
+                );
+            }
+        }
     }
 }

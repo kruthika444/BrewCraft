@@ -13,6 +13,7 @@ use BrewCraft\ErpIntegration\Model\Service\ProductImportService;
 use Magento\Framework\Console\Cli;
 use Magento\Framework\App\State;
 use BrewCraft\ErpIntegration\Logger\Logger;
+use BrewCraft\ErpIntegration\Model\Service\CategoryImportService;
 
 class TestConnection extends Command
 {
@@ -20,13 +21,14 @@ class TestConnection extends Command
     protected $productService;
     protected $state;
     protected $logger;
+    protected $categoryImportService;
 
     public function __construct(
         ProductService $productService,
         ProductImportService $productImportService,
         State $state,
         Logger $logger,
-
+        CategoryImportService $categoryImportService
     ) {
         parent::__construct();
 
@@ -34,6 +36,7 @@ class TestConnection extends Command
         $this->productImportService = $productImportService;
         $this->state = $state;
         $this->logger = $logger;
+        $this->categoryImportService = $categoryImportService;
     }
 
     protected function configure()
@@ -59,11 +62,19 @@ class TestConnection extends Command
         }
 
         try {
+            $output->writeln('<info>Importing Categories...</info>');
+
+            $this->categoryImportService->import();
+
+            $output->writeln('<info>Categories Imported.</info>');
+
+            $output->writeln('<info>Importing Products...</info>');
+
             $products = $this->productService->getProducts();
 
             $result = $this->productImportService->import($products);
 
-            $output->writeln('');
+            $output->writeln('<info>Products Imported.</info>');
 
             $output->writeln('<info>Synchronization Summary</info>');
             $output->writeln('--------------------------------');
