@@ -2059,3 +2059,1098 @@ None of the following have been built yet:
 | Quotes | ❌ |
 | Shipments | ❌ |
 | Invoices | ❌ |
+
+
+
+# Development Log — ERP Retry Mechanism and Admin Configuration
+**Date:** 20 July 2026
+
+
+**Project:** BrewCraft Magento 2 ERP Integration
+**Module:** `BrewCraft_ErpIntegration`
+**Work completed:** Retry mechanism, Admin configuration, configuration-controlled cron and queue behavior
+
+---
+
+# 1. Objective
+
+Before today’s changes, the ERP integration already supported:
+
+* Category import
+* Product import
+* Inventory import
+* Price import
+* Order export through Magento Queue
+* Sync success and failure history
+* Cron jobs
+* Console commands
+
+However, when the ERP API was unavailable, order export behaved like this:
+
+```text
+Consumer receives order
+        ↓
+ERP API request fails
+        ↓
+Order export marked FAILED
+```
+
+There was no retry mechanism.
+
+Also, important settings such as retry attempts and retry delay were hard-coded inside PHP:
+
+```php
+private const MAX_RETRY_ATTEMPTS = 3;
+private const RETRY_DELAY_SECONDS = 2;
+```
+
+The goals of today’s development were:
+
+1. Retry failed ERP order exports automatically.
+2. Detect unsuccessful ERP HTTP responses correctly.
+3. Store final success or failure in the sync-history table.
+4. Make retry values configurable from Magento Admin.
+5. Add enable/disable controls for integration components.
+6. Connect the Admin fields to the observer, service, and cron classes.
+
+---
+
+# 2. Retry Mechanism Architecture
+
+The new order-export flow is:
+
+```text
+Customer places order
+        ↓
+OrderPlacedObserver
+        ↓
+Publisher sends increment ID
+        ↓
+Magento queue stores message
+        ↓
+Consumer receives message
+        ↓
+OrderExportService builds payload
+        ↓
+Attempt 1
+        ↓
+Failure?
+        ↓
+Wait configured retry delay
+        ↓
+Attempt 2
+        ↓
+Failure?
+        ↓
+Wait configured retry delay
+        ↓
+Attempt 3
+        ↓
+SUCCESS or final FAILED history
+```
+
+The retry mechanism was implemented inside:
+
+```text
+Model/Service/OrderExportService.php
+```
+
+This was the correct layer because the service owns the complete order-export business process.
+
+The queue consumer remains responsible only for:
+
+```text
+Receive order increment ID
+        ↓
+Load Magento order
+        ↓
+Call OrderExportService
+```
+
+The consumer does not contain retry logic.
+
+---
+
+# 3. ERP HTTP Error Detection
+
+## Problem
+
+The Magento Curl client may complete an HTTP request even when the ERP returns an error such as:
+
+```text
+400 Bad Request
+404 Not Found
+500 Internal Server Error
+503 Service Unavailable
+```
+
+Without manually checking the response status, the application could incorrectly treat an ERP `500` response as successful.
+
+## Change in `OrderClient.php`
+
+After sending the order:
+
+```php
+$this->curl->post($url, $jsonPayload);
+```
+
+we retrieve:
+
+```php
+$statusCode = $this->curl->getStatus();
+$response = $this->curl->getBody();
+```
+
+Then validate the status:
+
+```php
+if ($statusCode < 200 || $statusCode >= 300) {
+    throw new \RuntimeException(
+        sprintf(
+            'ERP order export failed with HTTP status %d. Response: %s',
+            $statusCode,
+            $response
+        )
+    );
+}
+```
+
+## Result
+
+Only HTTP responses in the `2xx` range are considered successful.
+
+Examples:
+
+```text
+200 → Success
+201 → Success
+204 → Success
+
+400 → Exception
+404 → Exception
+500 → Exception
+503 → Exception
+```
+
+Connection problems also throw exceptions automatically, such as:
+
+```text
+Connection refused
+Connection timed out
+Could not resolve host
+```
+
+These exceptions are passed to the retry mechanism.
+
+---
+
+# 4. Retry Method Implementation
+
+A private method was introduced:
+
+```php
+private function exportWithRetry(
+    Order $order,
+    array $payload,
+    int $maxAttempts,
+    int $retryDelay
+): int
+```
+
+## Responsibilities
+
+This method:
+
+* Calls the ERP order API.
+* Catches temporary request failures.
+* Logs every attempt.
+* Waits before the next attempt.
+* Returns the successful attempt number.
+* Throws a final exception after all attempts fail.
+
+## Retry loop
+
+```php
+for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+    try {
+        $this->client->exportOrder($payload);
+
+        return $attempt;
+    } catch (\Throwable $exception) {
+        $lastException = $exception;
+
+        if ($attempt < $maxAttempts && $retryDelay > 0) {
+            sleep($retryDelay);
+        }
+    }
+}
+```
+
+## Why `return $attempt` is used
+
+When an attempt succeeds, the method returns the attempt number.
+
+For example:
+
+```text
+Attempt 1 succeeds → returns 1
+Attempt 2 succeeds → returns 2
+Attempt 3 succeeds → returns 3
+```
+
+This value is used in logs and sync history:
+
+```text
+Order 000000041 exported successfully after 3 attempt(s).
+```
+
+## Final failure
+
+When every attempt fails:
+
+```php
+throw new \RuntimeException(
+    sprintf(
+        'ERP export failed after %d attempt(s). Last error: %s',
+        $maxAttempts,
+        $lastException?->getMessage() ?? 'Unknown ERP error'
+    ),
+    0,
+    $lastException
+);
+```
+
+The previous exception is passed as the third argument so the original failure remains available for debugging.
+
+---
+
+# 5. Retry Delay
+
+Between failed attempts, the service uses:
+
+```php
+sleep($retryDelay);
+```
+
+Example configuration:
+
+```text
+Maximum attempts: 3
+Retry delay: 2 seconds
+```
+
+Execution timing:
+
+```text
+Attempt 1 → immediately
+Wait 2 seconds
+Attempt 2
+Wait 2 seconds
+Attempt 3
+```
+
+A delay is applied only when:
+
+```php
+$attempt < $maxAttempts && $retryDelay > 0
+```
+
+This prevents unnecessary waiting after the final attempt.
+
+## Current limitation
+
+`sleep()` pauses the active consumer process during the delay.
+
+For this learning project and local ERP simulation, this is acceptable. A high-volume production integration could instead use a delayed retry queue, but that is outside the current project scope.
+
+---
+
+# 6. Success and Failure History
+
+The existing `brewcraft_sync_job` table continues to store the final result.
+
+## Success
+
+When an API attempt succeeds:
+
+```php
+$this->saveJob(
+    status: 'SUCCESS',
+    recordsProcessed: 1,
+    executionTime: $executionTime,
+    message: $message
+);
+```
+
+Example:
+
+```text
+job_type: ORDER_EXPORT
+status: SUCCESS
+records_processed: 1
+message: Order 000000041 exported successfully after 3 attempt(s).
+```
+
+Only one final success row is stored.
+
+We do not create a database record for each failed attempt. Individual attempts are written to the log instead.
+
+## Final failure
+
+When all attempts fail:
+
+```php
+$this->saveJob(
+    status: 'FAILED',
+    recordsProcessed: 0,
+    executionTime: $executionTime,
+    message: $message
+);
+```
+
+Example:
+
+```text
+job_type: ORDER_EXPORT
+status: FAILED
+records_processed: 0
+message: Order 000000041 export permanently failed after 3 attempts.
+```
+
+This keeps the database history focused on the final synchronization outcome.
+
+---
+
+# 7. Why the Final Exception Is Not Rethrown
+
+Initially, the catch block ended with:
+
+```php
+throw $exception;
+```
+
+That passes the exception back to Magento’s queue consumer.
+
+The queue then considers message processing unsuccessful. This could cause the same message to remain failed or be processed again, depending on queue behavior.
+
+Since our service already performs all configured retries and saves the final failure, we changed the flow to:
+
+```text
+All attempts fail
+        ↓
+Save FAILED history
+        ↓
+Log critical error
+        ↓
+Return normally
+        ↓
+Queue message is acknowledged
+```
+
+Therefore, the final catch block does not rethrow.
+
+This prevents repeated processing of the same order message in our current architecture.
+
+## Important consequence
+
+When all immediate attempts fail, the order will not automatically be retried after the ERP returns later.
+
+It remains available in the sync-history table as `FAILED`.
+
+A delayed retry queue could solve that in a larger production implementation, but it is not required for the BrewCraft learning project.
+
+---
+
+# 8. Local Retry Test
+
+The successful test used order:
+
+```text
+000000041
+```
+
+Observed logs:
+
+```text
+Attempt 1/3 → Connection refused
+Wait 2 seconds
+
+Attempt 2/3 → Connection refused
+Wait 2 seconds
+
+Attempt 3/3 → HTTP 201
+```
+
+Final result:
+
+```text
+Order 000000041 exported successfully after 3 attempt(s).
+```
+
+This verified that:
+
+* The consumer received the queue message.
+* Connection failures were detected.
+* Retry delay worked.
+* The ERP could recover during the retry window.
+* A later attempt succeeded.
+* Final success history was stored.
+
+---
+
+# 9. Local Queue and ERP Behavior
+
+The Magento consumer and simulated ERP are separate processes.
+
+```text
+Magento Queue Consumer
+ERP JSON Server
+```
+
+## Consumer stopped, ERP stopped
+
+When an order is placed:
+
+```text
+Order placed
+        ↓
+Message stored in queue
+        ↓
+No processing because consumer is stopped
+```
+
+No retry happens yet because the service has not received the message.
+
+## Consumer started while ERP is stopped
+
+```text
+Consumer reads pending message
+        ↓
+Retry mechanism starts
+```
+
+Starting the ERP during the retry window allows a later attempt to succeed.
+
+## Consumer already running while ERP is stopped
+
+The message is consumed immediately, so all attempts happen quickly according to the configured delay.
+
+This is expected behavior in the local environment.
+
+---
+
+# 10. Magento Admin Configuration
+
+New Admin settings were added under:
+
+```text
+Stores
+→ Configuration
+→ BrewCraft
+→ ERP Integration
+```
+
+The configuration is divided into three groups.
+
+## General Settings
+
+```text
+Enable ERP Integration
+ERP Base URL
+API Version
+Connection Timeout
+```
+
+## Order Export Settings
+
+```text
+Enable Order Export
+Enable Queue Processing
+Maximum Retry Attempts
+Retry Delay
+```
+
+## Import Settings
+
+```text
+Enable Category and Product Sync
+Enable Inventory Sync
+Enable Price Sync
+```
+
+---
+
+# 11. `system.xml` Changes
+
+File:
+
+```text
+etc/adminhtml/system.xml
+```
+
+The new groups are:
+
+```xml
+<group id="general">
+```
+
+```xml
+<group id="order_export">
+```
+
+```xml
+<group id="import">
+```
+
+Each field ID forms part of its configuration path.
+
+Example:
+
+```xml
+<section id="brewcraft_erp">
+    <group id="order_export">
+        <field id="retry_attempts">
+```
+
+This produces:
+
+```text
+brewcraft_erp/order_export/retry_attempts
+```
+
+## XML validation issue fixed
+
+Initially, the source model was formatted across multiple lines:
+
+```xml
+<source_model>
+    Magento\Config\Model\Config\Source\Yesno
+</source_model>
+```
+
+Magento’s schema only accepts characters matching:
+
+```text
+[A-Za-z0-9_\\:]+
+```
+
+The newline and indentation became part of the XML value, causing validation failure.
+
+It was corrected to:
+
+```xml
+<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+```
+
+This is required for schema-restricted class-name elements such as:
+
+```xml
+<source_model>
+<backend_model>
+<frontend_model>
+```
+
+---
+
+# 12. Default Configuration
+
+File:
+
+```text
+etc/config.xml
+```
+
+Defaults were added:
+
+```xml
+<order_export>
+    <enabled>1</enabled>
+    <queue_enabled>1</queue_enabled>
+    <retry_attempts>3</retry_attempts>
+    <retry_delay>2</retry_delay>
+</order_export>
+```
+
+```xml
+<import>
+    <product_sync_enabled>1</product_sync_enabled>
+    <inventory_sync_enabled>1</inventory_sync_enabled>
+    <price_sync_enabled>1</price_sync_enabled>
+</import>
+```
+
+The local ERP base URL was updated to:
+
+```text
+http://host.docker.internal:3001
+```
+
+This allows Magento inside Docker to reach the JSON server running on the host machine.
+
+## Configuration priority
+
+Magento uses configuration fallback and stored values.
+
+An Admin value saved in `core_config_data` takes priority over the module default in `config.xml`.
+
+Therefore, changing `config.xml` does not overwrite an existing Admin value.
+
+---
+
+# 13. Config Helper Updates
+
+File:
+
+```text
+Helper/Config.php
+```
+
+New XML path constants were added:
+
+```php
+private const XML_PATH_ORDER_EXPORT_ENABLED =
+    'brewcraft_erp/order_export/enabled';
+
+private const XML_PATH_QUEUE_ENABLED =
+    'brewcraft_erp/order_export/queue_enabled';
+
+private const XML_PATH_RETRY_ATTEMPTS =
+    'brewcraft_erp/order_export/retry_attempts';
+
+private const XML_PATH_RETRY_DELAY =
+    'brewcraft_erp/order_export/retry_delay';
+```
+
+Import controls:
+
+```php
+private const XML_PATH_PRODUCT_SYNC_ENABLED =
+    'brewcraft_erp/import/product_sync_enabled';
+
+private const XML_PATH_INVENTORY_SYNC_ENABLED =
+    'brewcraft_erp/import/inventory_sync_enabled';
+
+private const XML_PATH_PRICE_SYNC_ENABLED =
+    'brewcraft_erp/import/price_sync_enabled';
+```
+
+New helper methods:
+
+```php
+isOrderExportEnabled()
+isQueueEnabled()
+getRetryAttempts()
+getRetryDelay()
+isProductSyncEnabled()
+isInventorySyncEnabled()
+isPriceSyncEnabled()
+```
+
+---
+
+# 14. Defensive Configuration Values
+
+The helper prevents invalid retry values.
+
+## Retry attempts
+
+```php
+return $attempts > 0 ? $attempts : 1;
+```
+
+Even when configuration is missing or incorrectly set to `0`, the system performs at least one request.
+
+## Retry delay
+
+```php
+return max(0, $delay);
+```
+
+A negative value is converted to zero.
+
+A zero delay is valid and means:
+
+```text
+Retry immediately
+```
+
+## Timeout
+
+```php
+return $timeout > 0 ? $timeout : 30;
+```
+
+An invalid timeout falls back to 30 seconds.
+
+---
+
+# 15. Store-Scope Configuration
+
+The configuration helper uses:
+
+```php
+ScopeInterface::SCOPE_STORE
+```
+
+This supports Magento’s normal fallback:
+
+```text
+Store View value
+        ↓
+Website value
+        ↓
+Default value
+```
+
+For order export, the service reads the store ID from the order:
+
+```php
+$storeId = (int)$order->getStoreId();
+```
+
+Then retrieves the appropriate configuration:
+
+```php
+$maxAttempts = $this->config->getRetryAttempts($storeId);
+$retryDelay = $this->config->getRetryDelay($storeId);
+```
+
+This means orders from different stores can use different ERP settings.
+
+---
+
+# 16. `OrderExportService` Configuration Integration
+
+The hard-coded constants were removed:
+
+```php
+private const MAX_RETRY_ATTEMPTS = 3;
+private const RETRY_DELAY_SECONDS = 2;
+```
+
+They were replaced with Admin values:
+
+```php
+$maxAttempts = $this->config->getRetryAttempts($storeId);
+$retryDelay = $this->config->getRetryDelay($storeId);
+```
+
+The service also checks:
+
+```php
+$this->config->isEnabled($storeId)
+```
+
+and:
+
+```php
+$this->config->isOrderExportEnabled($storeId)
+```
+
+## Behavior when disabled
+
+When the complete integration is disabled:
+
+```text
+Order export skipped because ERP integration is disabled.
+```
+
+When only order export is disabled:
+
+```text
+Order export skipped because order export is disabled.
+```
+
+No ERP request is made.
+
+---
+
+# 17. Queue Configuration Integration
+
+File:
+
+```text
+Observer/OrderPlacedObserver.php
+```
+
+The observer now checks:
+
+```php
+$this->config->isEnabled($storeId)
+```
+
+```php
+$this->config->isOrderExportEnabled($storeId)
+```
+
+```php
+$this->config->isQueueEnabled($storeId)
+```
+
+The order increment ID is published only when all three return `true`.
+
+Flow:
+
+```text
+Order placed
+        ↓
+ERP integration enabled?
+        ↓
+Order export enabled?
+        ↓
+Queue processing enabled?
+        ↓
+Publish increment ID
+```
+
+When queue processing is disabled:
+
+```text
+Order remains successfully placed in Magento
+No queue message is published
+No ERP export happens
+```
+
+The setting does not switch to synchronous export. The BrewCraft order-export architecture remains queue-based.
+
+---
+
+# 18. Cron Configuration Integration
+
+The following cron classes were updated:
+
+```text
+Cron/ProductSync.php
+Cron/InventorySync.php
+Cron/PriceSync.php
+```
+
+Each cron now checks:
+
+1. Is the complete ERP integration enabled?
+2. Is this specific scheduled synchronization enabled?
+
+## Product cron
+
+```text
+ERP enabled?
+        ↓
+Product sync enabled?
+        ↓
+Import categories
+        ↓
+Import products
+```
+
+Categories run before products because product category assignment depends on the Magento categories already existing.
+
+## Inventory cron
+
+```text
+ERP enabled?
+        ↓
+Inventory sync enabled?
+        ↓
+Fetch and import inventory
+```
+
+## Price cron
+
+```text
+ERP enabled?
+        ↓
+Price sync enabled?
+        ↓
+Fetch and import prices
+```
+
+When disabled, the cron writes a skipped message and returns without calling the ERP.
+
+---
+
+# 19. Why Console Commands Were Not Changed
+
+We intentionally decided that the individual import settings control **automatic scheduled synchronization**, not deliberate manual execution.
+
+Current behavior:
+
+| Execution method        | Checks individual sync switch |
+| ----------------------- | ----------------------------: |
+| Product cron            |                           Yes |
+| Inventory cron          |                           Yes |
+| Price cron              |                           Yes |
+| Manual console commands |                            No |
+
+This design allows:
+
+```text
+Scheduled sync disabled
+        ↓
+Cron does not run the integration
+        ↓
+Developer can still execute a manual command
+```
+
+Manual commands remain useful for:
+
+* Testing
+* Debugging
+* Emergency synchronization
+* Checking ERP responses
+* Running synchronization without waiting for cron
+
+To make this intention clearer, the Admin labels can be understood as:
+
+```text
+Enable Scheduled Category and Product Sync
+Enable Scheduled Inventory Sync
+Enable Scheduled Price Sync
+```
+
+The configuration paths do not need to change.
+
+---
+
+# 20. Logging Improvements
+
+The retry mechanism now produces clear operational logs.
+
+Example:
+
+```text
+Export attempt 1/3 for order 000000041.
+Sending order to ERP.
+Attempt 1/3 failed: Connection refused.
+Waiting 2 seconds before retrying.
+
+Export attempt 2/3 for order 000000041.
+Attempt 2/3 failed: Connection refused.
+Waiting 2 seconds before retrying.
+
+Export attempt 3/3 for order 000000041.
+ERP response status: 201.
+Order exported successfully after 3 attempts.
+```
+
+Exception objects are not passed directly to the logger where a full stack trace is unnecessary.
+
+Instead of:
+
+```php
+$this->logger->critical($exception);
+```
+
+we prefer:
+
+```php
+$this->logger->critical(
+    sprintf(
+        'Order export failed: %s',
+        $exception->getMessage()
+    )
+);
+```
+
+This keeps integration logs easier to read.
+
+---
+
+# 21. Commands Used After Configuration Changes
+
+After modifying XML and configuration:
+
+```bash
+bin/magento setup:upgrade
+bin/magento cache:clean config
+bin/magento cache:flush
+```
+
+When constructor dependencies changed:
+
+```bash
+rm -rf generated/code/*
+rm -rf generated/metadata/*
+bin/magento setup:di:compile
+```
+
+The queue consumer also had to be restarted because it is a long-running PHP process:
+
+```bash
+bin/magento queue:consumers:start brewcraft.order.consumer
+```
+
+Without restarting, the active consumer might continue using old code or cached configuration.
+
+---
+
+# 22. Final Result
+
+Before today:
+
+```text
+Order export fails
+        ↓
+One API attempt
+        ↓
+FAILED history
+```
+
+After today:
+
+```text
+Order export starts
+        ↓
+Read Admin retry configuration
+        ↓
+Attempt ERP export
+        ↓
+Retry temporary failures
+        ↓
+Store final SUCCESS or FAILED result
+```
+
+The integration is now configurable through Magento Admin:
+
+```text
+Global ERP enable/disable
+Order export enable/disable
+Queue enable/disable
+Retry attempts
+Retry delay
+Scheduled product sync
+Scheduled inventory sync
+Scheduled price sync
+```
+
+The completed functionality includes:
+
+```text
+✅ Configurable retry mechanism
+✅ HTTP failure detection
+✅ Connection-error handling
+✅ Retry logging
+✅ Success and failure history
+✅ Admin configuration
+✅ Store-scope configuration
+✅ Queue publishing controls
+✅ Cron execution controls
+✅ Manual console commands preserved
+```
+
+# Development Status
+
+The retry mechanism and configuration-improvement phase is now complete.
+
+The ERP integration has moved from:
+
+```text
+Functional integration
+```
+
+to:
+
+```text
+Configurable and failure-aware integration
+```
+
+The main remaining ERP work is code cleanup and final module documentation.

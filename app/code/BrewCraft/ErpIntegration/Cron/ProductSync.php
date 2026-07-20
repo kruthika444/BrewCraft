@@ -4,27 +4,50 @@ declare(strict_types=1);
 
 namespace BrewCraft\ErpIntegration\Cron;
 
-use BrewCraft\ErpIntegration\Model\Service\ProductService;
+use BrewCraft\ErpIntegration\Helper\Config;
 use BrewCraft\ErpIntegration\Logger\Logger;
 use BrewCraft\ErpIntegration\Model\Service\CategoryImportService;
 use BrewCraft\ErpIntegration\Model\Service\ProductImportService;
+use BrewCraft\ErpIntegration\Model\Service\ProductService;
 
 class ProductSync
 {
     public function __construct(
         private readonly ProductService $productService,
-        private readonly Logger $logger,
         private readonly ProductImportService $productImportService,
-        private readonly CategoryImportService $categoryImportService
-    ) {}
+        private readonly CategoryImportService $categoryImportService,
+        private readonly Logger $logger,
+        private readonly Config $config
+    ) {
+    }
 
     public function execute(): void
     {
-        $this->logger->info('Product Sync Started');
+        if (!$this->config->isEnabled()) {
+            $this->logger->info(
+                'Category and Product Sync skipped because ERP integration is disabled.'
+            );
+
+            return;
+        }
+
+        if (!$this->config->isProductSyncEnabled()) {
+            $this->logger->info(
+                'Category and Product Sync skipped because product synchronization is disabled.'
+            );
+
+            return;
+        }
+
+        $this->logger->info(
+            'Category and Product Sync Started.'
+        );
 
         try {
+            $this->logger->info(
+                'Importing Categories...'
+            );
 
-            $this->logger->info('Importing Categories...');
             $this->categoryImportService->import();
 
             $this->logger->info('Categories Imported.');

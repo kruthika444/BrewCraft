@@ -5,87 +5,205 @@
 
     <system>
 
-        <tab id="brewcraft" translate="label" sortOrder="500">
+        <tab id="brewcraft"
+             translate="label"
+             sortOrder="500">
             <label>BrewCraft</label>
         </tab>
 
-        <section
-            id="brewcraft_erp"
-            translate="label"
-            sortOrder="10"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1">
+        <section id="brewcraft_erp"
+                 translate="label"
+                 sortOrder="10"
+                 showInDefault="1"
+                 showInWebsite="1"
+                 showInStore="1">
 
             <label>ERP Integration</label>
-
             <tab>brewcraft</tab>
-
             <resource>BrewCraft_ErpIntegration::config</resource>
 
-            <group
-                id="general"
-                translate="label"
-                sortOrder="10"
-                showInDefault="1"
-                showInWebsite="1"
-                showInStore="1">
+            <group id="general"
+                   translate="label"
+                   sortOrder="10"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
 
                 <label>General Settings</label>
 
-                <field
-                    id="enabled"
-                    translate="label"
-                    type="select"
-                    sortOrder="10"
-                    showInDefault="1"
-                    showInWebsite="1"
-                    showInStore="1">
+                <field id="enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
 
-                    <label>Enable Integration</label>
-
+                    <label>Enable ERP Integration</label>
+                    <comment>Enables or disables the complete BrewCraft ERP integration(cron only).</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 
                 </field>
 
-                <field
-                    id="base_url"
-                    translate="label"
-                    type="text"
-                    sortOrder="20"
-                    showInDefault="1"
-                    showInWebsite="1"
-                    showInStore="1">
+                <field id="base_url"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
 
                     <label>ERP Base URL</label>
+                    <comment>Example: http://host.docker.internal:3001</comment>
+                    <validate>required-entry</validate>
 
                 </field>
 
-                <field
-                    id="api_version"
-                    translate="label"
-                    type="text"
-                    sortOrder="30"
-                    showInDefault="1"
-                    showInWebsite="1"
-                    showInStore="1">
+                <field id="api_version"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="30"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
 
                     <label>API Version</label>
+                    <comment>Example: v1</comment>
+                    <validate>required-entry</validate>
 
                 </field>
 
-                <field
-                    id="timeout"
-                    translate="label"
-                    type="text"
-                    sortOrder="40"
-                    showInDefault="1"
-                    showInWebsite="1"
-                    showInStore="1">
+                <field id="timeout"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="40"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
 
-                    <label>Connection Timeout (Seconds)</label>
+                    <label>Connection Timeout</label>
+                    <comment>Maximum number of seconds allowed for an ERP API request.</comment>
+                    <validate>required-entry validate-number validate-greater-than-zero</validate>
 
-                    <validate>validate-number</validate>
+                </field>
+
+            </group>
+
+            <group id="order_export"
+                   translate="label"
+                   sortOrder="20"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
+
+                <label>Order Export Settings</label>
+
+                <field id="enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Enable Order Export</label>
+                    <comment>Enables or disables Magento order export to ERP(cron only).</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+
+                </field>
+
+                <field id="queue_enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Enable Queue Processing</label>
+                    <comment>When enabled, order export messages are published to the Magento queue(cron only).</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+
+                </field>
+
+                <field id="retry_attempts"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="30"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Maximum Retry Attempts</label>
+                    <comment>Total number of attempts, including the first API request.</comment>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+
+                </field>
+
+                <field id="retry_delay"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="40"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Retry Delay</label>
+                    <comment>Delay in seconds before the next ERP export attempt.</comment>
+                    <validate>required-entry validate-digits</validate>
+
+                </field>
+
+            </group>
+
+            <group id="import"
+                   translate="label"
+                   sortOrder="30"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
+
+                <label>Import Settings</label>
+
+                <field id="product_sync_enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Enable Category and Product Sync</label>
+                    <comment>Enables category synchronization followed by product synchronization(cron only).</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+
+                </field>
+
+                <field id="inventory_sync_enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Enable Inventory Sync</label>
+                    <comment>Enables ERP inventory synchronization(cron only).</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+
+                </field>
+
+                <field id="price_sync_enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="30"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+
+                    <label>Enable Price Sync</label>
+                    <comment>Enables ERP product price synchronization(cron only).</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 
                 </field>
 

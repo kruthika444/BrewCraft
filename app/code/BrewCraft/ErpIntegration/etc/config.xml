@@ -11,13 +11,37 @@
 
                 <enabled>1</enabled>
 
-                <base_url>http://localhost:3000</base_url>
+                <base_url>
+                    http://host.docker.internal:3001
+                </base_url>
 
                 <api_version>v1</api_version>
 
                 <timeout>30</timeout>
 
             </general>
+
+            <order_export>
+
+                <enabled>1</enabled>
+
+                <queue_enabled>1</queue_enabled>
+
+                <retry_attempts>3</retry_attempts>
+
+                <retry_delay>2</retry_delay>
+
+            </order_export>
+
+            <import>
+
+                <product_sync_enabled>1</product_sync_enabled>
+
+                <inventory_sync_enabled>1</inventory_sync_enabled>
+
+                <price_sync_enabled>1</price_sync_enabled>
+
+            </import>
 
         </brewcraft_erp>
 

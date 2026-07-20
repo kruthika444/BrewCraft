@@ -14,42 +14,72 @@ class OrderClient
         private readonly Curl $curl,
         private readonly Config $config,
         private readonly Logger $logger
-    ) {}
+    ) {
+    }
 
     public function exportOrder(array $payload): string
     {
-        $url = rtrim($this->config->getBaseUrl(), '/')
+        $url = rtrim(trim($this->config->getBaseUrl()), '/')
             . '/api/'
-            . $this->config->getApiVersion()
+            . trim($this->config->getApiVersion(), '/')
             . '/orders';
 
-        $this->curl->setTimeout($this->config->getTimeout());
+        $jsonPayload = json_encode(
+            $payload,
+            JSON_THROW_ON_ERROR
+        );
+
+        $this->curl->setTimeout(
+            $this->config->getTimeout()
+        );
 
         $this->curl->addHeader(
             'Content-Type',
             'application/json'
         );
 
-        try {
-            //$this->logger->info('Sending Order to ERP');
-            $this->curl->post(
-                $url,
-                json_encode($payload)
-            );
-            //$this->logger->info('POST Completed');
-        } catch (\Throwable $e) {
+        $this->curl->addHeader(
+            'Accept',
+            'application/json'
+        );
 
-            $this->logger->error(
-                'Curl Error: ' . $e->getMessage()
-            );
+        $this->logger->info(
+            sprintf('Sending order to ERP: %s', $url)
+        );
 
-            throw $e;
-        }
+        $this->logger->debug($jsonPayload);
 
+        $this->curl->post(
+            $url,
+            $jsonPayload
+        );
+
+        $statusCode = $this->curl->getStatus();
         $response = $this->curl->getBody();
 
-        //$this->logger->info('ERP Response');
-        $this->logger->info($response);
+        $this->logger->info(
+            sprintf(
+                'ERP order response status: %d',
+                $statusCode
+            )
+        );
+
+        $this->logger->debug(
+            sprintf(
+                'ERP order response body: %s',
+                $response
+            )
+        );
+
+        if ($statusCode < 200 || $statusCode >= 300) {
+            throw new \RuntimeException(
+                sprintf(
+                    'ERP order export failed with HTTP status %d. Response: %s',
+                    $statusCode,
+                    $response
+                )
+            );
+        }
 
         return $response;
     }

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace BrewCraft\ErpIntegration\Model\Service;
 
+use BrewCraft\ErpIntegration\Api\JobRepositoryInterface;
+use BrewCraft\ErpIntegration\Helper\Config;
 use BrewCraft\ErpIntegration\Logger\Logger;
 use BrewCraft\ErpIntegration\Model\Api\OrderClient;
-use Magento\Sales\Model\Order;
-use BrewCraft\ErpIntegration\Api\JobRepositoryInterface;
 use BrewCraft\ErpIntegration\Model\JobFactory;
+use Magento\Sales\Model\Order;
 
 class OrderExportService
 {
@@ -16,16 +17,48 @@ class OrderExportService
         private readonly OrderClient $client,
         private readonly Logger $logger,
         private readonly JobRepositoryInterface $jobRepository,
-        private readonly JobFactory $jobFactory
-    ) {}
+        private readonly JobFactory $jobFactory,
+        private readonly Config $config
+    ) {
+    }
 
+    /**
+     * Export a Magento order to ERP.
+     */
     public function export(Order $order): void
     {
+        $storeId = (int)$order->getStoreId();
+
+        if (!$this->config->isEnabled($storeId)) {
+            $this->logger->info(
+                sprintf(
+                    'Order %s export skipped because ERP integration is disabled.',
+                    $order->getIncrementId()
+                )
+            );
+
+            return;
+        }
+
+        if (!$this->config->isOrderExportEnabled($storeId)) {
+            $this->logger->info(
+                sprintf(
+                    'Order %s export skipped because order export is disabled.',
+                    $order->getIncrementId()
+                )
+            );
+
+            return;
+        }
+
         $startTime = microtime(true);
+
+        $maxAttempts = $this->config->getRetryAttempts($storeId);
+        $retryDelay = $this->config->getRetryDelay($storeId);
+
         $payload = [
             'header' => $this->buildHeader($order),
             'customer' => $this->buildCustomer($order),
-
             'billing_address' => $this->buildBillingAddress($order),
             'shipping_address' => $this->buildShippingAddress($order),
             'payment' => $this->buildPayment($order),
@@ -35,56 +68,160 @@ class OrderExportService
         ];
 
         try {
-
-            $this->client->exportOrder($payload);
-
-            $executionTime = microtime(true) - $startTime;
-
-            $job = $this->jobFactory->create();
-
-            $job->setData([
-                'job_type' => 'ORDER_EXPORT',
-                'status' => 'SUCCESS',
-                'records_processed' => 1,
-                'execution_time' => $executionTime,
-                'message' => sprintf(
-                    'Order %s exported successfully.',
-                    $order->getIncrementId()
-                )
-            ]);
-
-            $this->jobRepository->save($job);
-
-            $this->logger->info(
-                sprintf(
-                    'Order %s exported successfully.',
-                    $order->getIncrementId()
-                )
+            $attemptsUsed = $this->exportWithRetry(
+                order: $order,
+                payload: $payload,
+                maxAttempts: $maxAttempts,
+                retryDelay: $retryDelay
             );
-        } catch (\Throwable $e) {
 
             $executionTime = microtime(true) - $startTime;
 
-            $job = $this->jobFactory->create();
+            $message = sprintf(
+                'Order %s exported successfully after %d attempt(s).',
+                $order->getIncrementId(),
+                $attemptsUsed
+            );
 
-            $job->setData([
-                'job_type' => 'ORDER_EXPORT',
-                'status' => 'FAILED',
-                'records_processed' => 0,
-                'execution_time' => $executionTime,
-                'message' => $e->getMessage()
-            ]);
+            $this->saveJob(
+                status: 'SUCCESS',
+                recordsProcessed: 1,
+                executionTime: $executionTime,
+                message: $message
+            );
 
-            $this->jobRepository->save($job);
+            $this->logger->info($message);
+        } catch (\Throwable $exception) {
+            $executionTime = microtime(true) - $startTime;
 
-            $this->logger->error($e->getMessage());
+            $message = sprintf(
+                'Order %s export permanently failed after %d attempt(s). Error: %s',
+                $order->getIncrementId(),
+                $maxAttempts,
+                $exception->getMessage()
+            );
 
-            throw $e;
+            $this->saveJob(
+                status: 'FAILED',
+                recordsProcessed: 0,
+                executionTime: $executionTime,
+                message: $message
+            );
+
+            $this->logger->critical($message);
+
+            /*
+             * Do not rethrow the exception.
+             *
+             * All configured retry attempts have already been completed.
+             * The final failure has been stored in brewcraft_sync_job.
+             *
+             * Rethrowing here would mark queue processing as failed and may
+             * cause the same queue message to be processed repeatedly.
+             */
         }
     }
 
     /**
-     * Build ERP Order Header
+     * Attempt to export an order with configurable retries.
+     */
+    private function exportWithRetry(
+        Order $order,
+        array $payload,
+        int $maxAttempts,
+        int $retryDelay
+    ): int {
+        $lastException = null;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                $this->logger->info(
+                    sprintf(
+                        'Export attempt %d/%d for order %s.',
+                        $attempt,
+                        $maxAttempts,
+                        $order->getIncrementId()
+                    )
+                );
+
+                $this->client->exportOrder($payload);
+
+                return $attempt;
+            } catch (\Throwable $exception) {
+                $lastException = $exception;
+
+                $this->logger->warning(
+                    sprintf(
+                        'Export attempt %d/%d failed for order %s: %s',
+                        $attempt,
+                        $maxAttempts,
+                        $order->getIncrementId(),
+                        $exception->getMessage()
+                    )
+                );
+
+                if ($attempt < $maxAttempts && $retryDelay > 0) {
+                    $this->logger->info(
+                        sprintf(
+                            'Waiting %d second(s) before retrying order %s.',
+                            $retryDelay,
+                            $order->getIncrementId()
+                        )
+                    );
+
+                    sleep($retryDelay);
+                }
+            }
+        }
+
+        throw new \RuntimeException(
+            sprintf(
+                'ERP export failed after %d attempt(s). Last error: %s',
+                $maxAttempts,
+                $lastException?->getMessage() ?? 'Unknown ERP error'
+            ),
+            0,
+            $lastException
+        );
+    }
+
+    /**
+     * Save synchronization history.
+     */
+    private function saveJob(
+        string $status,
+        int $recordsProcessed,
+        float $executionTime,
+        string $message
+    ): void {
+        try {
+            $job = $this->jobFactory->create();
+
+            $job->setData([
+                'job_type' => 'ORDER_EXPORT',
+                'status' => $status,
+                'records_processed' => $recordsProcessed,
+                'execution_time' => $executionTime,
+                'message' => $message
+            ]);
+
+            $this->jobRepository->save($job);
+        } catch (\Throwable $exception) {
+            /*
+             * A sync-history database failure should be logged separately.
+             * It should not trigger another ERP export attempt.
+             */
+            $this->logger->error(
+                sprintf(
+                    'Unable to save ORDER_EXPORT sync history: %s',
+                    $exception->getMessage()
+                )
+            );
+        }
+    }
+
+    /**
+     * Build ERP order header.
      */
     private function buildHeader(Order $order): array
     {
@@ -97,7 +234,7 @@ class OrderExportService
     }
 
     /**
-     * Build ERP Customer Information
+     * Build ERP customer information.
      */
     private function buildCustomer(Order $order): array
     {
@@ -110,49 +247,49 @@ class OrderExportService
     }
 
     /**
-     * Build ERP Billing Address
+     * Build ERP billing address.
      */
     private function buildBillingAddress(Order $order): array
     {
-        $billing = $order->getBillingAddress();
+        $billingAddress = $order->getBillingAddress();
 
-        if (!$billing) {
+        if (!$billingAddress) {
             return [];
         }
 
         return [
-            'street' => implode(' ', $billing->getStreet()),
-            'city' => $billing->getCity(),
-            'region' => $billing->getRegion(),
-            'postcode' => $billing->getPostcode(),
-            'country' => $billing->getCountryId(),
-            'telephone' => $billing->getTelephone()
+            'street' => implode(' ', $billingAddress->getStreet()),
+            'city' => $billingAddress->getCity(),
+            'region' => $billingAddress->getRegion(),
+            'postcode' => $billingAddress->getPostcode(),
+            'country' => $billingAddress->getCountryId(),
+            'telephone' => $billingAddress->getTelephone()
         ];
     }
 
     /**
-     * Build ERP Shipping Address
+     * Build ERP shipping address.
      */
     private function buildShippingAddress(Order $order): array
     {
-        $shipping = $order->getShippingAddress();
+        $shippingAddress = $order->getShippingAddress();
 
-        if (!$shipping) {
+        if (!$shippingAddress) {
             return [];
         }
 
         return [
-            'street' => implode(' ', $shipping->getStreet()),
-            'city' => $shipping->getCity(),
-            'region' => $shipping->getRegion(),
-            'postcode' => $shipping->getPostcode(),
-            'country' => $shipping->getCountryId(),
-            'telephone' => $shipping->getTelephone()
+            'street' => implode(' ', $shippingAddress->getStreet()),
+            'city' => $shippingAddress->getCity(),
+            'region' => $shippingAddress->getRegion(),
+            'postcode' => $shippingAddress->getPostcode(),
+            'country' => $shippingAddress->getCountryId(),
+            'telephone' => $shippingAddress->getTelephone()
         ];
     }
 
     /**
-     * Build ERP Payment Information
+     * Build ERP payment information.
      */
     private function buildPayment(Order $order): array
     {
@@ -168,7 +305,7 @@ class OrderExportService
     }
 
     /**
-     * Build ERP Shipping Information
+     * Build ERP shipping information.
      */
     private function buildShipping(Order $order): array
     {
@@ -178,8 +315,9 @@ class OrderExportService
             'amount' => (float)$order->getShippingAmount()
         ];
     }
+
     /**
-     * Build ERP Order Totals
+     * Build ERP order totals.
      */
     private function buildTotals(Order $order): array
     {
@@ -193,14 +331,13 @@ class OrderExportService
     }
 
     /**
-     * Build ERP Order Items
+     * Build ERP order items.
      */
     private function buildItems(Order $order): array
     {
         $items = [];
 
         foreach ($order->getAllVisibleItems() as $item) {
-
             $items[] = [
                 'sku' => $item->getSku(),
                 'name' => $item->getName(),
