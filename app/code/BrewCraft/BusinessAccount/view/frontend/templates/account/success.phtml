@@ -1,0 +1,185 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/**
+ * @var Template $block
+ * @var Escaper $escaper
+ */
+?>
+
+<div class="brewcraft-business-success">
+
+    <div class="business-success-card">
+
+        <div class="business-success-icon"
+             aria-hidden="true">
+            ✓
+        </div>
+
+        <span class="business-success-eyebrow">
+            <?= $escaper->escapeHtml(
+                __('BrewCraft Business')
+            ) ?>
+        </span>
+
+        <h1 class="business-success-title">
+            <?= $escaper->escapeHtml(
+                __('Registration Submitted!')
+            ) ?>
+        </h1>
+
+        <p class="business-success-description">
+            <?= $escaper->escapeHtml(
+                __(
+                    'Thank you for registering with BrewCraft Supply. Your business account application is now under review.'
+                )
+            ) ?>
+        </p>
+
+        <div class="business-success-status">
+
+            <span class="business-success-status__label">
+                <?= $escaper->escapeHtml(
+                    __('Application Status')
+                ) ?>
+            </span>
+
+            <strong class="business-success-status__value">
+                <?= $escaper->escapeHtml(
+                    __('Pending Review')
+                ) ?>
+            </strong>
+
+        </div>
+
+        <div class="business-success-next">
+
+            <h2>
+                <?= $escaper->escapeHtml(
+                    __('What happens next?')
+                ) ?>
+            </h2>
+
+            <div class="business-success-steps">
+
+                <div class="business-success-step">
+
+                    <span class="business-success-step__number">
+                        1
+                    </span>
+
+                    <div>
+                        <strong>
+                            <?= $escaper->escapeHtml(
+                                __('Application Review')
+                            ) ?>
+                        </strong>
+
+                        <p>
+                            <?= $escaper->escapeHtml(
+                                __(
+                                    'Our business team will review the company and contact information you submitted.'
+                                )
+                            ) ?>
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="business-success-step">
+
+                    <span class="business-success-step__number">
+                        2
+                    </span>
+
+                    <div>
+                        <strong>
+                            <?= $escaper->escapeHtml(
+                                __('Approval Notification')
+                            ) ?>
+                        </strong>
+
+                        <p>
+                            <?= $escaper->escapeHtml(
+                                __(
+                                    'You will receive an email after your application has been approved or rejected.'
+                                )
+                            ) ?>
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="business-success-step">
+
+                    <span class="business-success-step__number">
+                        3
+                    </span>
+
+                    <div>
+                        <strong>
+                            <?= $escaper->escapeHtml(
+                                __('Business Benefits')
+                            ) ?>
+                        </strong>
+
+                        <p>
+                            <?= $escaper->escapeHtml(
+                                __(
+                                    'Approved accounts will receive access to wholesale pricing, quotation services and other business features.'
+                                )
+                            ) ?>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="actions-toolbar">
+
+            <div class="primary">
+
+                <a class="action primary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getUrl('customer/account')
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Go to My Account')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+            <div class="secondary">
+
+                <a class="action secondary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getUrl('')
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Continue Shopping')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

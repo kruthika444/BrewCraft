@@ -19,8 +19,7 @@ class OrderExportService
         private readonly JobRepositoryInterface $jobRepository,
         private readonly JobFactory $jobFactory,
         private readonly Config $config
-    ) {
-    }
+    ) {}
 
     /**
      * Export a Magento order to ERP.

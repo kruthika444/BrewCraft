@@ -1,0 +1,564 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\BusinessAccount\Block\Account\Create;
+use Magento\Framework\Escaper;
+
+/**
+ * @var Create $block
+ * @var Escaper $escaper
+ */
+
+$companyTypes = $block->getCompanyTypes();
+$countryOptions = $block->getCountryOptions();
+?>
+
+<div class="brewcraft-business-account">
+
+    <div class="business-account-header">
+        <div class="business-account-header__content">
+
+            <span class="business-account-header__eyebrow">
+                <?= $escaper->escapeHtml(__('BrewCraft Business')) ?>
+            </span>
+
+            <h1 class="business-account-header__title">
+                <?= $escaper->escapeHtml(__('Create Your Business Account')) ?>
+            </h1>
+
+            <p class="business-account-header__description">
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Apply for a BrewCraft business account to access wholesale pricing, quotation services and business-only benefits.'
+                    )
+                ) ?>
+            </p>
+
+        </div>
+
+        <aside class="business-account-benefits">
+            <h2 class="business-account-benefits__title">
+                <?= $escaper->escapeHtml(__('Why create a business account?')) ?>
+            </h2>
+
+            <ul class="business-account-benefits__list">
+                <li>
+                    <?= $escaper->escapeHtml(__('Wholesale and business pricing')) ?>
+                </li>
+                <li>
+                    <?= $escaper->escapeHtml(__('Request custom quotations')) ?>
+                </li>
+                <li>
+                    <?= $escaper->escapeHtml(__('Quick reorder and order history')) ?>
+                </li>
+                <li>
+                    <?= $escaper->escapeHtml(__('Dedicated business support')) ?>
+                </li>
+            </ul>
+        </aside>
+    </div>
+
+    <form class="form business-account-form"
+          action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
+          method="post"
+          id="business-account-form"
+          data-mage-init='{
+              "validation": {}
+          }'>
+
+        <input type="hidden"
+               name="form_key"
+               value="<?= $escaper->escapeHtmlAttr($block->getFormKey()) ?>"/>
+
+        <fieldset class="fieldset business-account-section">
+
+            <legend class="legend">
+                <span>
+                    <?= $escaper->escapeHtml(__('Company Details')) ?>
+                </span>
+            </legend>
+
+            <div class="field company_name required">
+                <label class="label" for="company_name">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Company Name')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="company_name"
+                           id="company_name"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(__('Company Name')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 255
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field registration_number required">
+                <label class="label" for="registration_number">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Business Registration Number')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="registration_number"
+                           id="registration_number"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(
+                               __('Business Registration Number')
+                           ) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 100
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field tax_number">
+                <label class="label" for="tax_number">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Tax / VAT Number')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="tax_number"
+                           id="tax_number"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(__('Tax / VAT Number')) ?>"
+                           data-validate='{
+                               "maxlength": 100
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field company_type">
+                <label class="label" for="company_type">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Company Type')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <select name="company_type"
+                            id="company_type"
+                            class="select">
+
+                        <option value="">
+                            <?= $escaper->escapeHtml(__('Please select')) ?>
+                        </option>
+
+                        <?php foreach ($companyTypes as $value => $label): ?>
+                            <option value="<?= $escaper->escapeHtmlAttr($value) ?>">
+                                <?= $escaper->escapeHtml($label) ?>
+                            </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="field business_years">
+                <label class="label" for="business_years">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Years in Business')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="number"
+                           name="business_years"
+                           id="business_years"
+                           class="input-text"
+                           min="0"
+                           max="500"
+                           title="<?= $escaper->escapeHtmlAttr(__('Years in Business')) ?>"
+                           data-validate='{
+                               "validate-digits": true,
+                               "validate-zero-or-greater": true
+                           }'/>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <fieldset class="fieldset business-account-section">
+
+            <legend class="legend">
+                <span>
+                    <?= $escaper->escapeHtml(__('Primary Contact')) ?>
+                </span>
+            </legend>
+
+            <div class="field contact_firstname required">
+                <label class="label" for="contact_firstname">
+                    <span>
+                        <?= $escaper->escapeHtml(__('First Name')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="contact_firstname"
+                           id="contact_firstname"
+                           class="input-text"
+                           value="<?= $escaper->escapeHtmlAttr(
+                               $block->getCustomerFirstname()
+                           ) ?>"
+                           title="<?= $escaper->escapeHtmlAttr(__('First Name')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 100
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field contact_lastname required">
+                <label class="label" for="contact_lastname">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Last Name')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="contact_lastname"
+                           id="contact_lastname"
+                           class="input-text"
+                           value="<?= $escaper->escapeHtmlAttr(
+                               $block->getCustomerLastname()
+                           ) ?>"
+                           title="<?= $escaper->escapeHtmlAttr(__('Last Name')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 100
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field contact_email required">
+                <label class="label" for="contact_email">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Business Email')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="email"
+                           name="contact_email"
+                           id="contact_email"
+                           class="input-text"
+                           value="<?= $escaper->escapeHtmlAttr(
+                               $block->getCustomerEmail()
+                           ) ?>"
+                           title="<?= $escaper->escapeHtmlAttr(__('Business Email')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "validate-email": true,
+                               "maxlength": 255
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field contact_phone required">
+                <label class="label" for="contact_phone">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Business Phone')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="contact_phone"
+                           id="contact_phone"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(__('Business Phone')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 50
+                           }'/>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <fieldset class="fieldset business-account-section">
+
+            <legend class="legend">
+                <span>
+                    <?= $escaper->escapeHtml(__('Business Address')) ?>
+                </span>
+            </legend>
+
+            <div class="field street required">
+                <label class="label" for="street">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Street Address')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <textarea name="street"
+                              id="street"
+                              rows="3"
+                              class="input-text"
+                              title="<?= $escaper->escapeHtmlAttr(__('Street Address')) ?>"
+                              data-validate='{
+                                  "required": true
+                              }'></textarea>
+                </div>
+            </div>
+
+            <div class="field city required">
+                <label class="label" for="city">
+                    <span>
+                        <?= $escaper->escapeHtml(__('City')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="city"
+                           id="city"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(__('City')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 255
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field region">
+                <label class="label" for="region">
+                    <span>
+                        <?= $escaper->escapeHtml(__('State / Region')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="region"
+                           id="region"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(__('State / Region')) ?>"
+                           data-validate='{
+                               "maxlength": 255
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field postcode required">
+                <label class="label" for="postcode">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Postcode')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <input type="text"
+                           name="postcode"
+                           id="postcode"
+                           class="input-text"
+                           title="<?= $escaper->escapeHtmlAttr(__('Postcode')) ?>"
+                           data-validate='{
+                               "required": true,
+                               "maxlength": 20
+                           }'/>
+                </div>
+            </div>
+
+            <div class="field country_id required">
+                <label class="label" for="country_id">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Country')) ?>
+                    </span>
+                </label>
+
+                <div class="control">
+                    <select name="country_id"
+                            id="country_id"
+                            class="select"
+                            data-validate='{
+                                "required": true
+                            }'>
+
+                        <option value="">
+                            <?= $escaper->escapeHtml(__('Please select a country')) ?>
+                        </option>
+
+                        <?php foreach ($countryOptions as $country): ?>
+                            <?php
+                            $countryValue = (string)($country['value'] ?? '');
+                            $countryLabel = (string)($country['label'] ?? '');
+                            ?>
+
+                            <?php if ($countryValue === ''): ?>
+                                <?php continue; ?>
+                            <?php endif; ?>
+
+                            <option value="<?= $escaper->escapeHtmlAttr($countryValue) ?>">
+                                <?= $escaper->escapeHtml($countryLabel) ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <?php if (!$block->isCustomerLoggedIn()): ?>
+
+            <fieldset class="fieldset business-account-section">
+
+                <legend class="legend">
+                    <span>
+                        <?= $escaper->escapeHtml(__('Account Security')) ?>
+                    </span>
+                </legend>
+
+                <p class="business-account-section__note">
+                    <?= $escaper->escapeHtml(
+                        __(
+                            'A Magento customer account will be created with your business application.'
+                        )
+                    ) ?>
+                </p>
+
+                <div class="field password required">
+                    <label class="label" for="password">
+                        <span>
+                            <?= $escaper->escapeHtml(__('Password')) ?>
+                        </span>
+                    </label>
+
+                    <div class="control">
+                        <input type="password"
+                               name="password"
+                               id="password"
+                               class="input-text"
+                               autocomplete="new-password"
+                               title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                               data-password-min-length="8"
+                               data-password-min-character-sets="3"
+                               data-validate='{
+                                   "required": true,
+                                   "validate-customer-password": true
+                               }'/>
+                    </div>
+                </div>
+
+                <div class="field password_confirmation required">
+                    <label class="label" for="password_confirmation">
+                        <span>
+                            <?= $escaper->escapeHtml(__('Confirm Password')) ?>
+                        </span>
+                    </label>
+
+                    <div class="control">
+                        <input type="password"
+                               name="password_confirmation"
+                               id="password_confirmation"
+                               class="input-text"
+                               autocomplete="new-password"
+                               title="<?= $escaper->escapeHtmlAttr(
+                                   __('Confirm Password')
+                               ) ?>"
+                               data-validate='{
+                                   "required": true,
+                                   "equalTo": "#password"
+                               }'/>
+                    </div>
+                </div>
+
+            </fieldset>
+
+        <?php endif; ?>
+
+        <fieldset class="fieldset business-account-section">
+
+            <legend class="legend">
+                <span>
+                    <?= $escaper->escapeHtml(__('Review and Submit')) ?>
+                </span>
+            </legend>
+
+            <div class="field terms required">
+
+                <div class="control">
+
+                    <input type="checkbox"
+                           name="terms"
+                           id="terms"
+                           value="1"
+                           class="checkbox"
+                           data-validate='{
+                               "required": true
+                           }'/>
+
+                    <label class="label" for="terms">
+                        <span>
+                            <?= $escaper->escapeHtml(
+                                __(
+                                    'I confirm that the business information provided is accurate and may be reviewed by BrewCraft.'
+                                )
+                            ) ?>
+                        </span>
+                    </label>
+
+                </div>
+
+            </div>
+
+        </fieldset>
+
+        <div class="actions-toolbar">
+
+            <div class="primary">
+
+                <button type="submit"
+                        class="action submit primary"
+                        title="<?= $escaper->escapeHtmlAttr(
+                            __('Submit Business Application')
+                        ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Submit Business Application')
+                        ) ?>
+                    </span>
+
+                </button>
+
+            </div>
+
+            <div class="secondary">
+
+                <a class="action back"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getUrl('')
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(__('Back to Home')) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>

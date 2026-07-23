@@ -3154,3 +3154,1501 @@ Configurable and failure-aware integration
 ```
 
 The main remaining ERP work is code cleanup and final module documentation.
+
+
+
+# Development Log — BrewCraft Business Account Storefront Registration
+
+**DATE:** 21 July 
+
+**Project:** BrewCraft Supply
+**Magento module:** `BrewCraft_BusinessAccount`
+**Phase completed:** Module foundation, persistence layer, repository layer, storefront registration, customer creation, and pending application submission
+
+---
+
+# 1. Business Requirement
+
+BrewCraft serves both regular retail customers and business customers.
+
+A normal Magento customer can create an account and purchase products immediately. A business customer needs additional capabilities such as:
+
+* Wholesale pricing
+* Requesting quotations
+* Quick reorder
+* Business-specific promotions
+* Dedicated support
+* Purchase-order or credit-payment options in later phases
+
+These benefits should not be available to every customer automatically. BrewCraft must first collect the company’s details and review the application.
+
+The required business flow is:
+
+```text
+Customer submits business details
+            ↓
+Magento customer account is identified or created
+            ↓
+Business application is saved
+            ↓
+Application status is Pending
+            ↓
+Admin reviews the application
+            ↓
+Admin approves or rejects it
+            ↓
+Approved customer receives business benefits
+```
+
+The storefront-registration phase implements everything up to:
+
+```text
+Application status = pending
+```
+
+The Admin approval process will be developed next.
+
+---
+
+# 2. Why We Created a Separate Module
+
+We created:
+
+```text
+BrewCraft_BusinessAccount
+```
+
+instead of placing the functionality inside:
+
+```text
+BrewCraft_ErpIntegration
+```
+
+The two modules have different responsibilities.
+
+```text
+BrewCraft_ErpIntegration
+→ Communicates with the ERP
+→ Imports catalog data
+→ Exports orders
+→ Handles queue, cron, and retries
+```
+
+```text
+BrewCraft_BusinessAccount
+→ Accepts company applications
+→ Connects applications to customers
+→ Controls approval status
+→ Enables future B2B features
+```
+
+This follows separation of concerns.
+
+A future change to business registration should not require changing ERP integration code. Similarly, ERP API changes should not affect the business-account registration module.
+
+---
+
+# 3. Completed User Journey
+
+The current storefront workflow is:
+
+```text
+Visitor opens:
+/businessaccount/account/create
+            ↓
+Business registration page is displayed
+            ↓
+Visitor enters company, contact, and address information
+            ↓
+Visitor submits the form
+            ↓
+Server validates the submitted data
+            ↓
+Existing logged-in customer?
+     ├── Yes → use existing customer ID
+     └── No  → create a Magento customer account
+            ↓
+Check duplicate customer application
+            ↓
+Check duplicate business registration number
+            ↓
+Save application with status "pending"
+            ↓
+Redirect to success page
+```
+
+This flow supports two types of users:
+
+1. A guest who does not yet have a Magento customer account.
+2. An existing Magento customer who is already logged in.
+
+---
+
+# 4. Module Foundation
+
+The first files created were:
+
+```text
+app/code/BrewCraft/BusinessAccount
+├── registration.php
+├── composer.json
+└── etc
+    └── module.xml
+```
+
+## `registration.php`
+
+This registers the module with Magento:
+
+```php
+ComponentRegistrar::register(
+    ComponentRegistrar::MODULE,
+    'BrewCraft_BusinessAccount',
+    __DIR__
+);
+```
+
+Without this file, Magento would not discover the module.
+
+## `composer.json`
+
+This defines:
+
+* Composer package name
+* Magento module type
+* PHP compatibility
+* Required Magento modules
+* PSR-4 namespace mapping
+
+The namespace:
+
+```php
+BrewCraft\BusinessAccount
+```
+
+maps to:
+
+```text
+app/code/BrewCraft/BusinessAccount
+```
+
+## `module.xml`
+
+The module was configured to load after:
+
+```text
+Magento_Customer
+```
+
+because the business application depends on Magento customer records.
+
+```xml
+<sequence>
+    <module name="Magento_Customer"/>
+</sequence>
+```
+
+---
+
+# 5. Business Application Database Design
+
+We created a custom table:
+
+```text
+brewcraft_business_account
+```
+
+The table stores company-specific information that does not belong directly in Magento’s standard customer entity.
+
+Important columns include:
+
+```text
+entity_id
+customer_id
+company_name
+registration_number
+tax_number
+company_type
+business_years
+contact_name
+contact_email
+contact_phone
+street
+city
+region
+postcode
+country_id
+status
+admin_comment
+approved_at
+created_at
+updated_at
+```
+
+---
+
+# 6. Why We Used a Separate Table
+
+We intentionally did not store all company information as Magento customer EAV attributes.
+
+The two entities represent different concepts:
+
+```text
+customer_entity
+→ Login identity
+→ First name
+→ Last name
+→ Email
+→ Customer group
+```
+
+```text
+brewcraft_business_account
+→ Company identity
+→ Registration number
+→ Tax number
+→ Business address
+→ Application status
+→ Approval information
+```
+
+A business application has its own lifecycle:
+
+```text
+pending
+approved
+rejected
+```
+
+It also needs future fields such as:
+
+* Admin comments
+* Approval timestamp
+* Credit status
+* Account manager
+* Business tier
+* Document-verification status
+
+A separate entity keeps this process independent from the basic Magento customer account.
+
+---
+
+# 7. Customer Relationship
+
+The custom table contains:
+
+```text
+customer_id
+```
+
+This links the application to:
+
+```text
+customer_entity.entity_id
+```
+
+The database relationship is:
+
+```text
+customer_entity.entity_id
+           ↓
+brewcraft_business_account.customer_id
+```
+
+A foreign key was added with:
+
+```xml
+onDelete="CASCADE"
+```
+
+This means that when a Magento customer is permanently deleted, their related business-account record is also deleted.
+
+---
+
+# 8. Database Constraints
+
+## One application per customer
+
+A unique constraint was added to:
+
+```text
+customer_id
+```
+
+This enforces:
+
+```text
+One Magento customer
+→ One business application
+```
+
+It prevents duplicate applications such as:
+
+```text
+Customer 25
+├── Application 1
+├── Application 2
+└── Application 3
+```
+
+## Unique business registration number
+
+A unique constraint was also added to:
+
+```text
+registration_number
+```
+
+This prevents two applications from using the same legal company-registration number.
+
+The PHP service performs a friendly validation first, while the database constraint remains the final protection against duplicates.
+
+## Indexes
+
+Indexes were created for:
+
+```text
+status
+created_at
+```
+
+These will help the future Admin grid efficiently filter:
+
+* Pending applications
+* Approved applications
+* Rejected applications
+* Recently submitted applications
+
+---
+
+# 9. Business Account Model
+
+We created:
+
+```text
+Model/BusinessAccount.php
+```
+
+This model represents one row from:
+
+```text
+brewcraft_business_account
+```
+
+The model includes status constants:
+
+```php
+public const STATUS_PENDING = 'pending';
+public const STATUS_APPROVED = 'approved';
+public const STATUS_REJECTED = 'rejected';
+```
+
+Instead of repeatedly writing string values such as:
+
+```php
+$application->setStatus('approved');
+```
+
+the code can use:
+
+```php
+$application->setStatus(
+    BusinessAccount::STATUS_APPROVED
+);
+```
+
+This avoids inconsistent values and spelling errors.
+
+Helper methods were also added:
+
+```php
+isPending()
+isApproved()
+isRejected()
+```
+
+These methods make future business logic easier to read.
+
+Example:
+
+```php
+if ($businessAccount->isPending()) {
+    // Show approval actions.
+}
+```
+
+---
+
+# 10. Resource Model and Collection
+
+## Resource model
+
+We created:
+
+```text
+Model/ResourceModel/BusinessAccount.php
+```
+
+It maps:
+
+```text
+Model: BrewCraft\BusinessAccount\Model\BusinessAccount
+Table: brewcraft_business_account
+Primary key: entity_id
+```
+
+The resource model performs database operations:
+
+```text
+INSERT
+SELECT
+UPDATE
+DELETE
+```
+
+## Collection
+
+We created:
+
+```text
+Model/ResourceModel/BusinessAccount/Collection.php
+```
+
+A collection represents multiple business applications.
+
+It will later support queries such as:
+
+```php
+$collection->addFieldToFilter(
+    'status',
+    BusinessAccount::STATUS_PENDING
+);
+```
+
+This collection will be useful for the Admin approval grid.
+
+---
+
+# 11. Repository Layer
+
+We created:
+
+```text
+Api/BusinessAccountRepositoryInterface.php
+Model/BusinessAccountRepository.php
+etc/di.xml
+```
+
+The repository provides a controlled interface for accessing business applications.
+
+Methods include:
+
+```php
+save()
+getById()
+getByCustomerId()
+getByRegistrationNumber()
+delete()
+deleteById()
+```
+
+---
+
+# 12. Why We Used a Repository
+
+Without a repository, controllers and services might directly use the resource model:
+
+```php
+$this->resource->save($model);
+```
+
+Instead, higher-level classes depend on:
+
+```php
+BusinessAccountRepositoryInterface
+```
+
+The flow is:
+
+```text
+Controller or service
+        ↓
+Repository interface
+        ↓
+Repository implementation
+        ↓
+Resource model
+        ↓
+Database
+```
+
+This provides:
+
+* A clear service contract
+* Consistent exception handling
+* Easier future replacement
+* Cleaner controller and service code
+* Better alignment with Magento architecture
+
+---
+
+# 13. Dependency Injection Preference
+
+In `etc/di.xml`, we added:
+
+```xml
+<preference
+    for="BrewCraft\BusinessAccount\Api\BusinessAccountRepositoryInterface"
+    type="BrewCraft\BusinessAccount\Model\BusinessAccountRepository"/>
+```
+
+When a class requests:
+
+```php
+BusinessAccountRepositoryInterface
+```
+
+Magento injects:
+
+```php
+BusinessAccountRepository
+```
+
+The calling class depends on the interface rather than the concrete implementation.
+
+---
+
+# 14. Repository Loading Methods
+
+## Load by entity ID
+
+```php
+getById(int $entityId)
+```
+
+loads using:
+
+```text
+entity_id
+```
+
+## Load by customer ID
+
+```php
+getByCustomerId(int $customerId)
+```
+
+checks whether a specific Magento customer already has an application.
+
+This method fulfills the business rule:
+
+```text
+A customer cannot submit multiple applications.
+```
+
+## Load by registration number
+
+```php
+getByRegistrationNumber(string $registrationNumber)
+```
+
+checks whether a legal company-registration number is already in use.
+
+This fulfills the business rule:
+
+```text
+A registered company must not be duplicated.
+```
+
+---
+
+# 15. Storefront Route
+
+We created:
+
+```text
+etc/frontend/routes.xml
+```
+
+The route defines:
+
+```xml
+<route id="businessaccount" frontName="businessaccount">
+```
+
+This makes the storefront URL begin with:
+
+```text
+/businessaccount/
+```
+
+The registration page URL is:
+
+```text
+/businessaccount/account/create
+```
+
+Magento resolves this as:
+
+```text
+Front name: businessaccount
+Controller: account
+Action: create
+```
+
+which maps to:
+
+```text
+Controller/Account/Create.php
+```
+
+---
+
+# 16. Registration Page Controller
+
+We created:
+
+```text
+Controller/Account/Create.php
+```
+
+It implements:
+
+```php
+HttpGetActionInterface
+```
+
+because it displays a page through an HTTP GET request.
+
+The controller creates a Magento page result:
+
+```php
+$resultPage = $this->pageFactory->create();
+```
+
+It does not manually generate HTML. Magento processes the matching layout XML and template.
+
+---
+
+# 17. Layout and Template Rendering
+
+The request flow is:
+
+```text
+/businessaccount/account/create
+        ↓
+Create controller
+        ↓
+Page result
+        ↓
+businessaccount_account_create.xml
+        ↓
+Block/Account/Create.php
+        ↓
+account/create.phtml
+```
+
+We created:
+
+```text
+view/frontend/layout/businessaccount_account_create.xml
+```
+
+The block was inserted into Magento’s main content container.
+
+```xml
+<referenceContainer name="content">
+```
+
+The block and template were connected using:
+
+```xml
+<block
+    class="BrewCraft\BusinessAccount\Block\Account\Create"
+    template="BrewCraft_BusinessAccount::account/create.phtml"/>
+```
+
+---
+
+# 18. Duplicate Page Title Fix
+
+Initially, the page displayed two headings:
+
+```text
+Create Business Account
+Create Your Business Account
+```
+
+The first came from Magento’s standard page title block. The second came from our custom template.
+
+We removed the visible default heading using:
+
+```xml
+<referenceBlock name="page.main.title" remove="true"/>
+```
+
+The controller still sets:
+
+```php
+$resultPage->getConfig()->getTitle()->set(
+    __('Create Business Account')
+);
+```
+
+That title remains useful for:
+
+* Browser tab title
+* SEO metadata
+* Page identity
+
+The storefront displays only the designed template heading:
+
+```text
+Create Your Business Account
+```
+
+---
+
+# 19. Registration Form Block
+
+We created:
+
+```text
+Block/Account/Create.php
+```
+
+The block prepares data required by the template.
+
+It provides:
+
+```php
+getFormAction()
+getFormKey()
+isCustomerLoggedIn()
+getCustomerFirstname()
+getCustomerLastname()
+getCustomerEmail()
+getCountryOptions()
+getCompanyTypes()
+```
+
+The template does not directly create collections or read customer sessions. This logic stays inside the block.
+
+---
+
+# 20. Form Action
+
+The block returns:
+
+```php
+$this->getUrl('businessaccount/account/save');
+```
+
+This produces:
+
+```text
+/businessaccount/account/save
+```
+
+The form submits to:
+
+```text
+Controller/Account/Save.php
+```
+
+using the POST method.
+
+---
+
+# 21. CSRF Protection
+
+The form contains Magento’s form key:
+
+```html
+<input type="hidden"
+       name="form_key"
+       value="..."/>
+```
+
+The Save controller validates it with:
+
+```php
+$this->formKeyValidator->validate($this->request)
+```
+
+This protects the form from cross-site request forgery.
+
+When the key is invalid or expired, the customer receives:
+
+```text
+Your session has expired. Please submit the form again.
+```
+
+and is redirected back to the registration page.
+
+---
+
+# 22. Business Registration Form Sections
+
+The storefront form is divided into logical business sections.
+
+## Company details
+
+```text
+Company Name
+Business Registration Number
+Tax / VAT Number
+Company Type
+Years in Business
+```
+
+## Primary contact
+
+```text
+First Name
+Last Name
+Business Email
+Business Phone
+```
+
+## Business address
+
+```text
+Street
+City
+State / Region
+Postcode
+Country
+```
+
+## Account security
+
+For guests only:
+
+```text
+Password
+Confirm Password
+```
+
+## Review and submit
+
+The applicant confirms that the provided information is accurate.
+
+This structure matches a realistic business-onboarding form rather than a standard Magento retail registration form.
+
+---
+
+# 23. Country Options
+
+The block uses Magento’s country collection:
+
+```php
+CountryCollectionFactory
+```
+
+and calls:
+
+```php
+loadByStore()
+```
+
+This means the dropdown follows the countries permitted by the Magento store configuration.
+
+We did not hard-code a country list inside the template.
+
+---
+
+# 24. Logged-In and Guest Behavior
+
+## Logged-in customer
+
+When a customer is already logged in:
+
+* First name is prefilled.
+* Last name is prefilled.
+* Email is prefilled.
+* Password fields are hidden.
+* The application is connected to the existing customer ID.
+
+Flow:
+
+```text
+Existing Magento customer
+        ↓
+Submit business information
+        ↓
+Create only business application
+```
+
+## Guest visitor
+
+When the visitor is not logged in:
+
+* Name and email are entered manually.
+* Password fields are displayed.
+* A Magento customer account is created.
+* The business application is linked to the new customer.
+* The customer is logged in after successful completion.
+
+Flow:
+
+```text
+Guest visitor
+        ↓
+Create Magento customer
+        ↓
+Create business application
+        ↓
+Log customer in
+```
+
+This avoids forcing users to complete two separate registration processes.
+
+---
+
+# 25. Frontend Validation
+
+Magento JavaScript validation was initialized through:
+
+```html
+data-mage-init='{"validation": {}}'
+```
+
+Individual fields use rules such as:
+
+```text
+required
+validate-email
+validate-digits
+validate-zero-or-greater
+validate-customer-password
+equalTo
+maxlength
+```
+
+This gives immediate feedback before the form reaches the server.
+
+However, frontend validation alone is not trusted because it can be bypassed. The same important checks are repeated in PHP.
+
+---
+
+# 26. Save Controller
+
+We created:
+
+```text
+Controller/Account/Save.php
+```
+
+It implements:
+
+```php
+HttpPostActionInterface
+```
+
+because it accepts submitted form data.
+
+The controller performs request-level responsibilities:
+
+```text
+Validate form key
+Collect POST data
+Preserve form data
+Call registration service
+Add success/error messages
+Redirect the customer
+```
+
+It does not contain the main registration business logic.
+
+---
+
+# 27. Why Business Logic Was Moved to a Service
+
+We created:
+
+```text
+Model/Service/BusinessAccountRegistrationService.php
+```
+
+Instead of putting all logic inside the Save controller.
+
+The controller should deal with HTTP behavior:
+
+```text
+Request
+Response
+Redirect
+Messages
+```
+
+The service handles the business operation:
+
+```text
+Validate information
+Check duplicates
+Identify/create customer
+Create application
+Handle partial failures
+```
+
+This makes the registration workflow reusable later from:
+
+* REST API
+* GraphQL resolver
+* Admin action
+* Import command
+* Integration endpoint
+
+without copying the same logic from the controller.
+
+---
+
+# 28. Server-Side Validation
+
+The registration service validates:
+
+* Required fields
+* Valid email format
+* Terms confirmation
+* Field lengths
+* Two-character country code
+* Non-negative years in business
+* Guest password
+* Password confirmation
+
+Example required-field validation:
+
+```php
+if (
+    !isset($data[$field])
+    || trim((string)$data[$field]) === ''
+) {
+    throw new LocalizedException(
+        __('The "%1" field is required.', $label)
+    );
+}
+```
+
+This ensures that invalid requests cannot bypass the browser-side validation.
+
+---
+
+# 29. Data Normalization
+
+Before validation, submitted strings are trimmed:
+
+```php
+$normalized[$key] = trim($value);
+```
+
+This converts values such as:
+
+```text
+"  BrewCraft Traders  "
+```
+
+into:
+
+```text
+"BrewCraft Traders"
+```
+
+This improves consistency and prevents whitespace from affecting duplicate checks.
+
+---
+
+# 30. Duplicate Registration Number Validation
+
+Before saving, the service calls:
+
+```php
+getByRegistrationNumber()
+```
+
+When an application already exists, it throws a friendly error:
+
+```text
+A business account already exists with this registration number.
+```
+
+This protects BrewCraft from multiple applications for the same legal company.
+
+The database unique constraint remains the final safeguard.
+
+---
+
+# 31. Duplicate Customer Application Validation
+
+For logged-in customers, the service calls:
+
+```php
+getByCustomerId($customerId)
+```
+
+When an application exists, registration is stopped with a message such as:
+
+```text
+You already have a business account application with status "pending".
+```
+
+This fulfills the rule:
+
+```text
+One customer
+→ One active business-account application
+```
+
+---
+
+# 32. Existing Guest Email Protection
+
+A guest may enter an email that already belongs to a Magento customer.
+
+The service checks:
+
+```php
+$this->customerRepository->get(
+    $email,
+    $websiteId
+);
+```
+
+When the customer exists, it does not attempt to create another account.
+
+The user is instructed to sign in:
+
+```text
+A customer account already exists with this email address.
+Please sign in before applying for a business account.
+```
+
+This protects account identity and prevents duplicate-email errors.
+
+---
+
+# 33. Magento Customer Creation
+
+For a new guest, the service creates a Magento customer using:
+
+```php
+CustomerInterfaceFactory
+AccountManagementInterface
+```
+
+The customer fields include:
+
+```text
+First name
+Last name
+Email
+Website ID
+Store ID
+Password
+```
+
+The account is created through:
+
+```php
+$this->accountManagement->createAccount(
+    $customer,
+    $password
+);
+```
+
+Using Magento’s customer account service ensures that Magento’s normal account-creation behavior is respected.
+
+---
+
+# 34. Business Application Creation
+
+After the customer is available, the service creates:
+
+```php
+BusinessAccountFactory->create()
+```
+
+and maps the submitted information:
+
+```php
+$businessAccount->setData([
+    'customer_id' => $customerId,
+    'company_name' => $data['company_name'],
+    'registration_number' => $data['registration_number'],
+    'tax_number' => ...,
+    'company_type' => ...,
+    'business_years' => ...,
+    'contact_name' => ...,
+    'contact_email' => $data['contact_email'],
+    'contact_phone' => $data['contact_phone'],
+    'street' => $data['street'],
+    'city' => $data['city'],
+    'region' => ...,
+    'postcode' => $data['postcode'],
+    'country_id' => strtoupper($data['country_id']),
+    'status' => BusinessAccount::STATUS_PENDING
+]);
+```
+
+The application is then persisted through:
+
+```php
+$this->businessAccountRepository->save(
+    $businessAccount
+);
+```
+
+---
+
+# 35. Pending Status
+
+Every new application receives:
+
+```php
+BusinessAccount::STATUS_PENDING
+```
+
+This means:
+
+```text
+Customer account exists
+Business application exists
+Business benefits are not active yet
+Admin review is required
+```
+
+The application should not immediately receive wholesale pricing or B2B access.
+
+This fulfills the business approval requirement.
+
+---
+
+# 36. Contact Name Mapping
+
+The form collects:
+
+```text
+contact_firstname
+contact_lastname
+```
+
+The custom table stores:
+
+```text
+contact_name
+```
+
+The service combines them:
+
+```php
+return trim(
+    $data['contact_firstname']
+    . ' '
+    . $data['contact_lastname']
+);
+```
+
+Example:
+
+```text
+Jennifer + Kruthi
+→ Jennifer Kruthi
+```
+
+---
+
+# 37. Optional Data Handling
+
+Optional form values are converted from empty strings to `null`.
+
+For example:
+
+```text
+Tax number: ""
+```
+
+is saved as:
+
+```text
+NULL
+```
+
+rather than an empty string.
+
+This is handled by:
+
+```php
+nullableValue()
+nullableInteger()
+```
+
+This makes database data cleaner and easier to query.
+
+---
+
+# 38. Partial Failure Protection
+
+An important case is:
+
+```text
+Magento customer created successfully
+            ↓
+Business application save fails
+```
+
+Without protection, the store would contain a newly created normal customer with no business application.
+
+The service tracks whether it created a new customer:
+
+```php
+$createdCustomer = $customer;
+```
+
+If application persistence fails, it attempts to remove that customer:
+
+```php
+$this->customerRepository->deleteById(
+    (int)$customer->getId()
+);
+```
+
+This is a compensating action.
+
+It keeps the customer and business application creation process logically consistent.
+
+---
+
+# 39. Customer Login After Registration
+
+A guest customer is logged in only after both operations succeed:
+
+```text
+Magento customer saved
+        +
+Business application saved
+        ↓
+Log customer in
+```
+
+The code uses:
+
+```php
+$this->customerSession->setCustomerDataAsLoggedIn(
+    $createdCustomer
+);
+```
+
+We do not log the customer in immediately after account creation because the business-application save may still fail.
+
+---
+
+# 40. Success Page
+
+After successful registration, the Save controller redirects to:
+
+```text
+/businessaccount/account/success
+```
+
+We created:
+
+```text
+Controller/Account/Success.php
+view/frontend/layout/businessaccount_account_success.xml
+view/frontend/templates/account/success.phtml
+```
+
+The page shows:
+
+```text
+Registration Submitted
+Application Status: Pending Review
+```
+
+It also explains the next stages:
+
+1. Application review
+2. Approval or rejection notification
+3. Access to business benefits after approval
+
+This gives the applicant clear feedback instead of returning them to a generic Magento page.
+
+---
+
+# 41. Duplicate Success-Page Heading Prevention
+
+As with the registration page, the default Magento title block is removed:
+
+```xml
+<referenceBlock name="page.main.title" remove="true"/>
+```
+
+The designed success-page heading is rendered in the template.
+
+The controller title remains available for the browser tab.
+
+---
+
+# 46. Business Value Delivered
+
+The storefront-registration phase now allows BrewCraft to:
+
+* Capture structured company details
+* Convert guest applicants into Magento customers
+* Allow existing customers to apply
+* Prevent duplicate customer applications
+* Prevent duplicate company registrations
+* Maintain legal company information separately from customer identity
+* Keep applications pending until reviewed
+* Provide a clear registration-success journey
+* Prepare the system for Admin approval
+* Prepare approved customers for future wholesale and quotation features
+
+This is not merely an additional registration form.
+
+It establishes the foundation for BrewCraft’s full B2B customer lifecycle.
+
+---
+
+# 47. Current Business Flow
+
+```text
+Retail customer account
+        ↓
+Optional business application
+        ↓
+Pending review
+        ↓
+Future Admin approval
+        ↓
+Business customer group
+        ↓
+Wholesale pricing
+        ↓
+Quotes, reorders, purchase orders, and credit features
+```
+
+---
+
+# 48. Current Completion Status
+
+For the Business Account module:
+
+| Area                                | Status |
+| ----------------------------------- | -----: |
+| Module foundation                   |   100% |
+| Database entity                     |   100% |
+| Model/resource/collection           |   100% |
+| Repository layer                    |   100% |
+| Storefront registration form        |   100% |
+| Guest customer creation             |   100% |
+| Existing customer application       |   100% |
+| Validation and duplicate protection |   100% |
+| Pending application persistence     |   100% |
+| Success page                        |   100% |
+| Admin approval workflow             |     0% |
+| Approval/rejection email            |     0% |
+| Business customer-group assignment  |     0% |
+| Customer business dashboard         |     0% |
+
+
