@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+
+    <template id="brewcraft_business_account_approved"
+              label="BrewCraft Business Account Approved"
+              file="business_account_approved.html"
+              type="html"
+              module="BrewCraft_BusinessAccount"
+              area="frontend"/>
+
+    <template id="brewcraft_business_account_rejected"
+              label="BrewCraft Business Account Rejected"
+              file="business_account_rejected.html"
+              type="html"
+              module="BrewCraft_BusinessAccount"
+              area="frontend"/>
+
+</config>

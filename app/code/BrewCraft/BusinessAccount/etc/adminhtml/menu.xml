@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+
+    <menu>
+
+        <add id="BrewCraft_BusinessAccount::business"
+             title="BrewCraft"
+             module="BrewCraft_BusinessAccount"
+             sortOrder="500"
+             resource="BrewCraft_BusinessAccount::business"/>
+
+        <add id="BrewCraft_BusinessAccount::applications"
+             title="Business Applications"
+             module="BrewCraft_BusinessAccount"
+             sortOrder="10"
+             parent="BrewCraft_BusinessAccount::business"
+             action="businessaccount/application/index"
+             resource="BrewCraft_BusinessAccount::applications"/>
+
+    </menu>
+
+</config>

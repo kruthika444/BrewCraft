@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+
+    <acl>
+        <resources>
+
+            <resource id="Magento_Backend::admin">
+
+                <resource id="BrewCraft_BusinessAccount::business"
+                          title="BrewCraft"
+                          sortOrder="500">
+
+                    <resource id="BrewCraft_BusinessAccount::applications"
+                              title="Business Applications"
+                              sortOrder="10"/>
+
+                    <resource id="BrewCraft_BusinessAccount::application_view"
+                              title="View Business Applications"
+                              sortOrder="20"/>
+
+                    <resource id="BrewCraft_BusinessAccount::application_approve"
+                              title="Approve Business Applications"
+                              sortOrder="30"/>
+
+                    <resource id="BrewCraft_BusinessAccount::application_reject"
+                              title="Reject Business Applications"
+                              sortOrder="40"/>
+
+                </resource>
+
+            </resource>
+
+        </resources>
+    </acl>
+
+</config>

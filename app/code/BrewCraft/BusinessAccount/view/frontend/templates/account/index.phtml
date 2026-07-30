@@ -1,0 +1,674 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\BusinessAccount\Block\Account\Index;
+use Magento\Framework\Escaper;
+
+/**
+ * @var Index $block
+ * @var Escaper $escaper
+ */
+
+$businessAccount = $block->getBusinessAccount();
+?>
+
+<div class="brewcraft-business-account-dashboard">
+
+    <?php if (!$businessAccount): ?>
+
+        <section class="brewcraft-business-account-empty">
+
+            <span class="brewcraft-business-account-eyebrow">
+                <?= $escaper->escapeHtml(
+                    __('BrewCraft Business')
+                ) ?>
+            </span>
+
+            <h1>
+                <?= $escaper->escapeHtml(
+                    __('Grow Your Business with BrewCraft')
+                ) ?>
+            </h1>
+
+            <p>
+                <?= $escaper->escapeHtml(
+                    $block->getStatusDescription()
+                ) ?>
+            </p>
+
+            <p>
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Submit your company information for review. Approved customers can receive access to wholesale pricing, quotation services and additional business features.'
+                    )
+                ) ?>
+            </p>
+
+            <div class="actions-toolbar">
+
+                <div class="primary">
+
+                    <a class="action primary"
+                       href="<?= $escaper->escapeUrl(
+                           $block->getApplicationUrl()
+                       ) ?>">
+
+                        <span>
+                            <?= $escaper->escapeHtml(
+                                __('Apply for a Business Account')
+                            ) ?>
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    <?php else: ?>
+
+        <section class="brewcraft-business-account-header">
+
+            <div class="brewcraft-business-account-header__content">
+
+                <span class="brewcraft-business-account-eyebrow">
+                    <?= $escaper->escapeHtml(
+                        __('BrewCraft Business')
+                    ) ?>
+                </span>
+
+                <h1>
+                    <?= $escaper->escapeHtml(
+                        $businessAccount->getCompanyName()
+                    ) ?>
+                </h1>
+
+                <p>
+                    <?= $escaper->escapeHtml(
+                        $block->getStatusDescription()
+                    ) ?>
+                </p>
+
+            </div>
+
+            <div class="brewcraft-business-account-status
+                        brewcraft-business-account-status--<?= $escaper->escapeHtmlAttr(
+                            $block->getStatusCssClass()
+                        ) ?>">
+
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('Application Status')
+                    ) ?>
+                </span>
+
+                <strong>
+                    <?= $escaper->escapeHtml(
+                        $block->getStatusLabel()
+                    ) ?>
+                </strong>
+
+            </div>
+
+        </section>
+
+        <?php if ($block->isPending()): ?>
+
+            <div class="message message-notice notice">
+
+                <div>
+                    <?= $escaper->escapeHtml(
+                        __(
+                            'Your application is being reviewed. We will notify you when the review has been completed.'
+                        )
+                    ) ?>
+                </div>
+
+            </div>
+
+        <?php elseif ($block->isApproved()): ?>
+
+            <div class="message message-success success">
+
+                <div>
+                    <?= $escaper->escapeHtml(
+                        __(
+                            'Your Business Account has been approved and is now active.'
+                        )
+                    ) ?>
+                </div>
+
+            </div>
+
+        <?php elseif ($block->isRejected()): ?>
+
+            <div class="message message-error error">
+
+                <div>
+                    <?= $escaper->escapeHtml(
+                        __(
+                            'Your business application was not approved. Your regular customer account remains available.'
+                        )
+                    ) ?>
+                </div>
+
+            </div>
+
+        <?php endif; ?>
+
+        <?php if (
+            $block->isRejected()
+            && trim((string)$businessAccount->getAdminComment()) !== ''
+        ): ?>
+
+            <section class="brewcraft-business-account-rejection">
+
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Review Feedback')
+                    ) ?>
+                </h2>
+
+                <div class="brewcraft-business-account-rejection__content">
+
+                    <strong>
+                        <?= $escaper->escapeHtml(
+                            __('Reason provided by our business team:')
+                        ) ?>
+                    </strong>
+
+                    <p>
+                        <?= nl2br(
+                            $escaper->escapeHtml(
+                                (string)$businessAccount->getAdminComment()
+                            )
+                        ) ?>
+                    </p>
+
+                </div>
+
+            </section>
+
+        <?php elseif (
+            $block->isApproved()
+            && trim((string)$businessAccount->getAdminComment()) !== ''
+        ): ?>
+
+            <section class="brewcraft-business-account-comment">
+
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Message from Our Business Team')
+                    ) ?>
+                </h2>
+
+                <p>
+                    <?= nl2br(
+                        $escaper->escapeHtml(
+                            (string)$businessAccount->getAdminComment()
+                        )
+                    ) ?>
+                </p>
+
+            </section>
+
+        <?php endif; ?>
+
+        <section class="brewcraft-business-account-section">
+
+            <div class="brewcraft-business-account-section__title">
+
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Application Summary')
+                    ) ?>
+                </h2>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table class="data table">
+
+                    <caption class="table-caption">
+                        <?= $escaper->escapeHtml(
+                            __('Application Summary')
+                        ) ?>
+                    </caption>
+
+                    <tbody>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Application Number')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                '#' . (string)$businessAccount->getEntityId()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Status')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->getStatusLabel()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Submitted At')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->formatApplicationDate(
+                                    $businessAccount->getData(
+                                        'created_at'
+                                    )
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <?php if ($block->isApproved()): ?>
+
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Approved At')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->formatApplicationDate(
+                                        $businessAccount->getApprovedAt()
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Last Updated')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->formatApplicationDate(
+                                    $businessAccount->getData(
+                                        'updated_at'
+                                    )
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <section class="brewcraft-business-account-section">
+
+            <div class="brewcraft-business-account-section__title">
+
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Company Information')
+                    ) ?>
+                </h2>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table class="data table">
+
+                    <caption class="table-caption">
+                        <?= $escaper->escapeHtml(
+                            __('Company Information')
+                        ) ?>
+                    </caption>
+
+                    <tbody>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Company Name')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getCompanyName()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Registration Number')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getRegistrationNumber()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Tax / VAT Number')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getTaxNumber()
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Company Type')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getCompanyType()
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Years in Business')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getBusinessYears()
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <section class="brewcraft-business-account-section">
+
+            <div class="brewcraft-business-account-section__title">
+
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Primary Contact')
+                    ) ?>
+                </h2>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table class="data table">
+
+                    <caption class="table-caption">
+                        <?= $escaper->escapeHtml(
+                            __('Primary Contact')
+                        ) ?>
+                    </caption>
+
+                    <tbody>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Contact Name')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getContactName()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Contact Email')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getContactEmail()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Contact Phone')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getContactPhone()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <section class="brewcraft-business-account-section">
+
+            <div class="brewcraft-business-account-section__title">
+
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Business Address')
+                    ) ?>
+                </h2>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table class="data table">
+
+                    <caption class="table-caption">
+                        <?= $escaper->escapeHtml(
+                            __('Business Address')
+                        ) ?>
+                    </caption>
+
+                    <tbody>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Street')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= nl2br(
+                                $escaper->escapeHtml(
+                                    (string)$businessAccount->getData(
+                                        'street'
+                                    )
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('City')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getData(
+                                    'city'
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('State / Region')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getData(
+                                        'region'
+                                    )
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Postcode')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getData(
+                                    'postcode'
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml(
+                                __('Country')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getData(
+                                    'country_id'
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <div class="actions-toolbar">
+
+            <div class="primary">
+
+                <a class="action primary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getContinueShoppingUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Continue Shopping')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+            <div class="secondary">
+
+                <a class="action secondary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getCustomerAccountUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Back to My Account')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    <?php endif; ?>
+
+</div>

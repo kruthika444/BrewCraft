@@ -4652,3 +4652,3341 @@ For the Business Account module:
 | Customer business dashboard         |     0% |
 
 
+---
+---
+---
+
+# BrewCraft Business Account Administration and Email
+**DATE:** 25th July 
+
+**Module:** `BrewCraft_BusinessAccount`
+**Magento version:** Magento 2.4.7-based project
+**Phase covered:** Storefront business registration, Admin application management, approval/rejection processing, customer-group assignment, and email notification trigger
+
+---
+
+# 1. Business problem we are solving
+
+BrewCraft has two customer types:
+
+```text
+Retail customers
+Business customers
+```
+
+A retail customer can create a normal Magento account and purchase products.
+
+A business customer may receive additional benefits later, such as:
+
+```text
+Wholesale prices
+Quotation requests
+Bulk ordering
+Quick reorder
+Business-only promotions
+Special payment methods
+Dedicated support
+```
+
+BrewCraft should not give these benefits automatically to everyone who creates an account.
+
+The company must first collect business details and review the application.
+
+The required process is:
+
+```text
+Customer submits business application
+        ↓
+Application is stored as pending
+        ↓
+Admin reviews submitted information
+        ↓
+Admin approves or rejects
+        ↓
+Approved customer moves to Business Customer group
+        ↓
+Customer is notified
+```
+
+This workflow separates:
+
+```text
+Magento customer account
+```
+
+from:
+
+```text
+Business-account approval
+```
+
+That distinction is important because a customer can still be a valid retail customer even when their business application is pending or rejected.
+
+---
+
+# 2. Complete workflow implemented so far
+
+The current end-to-end flow is:
+
+```text
+Storefront business registration page
+        ↓
+Server-side validation
+        ↓
+Use existing customer or create new customer
+        ↓
+Save business application
+        ↓
+status = pending
+        ↓
+Application appears in Magento Admin grid
+        ↓
+Admin opens application details
+        ↓
+Admin approves or rejects
+        ↓
+Approved:
+    customer group updated
+    status = approved
+    approved_at saved
+
+Rejected:
+    status = rejected
+    rejection reason saved
+        ↓
+Email notification is triggered
+```
+
+---
+
+# 3. Magento areas involved
+
+Magento separates functionality into application areas.
+
+The main areas we used are:
+
+```text
+frontend
+adminhtml
+global
+```
+
+## Frontend area
+
+The frontend area is the customer-facing storefront.
+
+Files under:
+
+```text
+view/frontend
+etc/frontend
+Controller/Account
+```
+
+are related to pages such as:
+
+```text
+/businessaccount/account/create
+/businessaccount/account/success
+```
+
+## Adminhtml area
+
+The `adminhtml` area is for Magento Admin.
+
+Files under:
+
+```text
+view/adminhtml
+etc/adminhtml
+Controller/Adminhtml
+Block/Adminhtml
+```
+
+are used for:
+
+```text
+Admin menu
+Admin routes
+Admin grids
+Admin details pages
+Approve/reject actions
+```
+
+## Global configuration
+
+Some files apply across Magento areas:
+
+```text
+etc/module.xml
+etc/di.xml
+etc/db_schema.xml
+etc/acl.xml
+etc/email_templates.xml
+```
+
+For example:
+
+* `db_schema.xml` defines the custom table.
+* `di.xml` defines dependency-injection preferences.
+* `acl.xml` defines Admin permissions.
+* `email_templates.xml` registers email templates.
+
+---
+
+# 4. Storefront customization — general explanation
+
+You mentioned that you had not previously worked with Magento frontend customization.
+
+Magento frontend pages are not normally created as one large PHP file.
+
+A typical storefront page uses:
+
+```text
+Route
+Controller
+Layout XML
+Block
+Template
+```
+
+The flow is:
+
+```text
+Browser URL
+    ↓
+Frontend router
+    ↓
+Controller
+    ↓
+Page result
+    ↓
+Layout XML
+    ↓
+Block class
+    ↓
+.phtml template
+    ↓
+Rendered HTML
+```
+
+For our business registration page:
+
+```text
+/businessaccount/account/create
+        ↓
+Controller/Account/Create.php
+        ↓
+businessaccount_account_create.xml
+        ↓
+Block/Account/Create.php
+        ↓
+account/create.phtml
+```
+
+Each part has a different responsibility.
+
+---
+
+# 5. Frontend route
+
+We created:
+
+```text
+etc/frontend/routes.xml
+```
+
+This registered the storefront front name:
+
+```text
+businessaccount
+```
+
+So the route begins with:
+
+```text
+/businessaccount/
+```
+
+Magento interprets:
+
+```text
+/businessaccount/account/create
+```
+
+as:
+
+```text
+Front name: businessaccount
+Controller folder: Account
+Action class: Create
+```
+
+and loads:
+
+```text
+Controller/Account/Create.php
+```
+
+---
+
+# 6. Storefront Create controller
+
+We created:
+
+```text
+Controller/Account/Create.php
+```
+
+This controller implements a GET action because it displays a page.
+
+Its responsibility is limited to:
+
+```text
+Create page result
+Set browser/page title
+Return the page
+```
+
+It does not contain form HTML or business logic.
+
+That separation is intentional.
+
+A controller should coordinate the request, not become responsible for every operation.
+
+---
+
+# 7. Storefront layout XML
+
+We created:
+
+```text
+view/frontend/layout/businessaccount_account_create.xml
+```
+
+Magento generates the layout handle from:
+
+```text
+businessaccount/account/create
+```
+
+The format is:
+
+```text
+route_controller_action
+```
+
+Therefore:
+
+```text
+businessaccount_account_create.xml
+```
+
+The layout XML connected our block and template to Magento’s main content container.
+
+It also removed the default Magento title block:
+
+```xml
+<referenceBlock name="page.main.title" remove="true"/>
+```
+
+We added that because the page originally displayed two headings:
+
+```text
+Create Business Account
+Create Your Business Account
+```
+
+One title came from Magento’s standard page title block, while the second came from our custom template.
+
+We kept the custom designed title and removed the default visible title.
+
+The browser tab title is still set by the controller.
+
+---
+
+# 8. Frontend block
+
+We created:
+
+```text
+Block/Account/Create.php
+```
+
+A Magento block prepares data for the template.
+
+Our block provided:
+
+```text
+Form action URL
+Form key
+Customer login status
+Customer first name
+Customer last name
+Customer email
+Country options
+Company type options
+```
+
+Instead of performing these operations directly inside `create.phtml`, the block prepares the required values.
+
+This keeps the template focused on presentation.
+
+For example:
+
+```php
+$block->getFormAction()
+```
+
+returns:
+
+```text
+/businessaccount/account/save
+```
+
+and:
+
+```php
+$block->isCustomerLoggedIn()
+```
+
+controls whether the password fields are displayed.
+
+---
+
+# 9. Frontend template
+
+We created:
+
+```text
+view/frontend/templates/account/create.phtml
+```
+
+The `.phtml` file contains:
+
+```text
+HTML
+Small PHP output expressions
+Magento escaping
+Form fields
+Frontend validation rules
+```
+
+The form is divided into:
+
+```text
+Company Details
+Primary Contact
+Business Address
+Account Security
+Review and Submit
+```
+
+The account-security section appears only for guests.
+
+For logged-in customers, Magento already knows their customer identity, so creating another password is unnecessary.
+
+---
+
+# 10. Form security
+
+The form includes Magento’s form key.
+
+The form key protects against cross-site request forgery.
+
+Without it, another website could potentially cause a logged-in browser to submit unwanted requests to Magento.
+
+The form sends:
+
+```text
+form_key
+```
+
+and the Save controller validates it before processing any data.
+
+---
+
+# 11. Frontend validation
+
+The form uses Magento JavaScript validation.
+
+This provides immediate feedback for fields such as:
+
+```text
+Required values
+Email format
+Password confirmation
+Number validation
+Maximum lengths
+```
+
+However, JavaScript validation is only a user-experience feature.
+
+A malicious or custom request can bypass browser validation.
+
+Therefore, we also validate all important fields in PHP.
+
+The correct approach is:
+
+```text
+Frontend validation
+        +
+Server-side validation
+```
+
+not frontend validation alone.
+
+---
+
+# 12. Save controller
+
+We created:
+
+```text
+Controller/Account/Save.php
+```
+
+This controller implements a POST action because it changes data.
+
+Its responsibility is:
+
+```text
+Validate form key
+Read POST data
+Call registration service
+Handle exceptions
+Add success/error messages
+Redirect
+```
+
+It does not create the customer or save the business application directly.
+
+That logic belongs to the service class.
+
+---
+
+# 13. Registration service
+
+We created:
+
+```text
+Model/Service/BusinessAccountRegistrationService.php
+```
+
+This service contains the actual registration business logic.
+
+It handles:
+
+```text
+Data normalization
+Required-field validation
+Email validation
+Password validation
+Duplicate application checks
+Duplicate registration-number checks
+Existing customer flow
+Guest customer creation
+Business application persistence
+Partial-failure cleanup
+Customer login after successful registration
+```
+
+The service makes the registration logic reusable.
+
+In the future, the same service could potentially be called from:
+
+```text
+REST API
+GraphQL
+Admin action
+Import script
+CLI command
+```
+
+without duplicating all the logic from the storefront controller.
+
+---
+
+# 14. Guest and logged-in customer flows
+
+## Guest customer
+
+For a guest:
+
+```text
+Submit business form
+        ↓
+Validate email does not already exist
+        ↓
+Create Magento customer
+        ↓
+Create business application
+        ↓
+Link using customer_id
+        ↓
+Log the customer in
+```
+
+## Existing logged-in customer
+
+For a logged-in customer:
+
+```text
+Submit business form
+        ↓
+Use existing customer_id
+        ↓
+Check that no application already exists
+        ↓
+Create business application
+```
+
+No duplicate Magento customer is created.
+
+---
+
+# 15. Separate business application table
+
+We created:
+
+```text
+brewcraft_business_account
+```
+
+The table stores business information such as:
+
+```text
+Company name
+Registration number
+Tax number
+Company type
+Years in business
+Business contact
+Business address
+Application status
+Admin comment
+Approval timestamp
+```
+
+This information was not placed directly in the normal customer table because the two entities serve different purposes.
+
+```text
+Magento customer
+→ login identity
+
+Business application
+→ company approval process
+```
+
+A customer can exist without a business application.
+
+A business application must be linked to a customer.
+
+---
+
+# 16. Business application statuses
+
+The model defines:
+
+```php
+STATUS_PENDING
+STATUS_APPROVED
+STATUS_REJECTED
+```
+
+Every new application begins as:
+
+```text
+pending
+```
+
+This means:
+
+```text
+Application submitted
+Admin review not completed
+Business benefits unavailable
+```
+
+An approved application becomes:
+
+```text
+approved
+```
+
+A rejected application becomes:
+
+```text
+rejected
+```
+
+---
+
+# 17. Repository pattern
+
+We created:
+
+```text
+Api/BusinessAccountRepositoryInterface.php
+Model/BusinessAccountRepository.php
+```
+
+The repository provides methods such as:
+
+```text
+save
+getById
+getByCustomerId
+getByRegistrationNumber
+delete
+deleteById
+```
+
+Instead of allowing every controller or service to directly use SQL or resource models, they use the repository contract.
+
+The flow is:
+
+```text
+Controller/service
+        ↓
+Repository interface
+        ↓
+Repository implementation
+        ↓
+Resource model
+        ↓
+Database
+```
+
+This gives consistent persistence and exception behavior.
+
+---
+
+# 18. Admin customization — general explanation
+
+Magento Admin development follows a flow similar to storefront development, but uses the `adminhtml` area.
+
+The common parts are:
+
+```text
+Admin route
+ACL permission
+Admin menu
+Controller
+Layout XML
+Block or UI Component
+Admin template
+```
+
+The request flow for our Admin list is:
+
+```text
+Admin clicks Business Applications
+        ↓
+Admin route resolves
+        ↓
+Index controller runs
+        ↓
+Admin layout loads
+        ↓
+Listing UI Component loads
+        ↓
+Data provider loads collection
+        ↓
+Grid displays database records
+```
+
+For the details page:
+
+```text
+Admin clicks View
+        ↓
+View controller loads application
+        ↓
+Registers current model
+        ↓
+Layout loads block and template
+        ↓
+Details page renders
+```
+
+---
+
+# 19. Admin route
+
+We created:
+
+```text
+etc/adminhtml/routes.xml
+```
+
+This registered the Admin route:
+
+```text
+businessaccount
+```
+
+Admin URLs include Magento’s Admin front name and security key, so the final URL is generated by Magento rather than hard-coded.
+
+Our action path is:
+
+```text
+businessaccount/application/index
+```
+
+Magento resolves it to:
+
+```text
+Controller/Adminhtml/Application/Index.php
+```
+
+The `Adminhtml` folder distinguishes the controller from the storefront controller.
+
+---
+
+# 20. Admin ACL
+
+We created:
+
+```text
+etc/acl.xml
+```
+
+ACL means:
+
+```text
+Access Control List
+```
+
+It defines which Admin roles are allowed to perform specific operations.
+
+We created permissions for:
+
+```text
+Business Applications
+View Business Applications
+Approve Business Applications
+Reject Business Applications
+```
+
+Each Admin controller uses:
+
+```php
+public const ADMIN_RESOURCE = '...';
+```
+
+Magento checks this permission before allowing the controller to execute.
+
+This is important in real businesses because not every Admin user should be allowed to approve customers.
+
+For example:
+
+```text
+Support agent
+→ may view applications
+
+Business manager
+→ may approve or reject
+
+Catalog manager
+→ may have no business-account access
+```
+
+---
+
+# 21. Admin menu
+
+We created:
+
+```text
+etc/adminhtml/menu.xml
+```
+
+This added:
+
+```text
+BrewCraft
+└── Business Applications
+```
+
+The menu item contains:
+
+```text
+ID
+Title
+Parent
+Sort order
+Action
+ACL resource
+```
+
+The action points to:
+
+```text
+businessaccount/application/index
+```
+
+The ACL resource controls whether the logged-in Admin sees and can access it.
+
+---
+
+# 22. Admin grid — general explanation
+
+Magento Admin grids are commonly built using UI Components.
+
+A grid is not simply an HTML table.
+
+It includes built-in behavior such as:
+
+```text
+Sorting
+Filtering
+Pagination
+Column controls
+Bookmarks
+Date filters
+Select filters
+AJAX reload
+```
+
+The main parts are:
+
+```text
+Admin layout XML
+Listing UI Component XML
+Data source
+Data provider
+Collection
+Column definitions
+Actions column
+```
+
+---
+
+# 23. Grid layout
+
+We created:
+
+```text
+view/adminhtml/layout/businessaccount_application_index.xml
+```
+
+It loads:
+
+```xml
+<uiComponent name="businessaccount_application_listing"/>
+```
+
+Magento then finds:
+
+```text
+view/adminhtml/ui_component/
+businessaccount_application_listing.xml
+```
+
+The names must match exactly.
+
+---
+
+# 24. Listing UI Component
+
+We created:
+
+```text
+view/adminhtml/ui_component/
+businessaccount_application_listing.xml
+```
+
+This file defines the grid.
+
+It includes:
+
+```text
+Data source
+Primary key
+Toolbar
+Filters
+Paging
+Bookmarks
+Columns
+Actions column
+```
+
+The visible columns include:
+
+```text
+Application ID
+Company Name
+Registration Number
+Contact Name
+Contact Email
+Customer ID
+Status
+Submitted At
+Actions
+```
+
+Some columns such as phone and updated date are available but hidden by default.
+
+Admin users can show them through column controls.
+
+---
+
+# 25. Grid data source and DI configuration
+
+We created:
+
+```text
+etc/adminhtml/di.xml
+```
+
+This maps the UI Component data-source name to a grid collection.
+
+The data source name is:
+
+```text
+businessaccount_application_listing_data_source
+```
+
+The UI Component requests this name.
+
+Magento’s collection factory receives the request and returns a SearchResult collection reading from:
+
+```text
+brewcraft_business_account
+```
+
+The flow is:
+
+```text
+Listing UI Component
+        ↓
+Data provider
+        ↓
+CollectionFactory
+        ↓
+Grid collection
+        ↓
+brewcraft_business_account
+```
+
+This is why the submitted applications appeared in the Admin grid.
+
+---
+
+# 26. Admin status filter
+
+We created:
+
+```text
+Model/Source/Status.php
+```
+
+This implements Magento’s option-source interface.
+
+It returns:
+
+```text
+Pending
+Approved
+Rejected
+```
+
+The Admin grid uses this class for the status dropdown filter.
+
+The source class reuses model constants rather than repeating raw strings.
+
+---
+
+# 27. Grid actions column
+
+We created:
+
+```text
+Ui/Component/Listing/Column/Actions.php
+```
+
+This adds a **View** link to every row.
+
+For each application, it generates a URL containing:
+
+```text
+entity_id
+```
+
+For example:
+
+```text
+businessaccount/application/view/entity_id/5
+```
+
+The details page uses that ID to load the selected application.
+
+---
+
+# 28. Admin Index controller
+
+We created:
+
+```text
+Controller/Adminhtml/Application/Index.php
+```
+
+It:
+
+```text
+Creates the Admin page
+Sets active menu
+Adds breadcrumbs
+Sets page title
+Returns the page result
+```
+
+It does not manually load grid rows.
+
+The UI Component handles the grid data.
+
+This is an important Magento concept:
+
+```text
+Controller creates page
+UI Component loads grid data
+```
+
+---
+
+# 29. Admin application details page
+
+We created:
+
+```text
+Controller/Adminhtml/Application/View.php
+Block/Adminhtml/Application/View.php
+view/adminhtml/layout/businessaccount_application_view.xml
+view/adminhtml/templates/application/view.phtml
+```
+
+The details page displays:
+
+```text
+Application summary
+Company information
+Primary contact
+Business address
+Magento customer information
+Admin review controls
+```
+
+---
+
+# 30. Admin View controller
+
+The View controller reads:
+
+```text
+entity_id
+```
+
+from the request.
+
+It loads the application using:
+
+```php
+$this->businessAccountRepository->getById($entityId);
+```
+
+If the application does not exist, it:
+
+```text
+Adds an error message
+Redirects back to the grid
+```
+
+If loading succeeds, it places the model in Magento’s registry.
+
+---
+
+# 31. Magento Registry usage
+
+The View controller registers:
+
+```text
+current_brewcraft_business_application
+```
+
+The block reads the same registry key.
+
+The data flow is:
+
+```text
+View controller loads model
+        ↓
+Controller registers model
+        ↓
+Block retrieves model
+        ↓
+Template displays model
+```
+
+The registry is a shared request-level storage mechanism.
+
+It does not permanently store the data.
+
+It only makes the loaded object available during the current page request.
+
+---
+
+# 32. Admin View block
+
+The Admin block prepares:
+
+```text
+Current business application
+Linked Magento customer
+Customer edit URL
+Approve URL
+Reject URL
+Form key
+Status label
+Status CSS class
+Formatted dates
+Fallback display values
+```
+
+For example, if an optional value is empty, the block displays:
+
+```text
+Not provided
+```
+
+instead of leaving the page confusingly blank.
+
+---
+
+# 33. Admin details template
+
+The template uses Magento Admin CSS classes such as:
+
+```text
+admin__page-section
+admin__page-section-title
+admin__table-secondary
+admin__field
+admin__control-textarea
+```
+
+These classes help the custom page visually match standard Magento Admin screens.
+
+The page shows Approve and Reject forms only when the application status is pending.
+
+For approved or rejected applications, it displays:
+
+```text
+This application has already been reviewed and cannot be processed again.
+```
+
+This prevents accidental repeated processing from the user interface.
+
+---
+
+# 34. Why Approve and Reject use POST
+
+Approving and rejecting change application state.
+
+Therefore, they must not be simple GET links.
+
+A GET request is intended for reading data.
+
+A POST request is appropriate for changing data.
+
+Our forms use:
+
+```html
+<form method="post">
+```
+
+and include the Magento form key.
+
+This protects the actions against CSRF and prevents approval from happening merely by opening a URL.
+
+---
+
+# 35. Business Customer group
+
+We created the customer group:
+
+```text
+Business Customer
+```
+
+using a data patch.
+
+The patch file is:
+
+```text
+Setup/Patch/Data/CreateBusinessCustomerGroup.php
+```
+
+A data patch runs during:
+
+```bash
+bin/magento setup:upgrade
+```
+
+Magento records completed patches in:
+
+```text
+patch_list
+```
+
+so the same patch is not applied repeatedly.
+
+---
+
+# 36. Why a data patch was used
+
+We could have manually created the group in Magento Admin, but that would only affect one environment.
+
+A data patch ensures the same setup is created in:
+
+```text
+Local development
+Testing
+Staging
+Production
+```
+
+This makes the configuration part of the codebase and deployment process.
+
+---
+
+# 37. Why customer-group IDs are not hard-coded
+
+We did not use:
+
+```php
+$customer->setGroupId(4);
+```
+
+because group ID `4` may mean different things in different Magento databases.
+
+Instead, the approval service searches by:
+
+```text
+Business Customer
+```
+
+and gets the actual ID.
+
+The safer flow is:
+
+```text
+Find group by group code
+        ↓
+Read actual customer_group_id
+        ↓
+Assign it to customer
+```
+
+---
+
+# 38. Approval service
+
+We created:
+
+```text
+Model/Service/BusinessAccountApprovalService.php
+```
+
+This service handles both approval and rejection business rules.
+
+It does not deal with page rendering.
+
+It handles:
+
+```text
+Load application
+Validate pending status
+Load linked customer
+Find Business Customer group
+Change customer group
+Update application status
+Save Admin comment
+Save approved timestamp
+Trigger notification
+```
+
+---
+
+# 39. Approval flow
+
+The approval process is:
+
+```text
+Load application
+        ↓
+Verify status = pending
+        ↓
+Verify linked customer exists
+        ↓
+Find Business Customer group
+        ↓
+Load Magento customer
+        ↓
+Remember original group
+        ↓
+Assign Business Customer group
+        ↓
+Save customer
+        ↓
+Set status = approved
+        ↓
+Set approved_at
+        ↓
+Save Admin comment
+        ↓
+Save business application
+        ↓
+Trigger approval email
+```
+
+---
+
+# 40. Approval consistency handling
+
+There are two separate records being updated:
+
+```text
+customer_entity
+brewcraft_business_account
+```
+
+Possible failure:
+
+```text
+Customer group updated successfully
+        ↓
+Business application save fails
+```
+
+To reduce inconsistency, the service remembers the original group ID.
+
+If the business-application save fails, it attempts to restore the customer’s original group.
+
+This is a compensating action.
+
+It is not a perfect distributed transaction, but it improves reliability.
+
+---
+
+# 41. Rejection flow
+
+The rejection process is simpler:
+
+```text
+Load application
+        ↓
+Validate rejection reason
+        ↓
+Verify status = pending
+        ↓
+Set status = rejected
+        ↓
+Set approved_at = null
+        ↓
+Save rejection reason as Admin comment
+        ↓
+Save application
+        ↓
+Trigger rejection email
+```
+
+The customer group is not changed.
+
+The customer remains a normal Magento customer.
+
+---
+
+# 42. Review-state protection
+
+Only pending applications can be processed.
+
+The service checks:
+
+```php
+$businessAccount->isPending()
+```
+
+If the application is already approved or rejected, it throws a friendly error.
+
+This prevents:
+
+```text
+Approving twice
+Rejecting twice
+Approving a rejected application accidentally
+Rejecting an approved application accidentally
+```
+
+The current workflow treats approval/rejection as final.
+
+A future reopen or resubmission feature would need separate business rules.
+
+---
+
+# 43. Approve controller
+
+We created:
+
+```text
+Controller/Adminhtml/Application/Approve.php
+```
+
+It performs request-level operations:
+
+```text
+Validate form key
+Read entity_id
+Read Admin comment
+Call approval service
+Add success/error message
+Redirect back to details page
+```
+
+The controller does not directly manipulate the customer group or database.
+
+---
+
+# 44. Reject controller
+
+We created:
+
+```text
+Controller/Adminhtml/Application/Reject.php
+```
+
+It:
+
+```text
+Validates form key
+Reads entity_id
+Reads rejection reason
+Calls rejection service method
+Displays result message
+Redirects back
+```
+
+The rejection reason is required.
+
+If it is empty, the application remains pending.
+
+---
+
+# 45. Email trigger — general explanation
+
+Magento transactional email flow typically looks like:
+
+```text
+Business action occurs
+        ↓
+Email service is called
+        ↓
+Select template ID
+        ↓
+Build template variables
+        ↓
+Resolve sender
+        ↓
+Resolve recipient
+        ↓
+TransportBuilder builds message
+        ↓
+Mail transport sends message
+```
+
+Our business action is:
+
+```text
+Approve or reject business application
+```
+
+Our email service is:
+
+```text
+BusinessAccountNotifier
+```
+
+---
+
+# 46. Email template registration
+
+We created:
+
+```text
+etc/email_templates.xml
+```
+
+This registers two template IDs:
+
+```text
+brewcraft_business_account_approved
+brewcraft_business_account_rejected
+```
+
+The IDs connect PHP code to HTML email-template files.
+
+Without this registration, Magento would not know which module and file belong to the template ID.
+
+---
+
+# 47. Email HTML templates
+
+We created:
+
+```text
+view/frontend/email/business_account_approved.html
+view/frontend/email/business_account_rejected.html
+```
+
+The approval template includes:
+
+```text
+Customer name
+Company name
+Approval message
+Optional Admin comment
+My Account URL
+Store name
+```
+
+The rejection template includes:
+
+```text
+Customer name
+Company name
+Rejection message
+Rejection reason
+My Account URL
+Store name
+```
+
+---
+
+# 48. Email template variables
+
+Instead of passing entire PHP objects into the email template, the notifier passes simple scalar values:
+
+```text
+customer_name
+company_name
+admin_comment
+rejection_reason
+account_url
+store_name
+```
+
+This makes the templates safer and easier to understand.
+
+Example:
+
+```php
+[
+    'customer_name' => 'Lily James',
+    'company_name' => 'Lily Coffee Traders',
+    'account_url' => 'https://project1.test/customer/account'
+]
+```
+
+The template reads those values using Magento email directives.
+
+---
+
+# 49. Email notifier class
+
+We created:
+
+```text
+Model/Email/BusinessAccountNotifier.php
+```
+
+Its dependencies are:
+
+```text
+TransportBuilder
+StoreManagerInterface
+CustomerRepositoryInterface
+ScopeConfigInterface
+LoggerInterface
+```
+
+Each dependency has a specific responsibility.
+
+## `TransportBuilder`
+
+Builds the Magento email transport.
+
+## `StoreManagerInterface`
+
+Finds the relevant store view and generates the correct My Account URL.
+
+## `CustomerRepositoryInterface`
+
+Loads the linked Magento customer.
+
+## `ScopeConfigInterface`
+
+Reads sender-name and sender-email configuration.
+
+## `LoggerInterface`
+
+Writes email process information to Magento logs.
+
+---
+
+# 50. Constructor issue found and corrected
+
+The first notifier version accidentally contained dependencies from the approval service:
+
+```text
+BusinessAccountRepositoryInterface
+GroupCollectionFactory
+DateTime
+BusinessAccountNotifier
+```
+
+It also injected itself:
+
+```php
+private readonly BusinessAccountNotifier $notifier
+```
+
+That created a circular dependency:
+
+```text
+BusinessAccountNotifier
+        ↓
+requires BusinessAccountNotifier
+        ↓
+requires BusinessAccountNotifier
+```
+
+The class also used properties that were not injected:
+
+```text
+logger
+transportBuilder
+storeManager
+scopeConfig
+```
+
+We corrected the constructor so the notifier contains only the dependencies it actually uses.
+
+This was an important dependency-injection lesson:
+
+```text
+Each class should receive only its own dependencies.
+```
+
+---
+
+# 51. Email sender configuration
+
+The notifier reads Magento’s General Contact configuration:
+
+```text
+trans_email/ident_general/name
+trans_email/ident_general/email
+```
+
+These values represent the sender.
+
+Example:
+
+```text
+BrewCraft Support
+support@project1.test
+```
+
+If the sender email is empty, the notifier logs an error.
+
+---
+
+# 52. Email recipient resolution
+
+The notifier first uses:
+
+```text
+business application contact_email
+```
+
+If it is empty, it falls back to:
+
+```text
+Magento customer email
+```
+
+The customer name is built using:
+
+```text
+Customer first name + last name
+```
+
+If unavailable, it uses:
+
+```text
+Business application contact name
+```
+
+This makes the email logic more defensive.
+
+---
+
+# 53. Email store resolution
+
+The notifier tries to use the customer’s store ID.
+
+This ensures the email is rendered for the store where the customer was registered.
+
+If no valid store ID is available, it falls back to Magento’s default store view.
+
+This matters in multi-store Magento installations because:
+
+```text
+Store name
+Base URL
+Email design
+Configuration values
+```
+
+can differ between stores.
+
+---
+
+# 54. Why email happens after database updates
+
+The approval email is triggered only after:
+
+```text
+Customer group saved
+Business application saved
+```
+
+The rejection email is triggered only after:
+
+```text
+Rejected status saved
+Admin comment saved
+```
+
+This prevents sending an email that says:
+
+```text
+Your application was approved
+```
+
+when the database operation actually failed.
+
+---
+
+# 55. Why email failure does not undo approval
+
+Email is a secondary operation.
+
+Approval is the primary business transaction.
+
+Consider:
+
+```text
+Application approved successfully
+Customer group updated successfully
+SMTP server unavailable
+```
+
+The customer should remain approved.
+
+Therefore, the notifier catches email exceptions and logs them instead of rethrowing them.
+
+This means:
+
+```text
+Business state remains correct
+Email can be investigated separately
+```
+
+---
+
+# 56. Email logging added
+
+Initially, we only logged failures.
+
+That meant no log appeared when Magento believed the email was successfully sent.
+
+We added three stages:
+
+```text
+Process started
+Sent successfully
+Failed
+```
+
+Example success logs:
+
+```text
+BrewCraft approval email process started.
+BrewCraft approval email sent successfully.
+```
+
+Your test produced:
+
+```text
+application_id: 5
+customer_id: 6
+recipient: lily@yopmail.com
+```
+
+This confirms:
+
+```text
+Notifier was called
+Application was passed correctly
+Customer was resolved
+Recipient was resolved
+Magento mail transport completed without throwing an exception
+```
+
+---
+
+# 57. Meaning of “sent successfully”
+
+The log:
+
+```text
+BrewCraft approval email sent successfully.
+```
+
+means:
+
+```text
+Magento TransportBuilder completed
+Magento mail transport accepted the message
+No exception was thrown
+```
+
+It does not necessarily prove final inbox delivery.
+
+The complete external flow may still be:
+
+```text
+Magento
+    ↓
+PHP sendmail or SMTP module
+    ↓
+SMTP server
+    ↓
+Recipient mail server
+    ↓
+Inbox or spam folder
+```
+
+For the current learning phase, we confirmed the Magento trigger and transport layer.
+
+A proper SMTP or Mailpit integration can be added later.
+
+---
+
+# Development Log — Storefront Business Access and My Account Business Status
+**Date:** 25 July
+
+**Module:** `BrewCraft_BusinessAccount`
+**Work completed:** Storefront business-registration entry points, customer-facing Business Account status page, My Account navigation integration, template troubleshooting, and Admin UI data-source DI correction.
+
+---
+
+# 1. Business objective of this phase
+
+Before this phase, the Business Account functionality worked, but customers had to know the direct URL:
+
+```text
+/businessaccount/account/create
+```
+
+That is technically functional, but it is not a complete customer journey.
+
+A real customer visiting BrewCraft would normally use:
+
+```text
+Create an Account
+```
+
+or:
+
+```text
+Customer Login
+```
+
+They would not know that a separate custom URL exists.
+
+We therefore needed to solve two business problems:
+
+```text
+Problem 1:
+How does a customer discover Business Account registration?
+
+Problem 2:
+How does a customer check whether their application is
+pending, approved, or rejected?
+```
+
+The completed customer journey is now:
+
+```text
+Create Account / Login page
+        ↓
+Business Account registration option
+        ↓
+Customer submits application
+        ↓
+Admin reviews application
+        ↓
+Customer logs in
+        ↓
+My Account → Business Account
+        ↓
+Customer sees current application status
+```
+
+---
+
+# 2. What was completed
+
+This phase added:
+
+```text
+✅ Business Account option on Create Account page
+✅ Business Account option on Customer Login page
+✅ Reusable storefront CTA template
+✅ My Account → Business Account navigation link
+✅ Customer-specific Business Account status page
+✅ No-application state
+✅ Pending state
+✅ Approved state
+✅ Rejected state
+✅ Rejection reason display
+✅ Company and application information display
+✅ Guest-access protection
+✅ Protection against viewing another customer’s application
+✅ Fix for missing storefront template
+✅ Fix for Magento Admin customer-grid data source
+```
+
+---
+
+# Part A — Business registration entry points
+
+# 3. Previous limitation
+
+The business registration page already existed:
+
+```text
+/businessaccount/account/create
+```
+
+The backend flow also worked:
+
+```text
+Submit application
+        ↓
+Create or use Magento customer
+        ↓
+Save pending business application
+```
+
+However, there was no visible storefront link to the page.
+
+This meant the functionality was accessible only through a manually entered URL.
+
+That did not satisfy the business requirement of a discoverable registration process.
+
+---
+
+# 4. Decision: keep personal and business registration separate
+
+We did not replace Magento’s standard customer-registration form.
+
+Instead, we kept two separate journeys:
+
+```text
+Personal Account
+→ Magento’s default customer registration
+```
+
+```text
+Business Account
+→ BrewCraft’s custom business application
+```
+
+This was the safer architectural choice.
+
+A personal customer needs only basic account data:
+
+```text
+Name
+Email
+Password
+```
+
+A business applicant needs additional information:
+
+```text
+Company name
+Registration number
+Tax number
+Company type
+Years in business
+Business contact
+Business address
+```
+
+Combining both into a single large form would make normal customer registration unnecessarily complicated.
+
+---
+
+# 5. Extending existing Magento pages
+
+We created layout updates for existing Magento Customer pages:
+
+```text
+view/frontend/layout/customer_account_create.xml
+view/frontend/layout/customer_account_login.xml
+```
+
+These files do not create new routes.
+
+Instead, they extend existing Magento pages.
+
+The existing URLs are:
+
+```text
+/customer/account/create
+/customer/account/login
+```
+
+Magento generates the corresponding layout handles:
+
+```text
+customer_account_create
+customer_account_login
+```
+
+A module can create XML files using these handles to add new blocks to the existing pages.
+
+---
+
+# 6. Why layout XML was used
+
+We did not copy or replace Magento’s core customer templates.
+
+We used layout XML to insert an additional block into the page:
+
+```xml
+<referenceContainer name="content">
+    <block ... />
+</referenceContainer>
+```
+
+This results in:
+
+```text
+Existing Magento page content
+        +
+BrewCraft Business Account section
+```
+
+This is better than overriding the complete Magento registration or login template because:
+
+* Core Magento behavior remains intact.
+* Other modules can still extend the same pages.
+* Magento upgrades are less likely to break the customization.
+* Our code is responsible only for the new Business Account section.
+* The final theme can redesign the block later.
+
+---
+
+# 7. Reusable CTA template
+
+We created:
+
+```text
+view/frontend/templates/account/
+business-registration-link.phtml
+```
+
+The same template is rendered on both:
+
+```text
+Create Account page
+Login page
+```
+
+The layouts pass a value called:
+
+```text
+context_type
+```
+
+For the registration page:
+
+```text
+context_type = create
+```
+
+For the login page:
+
+```text
+context_type = login
+```
+
+The template reads that value and changes its content accordingly.
+
+---
+
+# 8. Why one reusable template was used
+
+Without reuse, we might have created:
+
+```text
+business-link-create.phtml
+business-link-login.phtml
+```
+
+Both templates would contain mostly the same markup.
+
+That would create duplicate code.
+
+Using one template gives us:
+
+```text
+One component
+        ↓
+Different text based on context
+        ↓
+Used on multiple pages
+```
+
+This improves maintainability.
+
+For example, if we later change the Business Account button label, we only need to update one template.
+
+---
+
+# 9. Create Account page behavior
+
+The default Magento customer-registration form remains available.
+
+Below or alongside that content, customers see a BrewCraft Business section explaining benefits such as:
+
+```text
+Wholesale access
+Quote requests
+Business support
+```
+
+The primary CTA points to:
+
+```text
+/businessaccount/account/create
+```
+
+A customer can therefore choose:
+
+```text
+Create a personal account
+```
+
+or:
+
+```text
+Apply for a business account
+```
+
+---
+
+# 10. Login page behavior
+
+The customer Login page also shows the Business Account CTA.
+
+This fulfills two possible journeys.
+
+## New customer
+
+```text
+Open Login page
+        ↓
+See Business Account option
+        ↓
+Open business registration form
+        ↓
+Create customer and business application together
+```
+
+## Existing customer
+
+```text
+Open Login page
+        ↓
+Sign in
+        ↓
+Open business registration
+        ↓
+Application is attached to existing customer
+```
+
+The business registration service already supports both cases, so no duplicate backend flow was required.
+
+---
+
+# 11. Temporary presentation versus final theme
+
+The current CTA is functional UI.
+
+It is intentionally not the final Figma-based storefront design.
+
+The current purpose is to confirm:
+
+```text
+Block loads
+Template renders
+Links work
+Pages remain functional
+Responsive structure is usable
+```
+
+Later we will create a dedicated theme, for example:
+
+```text
+app/design/frontend/BrewCraft/default
+```
+
+The theme will own final visual presentation:
+
+```text
+Colors
+Typography
+Spacing
+Cards
+Buttons
+Page structures
+Responsive design
+Figma implementation
+```
+
+The module will continue to own business functionality.
+
+```text
+Module = what the feature does
+Theme = how the feature looks
+```
+
+The theme can override the module template without changing the controller, service, repository, or database logic.
+
+---
+
+# Part B — My Account Business Account status page
+
+# 12. Business requirement
+
+Once customers submit a business application, they need a way to check its status.
+
+Previously, status was visible only to Admin users.
+
+The customer did not have a storefront page showing:
+
+```text
+Pending
+Approved
+Rejected
+```
+
+This created an incomplete customer experience.
+
+The new requirement was:
+
+```text
+My Account
+└── Business Account
+```
+
+The page should show:
+
+* Whether an application exists
+* Current application status
+* Company information
+* Contact information
+* Business address
+* Submitted date
+* Approved date when applicable
+* Rejection reason when applicable
+
+---
+
+# 13. Customer-facing status scenarios
+
+The page supports four states.
+
+## State 1 — No application
+
+```text
+Status: Not Applied
+```
+
+The customer sees an explanation and an application button.
+
+```text
+Apply for a Business Account
+```
+
+## State 2 — Pending
+
+```text
+Status: Pending Review
+```
+
+The customer sees:
+
+```text
+Application submitted
+Review still in progress
+Company and application information
+```
+
+They do not see another application button.
+
+## State 3 — Approved
+
+```text
+Status: Approved
+```
+
+The customer sees:
+
+```text
+Business Account active
+Approval date
+Company information
+Optional Admin approval comment
+```
+
+Their Magento customer group has already been changed to:
+
+```text
+Business Customer
+```
+
+## State 4 — Rejected
+
+```text
+Status: Rejected
+```
+
+The customer sees:
+
+```text
+Application not approved
+Regular customer account remains active
+Admin rejection reason
+```
+
+---
+
+# 14. My Account controller
+
+We created:
+
+```text
+Controller/Account/Index.php
+```
+
+This controller handles:
+
+```text
+/businessaccount/account/index
+```
+
+Its first responsibility is authentication.
+
+```php
+if (!$this->customerSession->isLoggedIn()) {
+    // Redirect to login.
+}
+```
+
+A guest cannot access the page because it contains private customer and company information.
+
+For a logged-in customer, the controller creates a page result and sets the page title:
+
+```text
+Business Account
+```
+
+---
+
+# 15. Why authentication is checked in the controller
+
+The Business Account status page may contain:
+
+```text
+Legal company information
+Tax number
+Registration number
+Business address
+Admin feedback
+Application status
+```
+
+This data must not be publicly visible.
+
+The controller therefore blocks guest access before rendering the page.
+
+The flow is:
+
+```text
+Request Business Account page
+        ↓
+Is customer logged in?
+    ├── No → redirect to login
+    └── Yes → render page
+```
+
+---
+
+# 16. My Account status block
+
+We created:
+
+```text
+Block/Account/Index.php
+```
+
+The block is responsible for loading and preparing the logged-in customer’s application.
+
+It obtains the customer ID from:
+
+```php
+CustomerSession
+```
+
+Then it calls:
+
+```php
+getByCustomerId($customerId)
+```
+
+on the repository.
+
+The important point is that the application is selected using the authenticated customer ID.
+
+---
+
+# 17. Security of the customer application lookup
+
+We intentionally did not use an application ID from the URL.
+
+An unsafe design could look like:
+
+```text
+/businessaccount/account/index/entity_id/5
+```
+
+A customer might then change the URL:
+
+```text
+entity_id/5
+entity_id/6
+entity_id/7
+```
+
+and attempt to view other applications.
+
+Our implementation does this instead:
+
+```text
+Logged-in session
+        ↓
+Current customer_id
+        ↓
+getByCustomerId(customer_id)
+        ↓
+Only that customer’s application
+```
+
+This prevents insecure direct object-reference behavior.
+
+The customer cannot choose which application ID to load.
+
+---
+
+# 18. Application caching inside the block
+
+The template may call several block methods:
+
+```php
+getBusinessAccount()
+isPending()
+isApproved()
+isRejected()
+getStatusLabel()
+getStatusDescription()
+```
+
+Most of these methods depend on the same business application.
+
+Without request-level caching, every method could run another repository query.
+
+We added:
+
+```php
+private bool $applicationLoaded = false;
+private ?BusinessAccount $businessAccount = null;
+```
+
+The first call loads the application.
+
+Later calls reuse the already-loaded object.
+
+The flow is:
+
+```text
+First method call
+→ query repository
+→ store result in block property
+
+Later method calls
+→ return stored result
+→ no additional query
+```
+
+---
+
+# 19. My Account navigation link
+
+We created:
+
+```text
+view/frontend/layout/customer_account.xml
+```
+
+This layout handle is shared by Magento customer-account pages.
+
+We targeted:
+
+```xml
+<referenceBlock name="customer_account_navigation">
+```
+
+and inserted a new link:
+
+```text
+Business Account
+```
+
+The link points to:
+
+```text
+businessaccount/account/index
+```
+
+This makes the feature discoverable from the standard customer account sidebar.
+
+---
+
+# 20. Why `customer_account.xml` was used
+
+Magento’s customer account navigation is a shared layout structure.
+
+Instead of modifying each account page individually, we add the link once to:
+
+```text
+customer_account
+```
+
+Then it appears across customer-account pages such as:
+
+```text
+My Account dashboard
+Account Information
+Address Book
+My Orders
+Business Account
+```
+
+This is another example of extending Magento rather than replacing core templates.
+
+---
+
+# 21. Business Account page layout
+
+We created:
+
+```text
+view/frontend/layout/businessaccount_account_index.xml
+```
+
+The layout contains:
+
+```xml
+<update handle="customer_account"/>
+```
+
+This imports Magento’s standard My Account structure.
+
+It gives the page:
+
+```text
+Customer account navigation
+Two-column account layout
+Standard account-area structure
+```
+
+Our custom block is then added to the content area.
+
+The resulting page is:
+
+```text
+Magento My Account layout
+        +
+BrewCraft Business Account content
+```
+
+---
+
+# 22. Why the block is non-cacheable
+
+The Business Account page contains customer-specific data.
+
+We used:
+
+```xml
+cacheable="false"
+```
+
+This prevents full-page cache from serving one customer’s application information to another customer.
+
+Customer-specific pages must be handled carefully because the displayed data changes by session.
+
+---
+
+# 23. Status helper methods
+
+The block contains methods such as:
+
+```php
+isPending()
+isApproved()
+isRejected()
+```
+
+It also maps raw database values to user-friendly text:
+
+```text
+pending  → Pending Review
+approved → Approved
+rejected → Rejected
+```
+
+This keeps raw technical values out of the template.
+
+The template asks the block:
+
+```php
+$block->getStatusLabel()
+```
+
+rather than implementing status mapping itself.
+
+---
+
+# 24. Customer-safe status descriptions
+
+The block also provides a customer-facing explanation.
+
+Examples:
+
+## Pending
+
+```text
+Your application has been submitted and is currently
+being reviewed by our business team.
+```
+
+## Approved
+
+```text
+Your BrewCraft Business Account is active.
+```
+
+## Rejected
+
+```text
+Your business application was not approved.
+Your regular customer account remains active.
+```
+
+This converts backend status into understandable customer communication.
+
+---
+
+# 25. Status template
+
+We created:
+
+```text
+view/frontend/templates/account/index.phtml
+```
+
+The template conditionally renders content based on status.
+
+Simplified structure:
+
+```php
+if (!$businessAccount) {
+    // Show application CTA.
+} else {
+    // Show status and details.
+
+    if (pending) {
+        // Pending notice.
+    }
+
+    if (approved) {
+        // Approval notice.
+    }
+
+    if (rejected) {
+        // Rejection notice and feedback.
+    }
+}
+```
+
+---
+
+# 26. Information displayed to customers
+
+The page displays several sections.
+
+## Application Summary
+
+```text
+Application number
+Status
+Submitted date
+Approved date, when approved
+Last-updated date
+```
+
+## Company Information
+
+```text
+Company name
+Registration number
+Tax/VAT number
+Company type
+Years in business
+```
+
+## Primary Contact
+
+```text
+Contact name
+Contact email
+Contact phone
+```
+
+## Business Address
+
+```text
+Street
+City
+State/region
+Postcode
+Country
+```
+
+## Review Feedback
+
+Displayed only for a rejected application with an Admin comment.
+
+```text
+Reason provided by our business team:
+<Admin rejection reason>
+```
+
+---
+
+# 27. Why Admin comments are conditionally displayed
+
+The `admin_comment` field can represent two types of messages:
+
+```text
+Approval note
+Rejection reason
+```
+
+For approved applications, it may be displayed as:
+
+```text
+Message from Our Business Team
+```
+
+For rejected applications, it is displayed as:
+
+```text
+Review Feedback
+```
+
+The rejection reason is especially important because it explains why the application was not accepted.
+
+---
+
+# 28. Duplicate application protection remains active
+
+When a customer already has a pending, approved, or rejected application, the status page does not show the Apply button.
+
+Even if they manually open:
+
+```text
+/businessaccount/account/create
+```
+
+the backend registration service still checks:
+
+```php
+getByCustomerId($customerId)
+```
+
+The database also has a unique constraint on:
+
+```text
+customer_id
+```
+
+Protection therefore exists at multiple levels:
+
+```text
+Storefront UI
+        +
+Service validation
+        +
+Database unique constraint
+```
+
+---
+
+# Part C — Problems encountered and fixed
+
+# 29. Problem 1: Invalid template file
+
+When a customer without a business application opened the Business Account page, Magento showed:
+
+```text
+Invalid template file:
+BrewCraft_BusinessAccount::account/index.phtml
+```
+
+Magento translated this alias:
+
+```text
+BrewCraft_BusinessAccount::account/index.phtml
+```
+
+into the expected physical path:
+
+```text
+app/code/BrewCraft/BusinessAccount/
+view/frontend/templates/account/index.phtml
+```
+
+The error meant that Magento could not locate or validate the template at that exact path.
+
+---
+
+# 30. Template path rules learned
+
+For a module template alias:
+
+```text
+Vendor_Module::folder/file.phtml
+```
+
+Magento looks under:
+
+```text
+Vendor/Module/view/<area>/templates/folder/file.phtml
+```
+
+For our frontend template:
+
+```text
+BrewCraft_BusinessAccount::account/index.phtml
+```
+
+the exact path must be:
+
+```text
+view/frontend/templates/account/index.phtml
+```
+
+Linux paths are case-sensitive.
+
+These would be incorrect:
+
+```text
+templates/Account/index.phtml
+templates/account/Index.phtml
+view/adminhtml/templates/account/index.phtml
+view/frontend/template/account/index.phtml
+```
+
+After correcting the file location/name and clearing layout/template caches, the Business Account page worked correctly.
+
+---
+
+# 31. Problem 2: Admin All Customers grid failed
+
+A second unrelated error occurred in:
+
+```text
+Admin → Customers → All Customers
+```
+
+Magento displayed:
+
+```text
+Not registered handle customer_listing_data_source
+```
+
+The exception came from:
+
+```text
+Magento\Framework\View\Element\UiComponent\
+DataProvider\CollectionFactory
+```
+
+This happened after we registered our custom Business Applications grid.
+
+---
+
+# 32. Understanding grid data-source registration
+
+Magento Admin UI grids use data-source names.
+
+For example:
+
+```text
+customer_listing_data_source
+```
+
+maps to Magento’s customer-grid collection.
+
+Our custom grid uses:
+
+```text
+businessaccount_application_listing_data_source
+```
+
+which maps to the BrewCraft business-application grid collection.
+
+The collection registry should contain both:
+
+```text
+customer_listing_data_source
+→ Magento Customer grid collection
+
+businessaccount_application_listing_data_source
+→ BrewCraft Business Application collection
+```
+
+---
+
+# 33. Initial custom grid DI configuration
+
+We originally placed our custom collection mapping in:
+
+```text
+etc/adminhtml/di.xml
+```
+
+The file configured this argument:
+
+```xml
+<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+    <arguments>
+        <argument name="collections" xsi:type="array">
+            <item name="businessaccount_application_listing_data_source">
+                ...
+            </item>
+        </argument>
+    </arguments>
+</type>
+```
+
+Our BrewCraft grid worked because its data-source mapping was present.
+
+However, Magento’s core Customer grid mapping disappeared from the final Admin-area DI configuration.
+
+---
+
+# 34. Diagnostics performed
+
+We searched all custom modules for CollectionFactory configuration:
+
+```bash
+grep -R -n \
+'UiComponent\\DataProvider\\CollectionFactory' \
+app/code/*/*/etc
+```
+
+Only our Business Account module contained a custom declaration.
+
+We also checked the core Magento mapping:
+
+```bash
+grep -R -n \
+"customer_listing_data_source" \
+vendor/magento/module-customer
+```
+
+Magento’s Customer module registered the mapping in:
+
+```text
+vendor/magento/module-customer/etc/di.xml
+```
+
+This confirmed that:
+
+```text
+Magento’s core mapping existed
+```
+
+but:
+
+```text
+It was missing from the final Admin DI registry
+```
+
+---
+
+# 35. Root cause
+
+Magento Customer registered its grid collection in global:
+
+```text
+vendor/magento/module-customer/etc/di.xml
+```
+
+Our module registered another value for the same `collections` argument in:
+
+```text
+BrewCraft/BusinessAccount/etc/adminhtml/di.xml
+```
+
+The Admin-area configuration replaced the already-merged global array for that argument.
+
+The effective registry became similar to:
+
+```php
+[
+    'businessaccount_application_listing_data_source'
+        => BrewCraftGridCollection::class
+]
+```
+
+It no longer contained:
+
+```php
+'customer_listing_data_source'
+```
+
+Therefore, Magento could display our custom grid but could not open the core Customers grid.
+
+---
+
+# 36. DI fix
+
+We removed:
+
+```text
+etc/adminhtml/di.xml
+```
+
+and moved the custom grid mapping into:
+
+```text
+etc/di.xml
+```
+
+The same global `di.xml` now contains:
+
+```text
+Repository interface preference
+Custom Admin grid SearchResult virtual type
+Custom grid data-source collection mapping
+```
+
+Because both Magento Customer and BrewCraft now contribute to the same global DI configuration stage, their array items merge correctly.
+
+The final registry contains both mappings.
+
+---
+
+# 37. Why the grid mapping can remain global
+
+Even though the BrewCraft collection is used by an Admin grid, registering the data-source collection globally is acceptable.
+
+The mapping is only requested when the corresponding UI Component uses:
+
+```text
+businessaccount_application_listing_data_source
+```
+
+The existence of the mapping does not render or execute the Admin grid on storefront pages.
+
+The important requirement is correct DI array merging.
+
+---
+
+# 38. Rebuilding compiled dependency injection
+
+After moving the configuration, we deleted:
+
+```text
+generated/code
+generated/metadata
+var/di
+var/cache
+var/page_cache
+```
+
+Then we ran:
+
+```bash
+bin/magento setup:di:compile
+bin/magento cache:flush
+```
+
+Removing `var/di` was especially relevant because Magento may otherwise continue using stale compiled dependency-injection configuration.
+
+After rebuilding:
+
+```text
+Customers → All Customers
+```
+
+worked again, and:
+
+```text
+BrewCraft → Business Applications
+```
+
+continued working.
+
+---
+
+# 39. Important DI lesson
+
+Magento merges configuration from many modules and application areas.
+
+When multiple modules modify an array constructor argument, configuration location matters.
+
+The lesson from this issue is:
+
+```text
+Do not assume area-specific DI will always extend a global array.
+It may replace the previously merged value for that area.
+```
+
+For shared collection registries such as:
+
+```php
+CollectionFactory::$collections
+```
+
+custom data-source mappings should be configured at the same global stage as the core mappings when they need to merge.
+
+---
+
+# 40. Why the two errors were unrelated
+
+We encountered:
+
+```text
+Invalid template file
+```
+
+and:
+
+```text
+Not registered handle customer_listing_data_source
+```
+
+at nearly the same time.
+
+However, they had completely different causes.
+
+## Storefront error
+
+```text
+Cause:
+Missing or incorrectly located .phtml template
+```
+
+## Admin error
+
+```text
+Cause:
+Dependency-injection array mapping replaced in Admin area
+```
+
+This is an important debugging lesson: errors happening after the same development change are not automatically caused by the same file.
+
+Each stack trace and affected area should be investigated independently.
+
+---
+
+# 41. Files added or changed in this phase
+
+## Storefront entry points
+
+```text
+view/frontend/layout/customer_account_create.xml
+view/frontend/layout/customer_account_login.xml
+view/frontend/templates/account/business-registration-link.phtml
+view/frontend/web/css/source/_module.less
+```
+
+## My Account Business page
+
+```text
+Controller/Account/Index.php
+Block/Account/Index.php
+view/frontend/layout/customer_account.xml
+view/frontend/layout/businessaccount_account_index.xml
+view/frontend/templates/account/index.phtml
+```
+
+## DI correction
+
+Changed:
+
+```text
+etc/di.xml
+```
+
+Removed:
+
+```text
+etc/adminhtml/di.xml
+```
+
+The global DI file now owns both the repository preference and custom grid-collection registration.
+
+---

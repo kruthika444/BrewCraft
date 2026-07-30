@@ -1,0 +1,756 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\BusinessAccount\Block\Adminhtml\Application\View;
+use Magento\Framework\Escaper;
+
+/**
+ * @var View $block
+ * @var Escaper $escaper
+ */
+
+$businessAccount = $block->getBusinessAccount();
+$customer = $block->getCustomer();
+$customerEditUrl = $block->getCustomerEditUrl();
+?>
+
+<?php if (!$businessAccount): ?>
+
+    <div class="message message-error error">
+        <div>
+            <?= $escaper->escapeHtml(
+                __('The business application could not be loaded.')
+            ) ?>
+        </div>
+    </div>
+
+<?php else: ?>
+
+    <div class="brewcraft-business-application-view">
+
+        <div class="page-actions">
+            <div class="page-actions-buttons">
+
+                <a class="action-default scalable back"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getBackUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Back')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+        </div>
+
+        <div class="admin__page-section">
+
+            <div class="admin__page-section-title">
+
+                <span class="title">
+                    <?= $escaper->escapeHtml(
+                        $businessAccount->getCompanyName()
+                    ) ?>
+                </span>
+
+            </div>
+
+            <div class="admin__page-section-content">
+
+                <div class="admin__page-section-item">
+
+                    <div class="admin__page-section-item-title">
+                        <span class="title">
+                            <?= $escaper->escapeHtml(
+                                __('Application Summary')
+                            ) ?>
+                        </span>
+                    </div>
+
+                    <div class="admin__page-section-item-content">
+
+                        <table class="admin__table-secondary">
+
+                            <tbody>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Application ID')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <?= $escaper->escapeHtml(
+                                        (string)$businessAccount->getEntityId()
+                                    ) ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Status')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <span class="brewcraft-status brewcraft-status--<?= $escaper->escapeHtmlAttr(
+                                        $block->getStatusCssClass()
+                                    ) ?>">
+                                        <?= $escaper->escapeHtml(
+                                            $block->getStatusLabel()
+                                        ) ?>
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Submitted At')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatApplicationDate(
+                                            (string)$businessAccount->getData(
+                                                'created_at'
+                                            )
+                                        )
+                                    ) ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Last Updated')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatApplicationDate(
+                                            (string)$businessAccount->getData(
+                                                'updated_at'
+                                            )
+                                        )
+                                    ) ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Approved At')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatApplicationDate(
+                                            $businessAccount->getApprovedAt()
+                                        )
+                                    ) ?>
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="admin__page-section">
+
+            <div class="admin__page-section-title">
+                <span class="title">
+                    <?= $escaper->escapeHtml(
+                        __('Company Information')
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="admin__page-section-content">
+
+                <table class="admin__table-secondary">
+
+                    <tbody>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Company Name')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getCompanyName()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Registration Number')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getRegistrationNumber()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Tax / VAT Number')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getTaxNumber()
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Company Type')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getCompanyType()
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Years in Business')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getBusinessYears()
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="admin__page-section">
+
+            <div class="admin__page-section-title">
+                <span class="title">
+                    <?= $escaper->escapeHtml(
+                        __('Primary Contact')
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="admin__page-section-content">
+
+                <table class="admin__table-secondary">
+
+                    <tbody>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Contact Name')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getContactName()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Contact Email')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <a href="mailto:<?= $escaper->escapeHtmlAttr(
+                                $businessAccount->getContactEmail()
+                            ) ?>">
+                                <?= $escaper->escapeHtml(
+                                    $businessAccount->getContactEmail()
+                                ) ?>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Contact Phone')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $businessAccount->getContactPhone()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="admin__page-section">
+
+            <div class="admin__page-section-title">
+                <span class="title">
+                    <?= $escaper->escapeHtml(
+                        __('Business Address')
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="admin__page-section-content">
+
+                <table class="admin__table-secondary">
+
+                    <tbody>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Street')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= nl2br(
+                                $escaper->escapeHtml(
+                                    (string)$businessAccount->getData(
+                                        'street'
+                                    )
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('City')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getData(
+                                    'city'
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('State / Region')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                $block->displayNullableValue(
+                                    $businessAccount->getData(
+                                        'region'
+                                    )
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Postcode')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getData(
+                                    'postcode'
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Country')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getData(
+                                    'country_id'
+                                )
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="admin__page-section">
+
+            <div class="admin__page-section-title">
+                <span class="title">
+                    <?= $escaper->escapeHtml(
+                        __('Magento Customer')
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="admin__page-section-content">
+
+                <table class="admin__table-secondary">
+
+                    <tbody>
+
+                    <tr>
+                        <th>
+                            <?= $escaper->escapeHtml(
+                                __('Customer ID')
+                            ) ?>
+                        </th>
+
+                        <td>
+                            <?= $escaper->escapeHtml(
+                                (string)$businessAccount->getCustomerId()
+                            ) ?>
+                        </td>
+                    </tr>
+
+                    <?php if ($customer): ?>
+
+                        <tr>
+                            <th>
+                                <?= $escaper->escapeHtml(
+                                    __('Customer Name')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    trim(
+                                        $customer->getFirstname()
+                                        . ' '
+                                        . $customer->getLastname()
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <?= $escaper->escapeHtml(
+                                    __('Customer Email')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $customer->getEmail()
+                                ) ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <?= $escaper->escapeHtml(
+                                    __('Customer Group ID')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    (string)$customer->getGroupId()
+                                ) ?>
+                            </td>
+                        </tr>
+
+                        <?php if ($customerEditUrl): ?>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Customer Account')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <a href="<?= $escaper->escapeUrl(
+                                        $customerEditUrl
+                                    ) ?>">
+                                        <?= $escaper->escapeHtml(
+                                            __('Open Magento Customer')
+                                        ) ?>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        <?php endif; ?>
+
+                    <?php else: ?>
+
+                        <tr>
+                            <th>
+                                <?= $escaper->escapeHtml(
+                                    __('Customer Record')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    __('The linked Magento customer could not be loaded.')
+                                ) ?>
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="admin__page-section">
+
+            <div class="admin__page-section-title">
+                <span class="title">
+                    <?= $escaper->escapeHtml(
+                        __('Admin Review')
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="admin__page-section-content">
+
+                <?php if ($businessAccount->getAdminComment()): ?>
+
+                    <div class="admin__field">
+
+                        <div class="admin__field-label">
+                            <label>
+                                <?= $escaper->escapeHtml(
+                                    __('Previous Admin Comment')
+                                ) ?>
+                            </label>
+                        </div>
+
+                        <div class="admin__field-control">
+                            <p>
+                                <?= nl2br(
+                                    $escaper->escapeHtml(
+                                        $businessAccount->getAdminComment()
+                                    )
+                                ) ?>
+                            </p>
+                        </div>
+
+                    </div>
+
+                <?php endif; ?>
+
+                <?php if ($block->isPending()): ?>
+
+                    <div class="admin__field">
+
+                        <div class="admin__field-label">
+                            <label for="approval-comment">
+                                <?= $escaper->escapeHtml(
+                                    __('Approval Comment')
+                                ) ?>
+                            </label>
+                        </div>
+
+                        <div class="admin__field-control">
+
+                            <form method="post"
+                                  action="<?= $escaper->escapeUrl(
+                                      $block->getApproveUrl()
+                                  ) ?>">
+
+                                <input type="hidden"
+                                       name="form_key"
+                                       value="<?= $escaper->escapeHtmlAttr(
+                                           $block->getFormKey()
+                                       ) ?>"/>
+
+                                <input type="hidden"
+                                       name="entity_id"
+                                       value="<?= $escaper->escapeHtmlAttr(
+                                           (string)$businessAccount->getEntityId()
+                                       ) ?>"/>
+
+                                <textarea name="admin_comment"
+                                          id="approval-comment"
+                                          class="admin__control-textarea"
+                                          rows="4"
+                                          placeholder="<?= $escaper->escapeHtmlAttr(
+                                              __('Optional approval comment')
+                                          ) ?>"></textarea>
+
+                                <div class="admin__field-note">
+                                    <span>
+                                        <?= $escaper->escapeHtml(
+                                            __('Approving will move the customer to the Business Customer group.')
+                                        ) ?>
+                                    </span>
+                                </div>
+
+                                <button type="submit"
+                                        class="action-primary">
+                                    <span>
+                                        <?= $escaper->escapeHtml(
+                                            __('Approve Application')
+                                        ) ?>
+                                    </span>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <hr/>
+
+                    <div class="admin__field required">
+
+                        <div class="admin__field-label">
+                            <label for="rejection-comment">
+                                <?= $escaper->escapeHtml(
+                                    __('Rejection Reason')
+                                ) ?>
+                            </label>
+                        </div>
+
+                        <div class="admin__field-control">
+
+                            <form method="post"
+                                  action="<?= $escaper->escapeUrl(
+                                      $block->getRejectUrl()
+                                  ) ?>">
+
+                                <input type="hidden"
+                                       name="form_key"
+                                       value="<?= $escaper->escapeHtmlAttr(
+                                           $block->getFormKey()
+                                       ) ?>"/>
+
+                                <input type="hidden"
+                                       name="entity_id"
+                                       value="<?= $escaper->escapeHtmlAttr(
+                                           (string)$businessAccount->getEntityId()
+                                       ) ?>"/>
+
+                                <textarea name="admin_comment"
+                                          id="rejection-comment"
+                                          class="admin__control-textarea"
+                                          rows="4"
+                                          required
+                                          placeholder="<?= $escaper->escapeHtmlAttr(
+                                              __('Enter the reason for rejecting this application')
+                                          ) ?>"></textarea>
+
+                                <button type="submit"
+                                        class="action-secondary">
+                                    <span>
+                                        <?= $escaper->escapeHtml(
+                                            __('Reject Application')
+                                        ) ?>
+                                    </span>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                <?php else: ?>
+
+                    <div class="message message-notice notice">
+                        <div>
+                            <?= $escaper->escapeHtml(
+                                __(
+                                    'This application has already been reviewed and cannot be processed again.'
+                                )
+                            ) ?>
+                        </div>
+                    </div>
+
+                <?php endif; ?>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<?php endif; ?>

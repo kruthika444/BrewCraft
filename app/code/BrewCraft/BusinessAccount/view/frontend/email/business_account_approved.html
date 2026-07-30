@@ -1,0 +1,48 @@
+<!--@subject {{trans "Your BrewCraft Business Account Has Been Approved"}} @-->
+<!--@vars {
+"var customer_name":"Customer Name",
+"var company_name":"Company Name",
+"var admin_comment":"Admin Comment",
+"var account_url":"Customer Account URL",
+"var store_name":"Store Name"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p class="greeting">
+    {{trans "Hello %customer_name," customer_name=$customer_name}}
+</p>
+
+<p>
+    {{trans "We are pleased to inform you that the business account application for %company_name has been approved." company_name=$company_name}}
+</p>
+
+<p>
+    {{trans "Your customer account has now been upgraded to a BrewCraft Business Customer account."}}
+</p>
+
+<p>
+    {{trans "You can sign in using your existing email address and password."}}
+</p>
+
+{{if admin_comment}}
+<p>
+    <strong>{{trans "Message from our business team:"}}</strong>
+</p>
+
+<p>
+    {{var admin_comment}}
+</p>
+{{/if}}
+
+<p>
+    <a href="{{var account_url}}">
+        {{trans "Go to My Account"}}
+    </a>
+</p>
+
+<p>
+    {{trans "Thank you for choosing %store_name." store_name=$store_name}}
+</p>
+
+{{template config_path="design/email/footer_template"}}

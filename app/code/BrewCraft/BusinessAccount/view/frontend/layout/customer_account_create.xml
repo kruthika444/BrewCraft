@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+
+        <referenceContainer name="content">
+
+            <block class="Magento\Framework\View\Element\Template"
+                   name="brewcraft.business.registration.create.link"
+                   template="BrewCraft_BusinessAccount::account/business-registration-link.phtml"
+                   after="-">
+
+                <arguments>
+
+                    <argument name="context_type"
+                              xsi:type="string">
+                        create
+                    </argument>
+
+                </arguments>
+
+            </block>
+
+        </referenceContainer>
+
+    </body>
+
+</page>

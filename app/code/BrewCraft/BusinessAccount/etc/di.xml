@@ -3,8 +3,42 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
+    <!-- Repository interface implementation -->
     <preference
         for="BrewCraft\BusinessAccount\Api\BusinessAccountRepositoryInterface"
         type="BrewCraft\BusinessAccount\Model\BusinessAccountRepository"/>
+
+    <!-- Search-result collection used by the Admin applications grid -->
+    <virtualType
+        name="BrewCraft\BusinessAccount\Model\ResourceModel\BusinessAccount\Grid\Collection"
+        type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+
+        <arguments>
+            <argument name="mainTable" xsi:type="string">
+                brewcraft_business_account
+            </argument>
+
+            <argument name="resourceModel" xsi:type="string">
+                BrewCraft\BusinessAccount\Model\ResourceModel\BusinessAccount
+            </argument>
+        </arguments>
+
+    </virtualType>
+
+    <!-- Register the BrewCraft grid data-source collection -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+
+        <arguments>
+            <argument name="collections" xsi:type="array">
+
+                <item name="businessaccount_application_listing_data_source"
+                      xsi:type="string">
+                    BrewCraft\BusinessAccount\Model\ResourceModel\BusinessAccount\Grid\Collection
+                </item>
+
+            </argument>
+        </arguments>
+
+    </type>
 
 </config>

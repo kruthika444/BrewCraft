@@ -4,8 +4,10 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
 
     <module name="BrewCraft_BusinessAccount">
-        <sequence>
+         <sequence>
             <module name="Magento_Customer"/>
+            <module name="Magento_Backend"/>
+            <module name="Magento_Ui"/>
         </sequence>
     </module>
 

@@ -1,0 +1,50 @@
+<!--@subject {{trans "Update on Your BrewCraft Business Application"}} @-->
+<!--@vars {
+"var customer_name":"Customer Name",
+"var company_name":"Company Name",
+"var rejection_reason":"Rejection Reason",
+"var account_url":"Customer Account URL",
+"var store_name":"Store Name"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p class="greeting">
+    {{trans "Hello %customer_name," customer_name=$customer_name}}
+</p>
+
+<p>
+    {{trans "We have completed our review of the business account application for %company_name." company_name=$company_name}}
+</p>
+
+<p>
+    {{trans "Unfortunately, the application could not be approved at this time."}}
+</p>
+
+<p>
+    <strong>{{trans "Reason:"}}</strong>
+</p>
+
+<p>
+    {{var rejection_reason}}
+</p>
+
+<p>
+    {{trans "Your Magento customer account remains active, and you can continue to sign in and shop as a regular customer."}}
+</p>
+
+<p>
+    <a href="{{var account_url}}">
+        {{trans "Go to My Account"}}
+    </a>
+</p>
+
+<p>
+    {{trans "For further assistance, please contact the BrewCraft business support team."}}
+</p>
+
+<p>
+    {{trans "Thank you for your interest in %store_name." store_name=$store_name}}
+</p>
+
+{{template config_path="design/email/footer_template"}}
