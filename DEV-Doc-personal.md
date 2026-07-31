@@ -7990,3 +7990,884 @@ etc/adminhtml/di.xml
 The global DI file now owns both the repository preference and custom grid-collection registration.
 
 ---
+
+
+# BrewCraft B2B Business Account — Complete Workflow
+
+You have now completed an end-to-end **B2B customer onboarding and approval workflow** in Magento.
+
+The feature allows a customer to apply for a Business Account, lets an Admin review the application, assigns approved customers to a business customer group, sends notifications, and allows the customer to track the result from My Account.
+
+---
+
+# 1. Overall business workflow
+
+```text
+Customer visits BrewCraft storefront
+        ↓
+Chooses Business Account registration
+        ↓
+Submits company and contact information
+        ↓
+Magento validates the request
+        ↓
+Magento creates or uses an existing customer
+        ↓
+Business application is stored as Pending
+        ↓
+Application appears in Magento Admin
+        ↓
+Admin opens the application details
+        ↓
+Admin approves or rejects
+        ↓
+Approved:
+    Customer moved to Business Customer group
+    Application status = Approved
+    Approval timestamp saved
+    Approval email triggered
+
+Rejected:
+    Customer remains a normal customer
+    Application status = Rejected
+    Rejection reason saved
+    Rejection email triggered
+        ↓
+Customer logs in
+        ↓
+My Account → Business Account
+        ↓
+Customer sees Pending, Approved or Rejected status
+```
+
+---
+
+# 2. Customer registration scenarios
+
+The registration workflow supports both guests and existing Magento customers.
+
+## Guest customer
+
+```text
+Guest opens Business Account form
+        ↓
+Enters personal, company and password information
+        ↓
+Magento validates the form
+        ↓
+A new Magento customer account is created
+        ↓
+Business application is created
+        ↓
+Application is linked using customer_id
+        ↓
+Status is set to Pending
+```
+
+The customer does not need to separately create a personal account first.
+
+## Existing customer
+
+```text
+Customer logs in
+        ↓
+Opens Business Account registration
+        ↓
+Magento uses existing customer_id
+        ↓
+No duplicate Magento customer is created
+        ↓
+Business application is created and linked
+```
+
+## Existing customer without an application
+
+When a normal logged-in customer accesses the Business Account feature:
+
+```text
+No business application found
+        ↓
+Customer is allowed to open the Business Account registration page
+```
+
+## Customer with an existing application
+
+```text
+Pending / Approved / Rejected application exists
+        ↓
+Customer cannot create another application
+        ↓
+Customer is redirected to My Account → Business Account
+```
+
+---
+
+# 3. Storefront discoverability
+
+Previously, customers needed to know the direct route:
+
+```text
+/businessaccount/account/create
+```
+
+We extended Magento’s existing customer pages so the feature is visible.
+
+Business Account CTAs were added to:
+
+```text
+/customer/account/create
+/customer/account/login
+```
+
+The pages now show an option such as:
+
+```text
+Apply for a Business Account
+```
+
+The CTA is status-aware.
+
+## No application
+
+```text
+Apply for a Business Account
+```
+
+## Pending application
+
+```text
+Your Application Is Under Review
+View Application Status
+```
+
+## Approved application
+
+```text
+Your Business Account Is Active
+Go to Business Account
+```
+
+## Rejected application
+
+```text
+Your Business Application Was Reviewed
+View Review Feedback
+```
+
+---
+
+# 4. Data model
+
+We created a custom table:
+
+```text
+brewcraft_business_account
+```
+
+It stores business-specific information separately from the Magento customer entity.
+
+Typical information stored includes:
+
+```text
+Customer ID
+Company name
+Registration number
+Tax/VAT number
+Company type
+Years in business
+Contact name
+Contact email
+Contact phone
+Street
+City
+Region
+Postcode
+Country
+Application status
+Admin comment
+Approved date
+Created date
+Updated date
+```
+
+## Why a separate table was used
+
+Magento customer data represents the login identity.
+
+The business application represents a company approval process.
+
+```text
+Magento customer
+→ Login, email, password and normal customer account
+
+Business application
+→ Company details, approval status and Admin review
+```
+
+A customer can exist without a business application, so the business data should not be forced into the standard customer entity.
+
+---
+
+# 5. Application statuses
+
+We implemented three main statuses:
+
+```text
+Pending
+Approved
+Rejected
+```
+
+## Pending
+
+```text
+Application submitted
+Admin review not completed
+Business privileges unavailable
+```
+
+## Approved
+
+```text
+Admin accepted the application
+Customer assigned to Business Customer group
+Business benefits can be enabled
+```
+
+## Rejected
+
+```text
+Admin declined the business application
+Customer remains a normal retail customer
+Rejection reason is available in My Account
+```
+
+---
+
+# 6. Duplicate prevention
+
+The system prevents duplicate applications in multiple layers.
+
+## Duplicate customer application
+
+A customer cannot have multiple active business applications.
+
+The service checks by:
+
+```text
+customer_id
+```
+
+The database also has a unique constraint for the customer relationship.
+
+## Duplicate registration number
+
+Two companies cannot register using the same business registration number.
+
+The service checks whether the registration number already exists before saving.
+
+## Direct URL protection
+
+Even if a customer manually enters:
+
+```text
+/businessaccount/account/create
+```
+
+Magento checks whether the logged-in customer already has an application.
+
+If one exists, the customer is redirected to the Business Account status page.
+
+This means protection exists at:
+
+```text
+Storefront UI
+Service layer
+Controller
+Database
+```
+
+---
+
+# 7. Main backend architecture
+
+The implementation follows Magento separation of responsibilities.
+
+```text
+Controller
+→ Handles HTTP request, validation messages and redirects
+
+Service
+→ Handles business rules
+
+Repository
+→ Loads and saves business application entities
+
+Resource Model
+→ Maps the entity to the database table
+
+Block
+→ Prepares data for frontend or Admin template
+
+Template
+→ Displays HTML
+
+UI Component
+→ Renders the Admin grid
+
+Notifier
+→ Sends approval or rejection emails
+```
+
+This structure avoids putting all functionality into one controller.
+
+---
+
+# 8. Registration backend flow
+
+The storefront Save controller receives the form submission.
+
+```text
+POST request
+        ↓
+Validate Magento form key
+        ↓
+Read submitted data
+        ↓
+Call BusinessAccountRegistrationService
+```
+
+The registration service performs:
+
+```text
+Input normalization
+Required-field validation
+Email validation
+Password validation
+Existing customer detection
+Duplicate customer application check
+Duplicate registration-number check
+Magento customer creation for guests
+Business application persistence
+Customer/application linking
+```
+
+The controller then handles:
+
+```text
+Success message
+Error message
+Redirect
+```
+
+---
+
+# 9. Repository pattern
+
+We created:
+
+```text
+BusinessAccountRepositoryInterface
+BusinessAccountRepository
+```
+
+The repository provides operations such as:
+
+```text
+save()
+getById()
+getByCustomerId()
+getByRegistrationNumber()
+delete()
+deleteById()
+```
+
+The application code uses the repository instead of writing SQL directly.
+
+Example flow:
+
+```text
+Service
+        ↓
+Repository interface
+        ↓
+Repository implementation
+        ↓
+Resource model
+        ↓
+Database
+```
+
+This makes persistence consistent and reusable.
+
+---
+
+# 10. Admin functionality
+
+We created a complete Admin management section:
+
+```text
+BrewCraft
+└── Business Applications
+```
+
+The Admin functionality includes:
+
+```text
+Menu
+ACL permissions
+Application grid
+Filtering
+Sorting
+Pagination
+View action
+Application details page
+Approve form
+Reject form
+Admin comments
+```
+
+---
+
+# 11. Admin grid workflow
+
+```text
+Admin opens BrewCraft → Business Applications
+        ↓
+Admin controller creates the page
+        ↓
+UI Component listing loads
+        ↓
+Data provider requests collection
+        ↓
+Collection loads brewcraft_business_account records
+        ↓
+Grid displays applications
+```
+
+The grid includes columns such as:
+
+```text
+Application ID
+Company name
+Registration number
+Contact name
+Contact email
+Customer ID
+Status
+Submitted date
+Actions
+```
+
+---
+
+# 12. Admin ACL
+
+We created Admin permissions for actions such as:
+
+```text
+View Business Applications
+Approve Business Applications
+Reject Business Applications
+```
+
+Each Admin controller declares an ACL resource.
+
+Magento checks the logged-in Admin role before allowing access.
+
+This means different roles can be configured, for example:
+
+```text
+Support role
+→ View only
+
+Business manager
+→ View, approve and reject
+```
+
+---
+
+# 13. Admin details page
+
+When the Admin clicks View:
+
+```text
+Application ID received
+        ↓
+Repository loads the application
+        ↓
+Application is placed in request-level registry
+        ↓
+Admin block reads the application
+        ↓
+Template displays all submitted information
+```
+
+The page includes:
+
+```text
+Application summary
+Company information
+Contact information
+Business address
+Linked Magento customer
+Status
+Admin comments
+Approve and Reject actions
+```
+
+Approve and Reject controls are shown only when the application is pending.
+
+---
+
+# 14. Approval workflow
+
+```text
+Admin clicks Approve
+        ↓
+Form key is validated
+        ↓
+Approval service loads the application
+        ↓
+Service checks status is Pending
+        ↓
+Linked customer is loaded
+        ↓
+Business Customer group is found
+        ↓
+Customer group is updated
+        ↓
+Application status becomes Approved
+        ↓
+approved_at is saved
+        ↓
+Admin comment is saved
+        ↓
+Approval notification is triggered
+```
+
+---
+
+# 15. Rejection workflow
+
+```text
+Admin enters rejection reason
+        ↓
+Clicks Reject
+        ↓
+Form key is validated
+        ↓
+Rejection reason is validated
+        ↓
+Service checks status is Pending
+        ↓
+Application status becomes Rejected
+        ↓
+Admin comment stores the rejection reason
+        ↓
+Customer group remains unchanged
+        ↓
+Rejection notification is triggered
+```
+
+The customer remains a normal Magento customer.
+
+---
+
+# 16. Customer group assignment
+
+A custom Magento customer group was created:
+
+```text
+Business Customer
+```
+
+It was added using a data patch.
+
+Using a data patch ensures the group is created consistently in:
+
+```text
+Local
+Testing
+Staging
+Production
+```
+
+We did not hard-code the customer group ID.
+
+The approval service searches for the group by name:
+
+```text
+Business Customer
+```
+
+and uses the actual ID from the current database.
+
+This is safer because IDs can differ between environments.
+
+---
+
+# 17. Consistency handling during approval
+
+Approval updates two different records:
+
+```text
+Magento customer
+Business application
+```
+
+Possible problem:
+
+```text
+Customer group update succeeds
+        ↓
+Business application save fails
+```
+
+The service stores the customer’s original group ID.
+
+If the application save fails, it attempts to restore the original customer group.
+
+This is a compensating operation that reduces inconsistent data.
+
+---
+
+# 18. Email notification workflow
+
+We created two email templates:
+
+```text
+Business Account Approved
+Business Account Rejected
+```
+
+The email flow is:
+
+```text
+Application successfully approved/rejected
+        ↓
+BusinessAccountNotifier is called
+        ↓
+Linked customer is loaded
+        ↓
+Recipient email is resolved
+        ↓
+Template variables are prepared
+        ↓
+Magento TransportBuilder sends the message
+        ↓
+Success or failure is logged
+```
+
+Template variables include values such as:
+
+```text
+Customer name
+Company name
+Admin comment
+Rejection reason
+Store name
+My Account URL
+```
+
+---
+
+# 19. Email reliability rule
+
+Email is treated as a secondary operation.
+
+For example:
+
+```text
+Customer group updated
+Application approved
+SMTP server unavailable
+```
+
+The application should remain approved.
+
+Therefore, the notifier catches email exceptions and logs them instead of reversing the business transaction.
+
+Logs confirm:
+
+```text
+Email process started
+Email sent successfully
+Email failed
+```
+
+Your successful test confirmed that Magento completed the email transport without throwing an exception.
+
+---
+
+# 20. My Account Business Account page
+
+We added:
+
+```text
+My Account
+└── Business Account
+```
+
+The page is customer-specific.
+
+It loads the business application using:
+
+```text
+Logged-in customer_id
+```
+
+It does not accept an application ID from the URL.
+
+This prevents one customer from attempting to view another customer’s business application.
+
+---
+
+# 21. My Account page states
+
+## No application
+
+The customer sees:
+
+```text
+No Business Account application found
+Apply for a Business Account
+```
+
+## Pending
+
+The customer sees:
+
+```text
+Pending Review
+Application details
+Submitted date
+Company information
+```
+
+## Approved
+
+The customer sees:
+
+```text
+Approved
+Business Account active
+Approval date
+Company information
+Optional Admin message
+```
+
+## Rejected
+
+The customer sees:
+
+```text
+Rejected
+Review Feedback
+Rejection reason
+Online resubmission is not currently available
+Contact support for another review
+```
+
+---
+
+# 22. Current rejection business rule
+
+Rejected applications cannot currently be resubmitted online.
+
+```text
+Rejected customer
+        ↓
+Can view rejection reason
+        ↓
+Cannot submit another application
+        ↓
+Can contact support for another review
+```
+
+This is an intentional business rule, not an accidental limitation.
+
+A future resubmission feature would require:
+
+```text
+Edit application
+Status reset to Pending
+Previous decision history
+New review cycle
+Status history table
+```
+
+---
+
+# 23. Final test results
+
+You confirmed:
+
+```text
+✅ Guest Business Account CTA works
+✅ Normal customer without application can access registration
+✅ Pending customer behavior works
+✅ Approved customer behavior works
+✅ Rejected customer behavior works
+✅ Direct registration URL protection works
+✅ My Account status page works
+✅ Magento Customers grid works
+✅ BrewCraft Business Applications grid works
+```
+
+---
+
+# 24. What we can say is complete
+
+The following feature is complete:
+
+> **BrewCraft B2B Business Account onboarding and approval lifecycle**
+
+It includes:
+
+```text
+Registration
+Customer creation/linking
+Application persistence
+Duplicate prevention
+Admin management
+Approval/rejection
+Customer-group assignment
+Email notification
+Customer-facing status tracking
+Status-aware CTAs
+Direct URL protection
+Rejection feedback
+```
+
+---
+
+# 25. What is not part of this completed phase
+
+The following are larger B2B commerce features and have not yet been implemented:
+
+```text
+Wholesale pricing
+Request for Quote
+Quick reorder
+Company sub-users and roles
+Credit limits
+Purchase order workflow
+Business-only catalog
+Negotiated pricing
+Business-specific shipping
+Business-specific payment methods
+```
+
+However, the foundation required for them now exists:
+
+```text
+Approved customer
+        ↓
+Business Customer group
+        ↓
+Future B2B feature availability
+```
+
+---
+

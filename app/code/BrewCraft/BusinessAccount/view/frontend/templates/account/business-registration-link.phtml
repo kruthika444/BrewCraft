@@ -2,24 +2,13 @@
 
 declare(strict_types=1);
 
+use BrewCraft\BusinessAccount\Block\Account\BusinessRegistrationLink;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 
 /**
- * @var Template $block
+ * @var BusinessRegistrationLink $block
  * @var Escaper $escaper
  */
-
-$contextType = (string)$block->getData('context_type');
-$isLoginPage = $contextType === 'login';
-
-$businessRegistrationUrl = $block->getUrl(
-    'businessaccount/account/create'
-);
-
-$customerLoginUrl = $block->getUrl(
-    'customer/account/login'
-);
 ?>
 
 <section class="brewcraft-business-registration-cta">
@@ -27,102 +16,60 @@ $customerLoginUrl = $block->getUrl(
     <div class="brewcraft-business-registration-cta__content">
 
         <span class="brewcraft-business-registration-cta__eyebrow">
-            <?= $escaper->escapeHtml(
-                __('BrewCraft Business')
-            ) ?>
+            <?= $escaper->escapeHtml(__('BrewCraft Business')) ?>
         </span>
 
         <h2 class="brewcraft-business-registration-cta__title">
-
-            <?php if ($isLoginPage): ?>
-
-                <?= $escaper->escapeHtml(
-                    __('Looking for a Business Account?')
-                ) ?>
-
-            <?php else: ?>
-
-                <?= $escaper->escapeHtml(
-                    __('Registering for Your Business?')
-                ) ?>
-
-            <?php endif; ?>
-
+            <?= $escaper->escapeHtml($block->getHeading()) ?>
         </h2>
 
         <p class="brewcraft-business-registration-cta__description">
-
-            <?php if ($isLoginPage): ?>
-
-                <?= $escaper->escapeHtml(
-                    __(
-                        'Sign in with your existing customer account or submit a new business application to access BrewCraft business services.'
-                    )
-                ) ?>
-
-            <?php else: ?>
-
-                <?= $escaper->escapeHtml(
-                    __(
-                        'Apply for a BrewCraft Business Account to access wholesale pricing, quotation services and other business benefits after approval.'
-                    )
-                ) ?>
-
-            <?php endif; ?>
-
+            <?= $escaper->escapeHtml($block->getDescription()) ?>
         </p>
 
-        <div class="brewcraft-business-registration-cta__benefits">
+        <?php if ($block->shouldShowBenefits()): ?>
 
-            <div class="brewcraft-business-registration-cta__benefit">
+            <div class="brewcraft-business-registration-cta__benefits">
 
-                <strong>
-                    <?= $escaper->escapeHtml(
-                        __('Wholesale Access')
-                    ) ?>
-                </strong>
+                <div class="brewcraft-business-registration-cta__benefit">
+                    <strong>
+                        <?= $escaper->escapeHtml(__('Wholesale Access')) ?>
+                    </strong>
 
-                <span>
-                    <?= $escaper->escapeHtml(
-                        __('Business pricing after approval')
-                    ) ?>
-                </span>
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Business pricing after approval')
+                        ) ?>
+                    </span>
+                </div>
 
-            </div>
+                <div class="brewcraft-business-registration-cta__benefit">
+                    <strong>
+                        <?= $escaper->escapeHtml(__('Request Quotes')) ?>
+                    </strong>
 
-            <div class="brewcraft-business-registration-cta__benefit">
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Request pricing for larger orders')
+                        ) ?>
+                    </span>
+                </div>
 
-                <strong>
-                    <?= $escaper->escapeHtml(
-                        __('Request Quotes')
-                    ) ?>
-                </strong>
+                <div class="brewcraft-business-registration-cta__benefit">
+                    <strong>
+                        <?= $escaper->escapeHtml(__('Business Support')) ?>
+                    </strong>
 
-                <span>
-                    <?= $escaper->escapeHtml(
-                        __('Request pricing for larger orders')
-                    ) ?>
-                </span>
-
-            </div>
-
-            <div class="brewcraft-business-registration-cta__benefit">
-
-                <strong>
-                    <?= $escaper->escapeHtml(
-                        __('Business Support')
-                    ) ?>
-                </strong>
-
-                <span>
-                    <?= $escaper->escapeHtml(
-                        __('Dedicated services for approved accounts')
-                    ) ?>
-                </span>
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Dedicated services for approved accounts')
+                        ) ?>
+                    </span>
+                </div>
 
             </div>
 
-        </div>
+        <?php endif; ?>
 
         <div class="actions-toolbar">
 
@@ -130,12 +77,12 @@ $customerLoginUrl = $block->getUrl(
 
                 <a class="action primary"
                    href="<?= $escaper->escapeUrl(
-                       $businessRegistrationUrl
+                       $block->getActionUrl()
                    ) ?>">
 
                     <span>
                         <?= $escaper->escapeHtml(
-                            __('Create Business Account')
+                            $block->getActionLabel()
                         ) ?>
                     </span>
 
@@ -143,13 +90,16 @@ $customerLoginUrl = $block->getUrl(
 
             </div>
 
-            <?php if (!$isLoginPage): ?>
+            <?php if (
+                !$block->isLoginPage()
+                && !$block->isCustomerLoggedIn()
+            ): ?>
 
                 <div class="secondary">
 
                     <a class="action secondary"
                        href="<?= $escaper->escapeUrl(
-                           $customerLoginUrl
+                           $block->getCustomerLoginUrl()
                        ) ?>">
 
                         <span>
@@ -166,15 +116,27 @@ $customerLoginUrl = $block->getUrl(
 
         </div>
 
-        <p class="brewcraft-business-registration-cta__note">
+        <?php if (!$block->hasBusinessApplication()): ?>
 
-            <?= $escaper->escapeHtml(
-                __(
-                    'Business applications are reviewed before business benefits are activated.'
-                )
-            ) ?>
+            <p class="brewcraft-business-registration-cta__note">
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Business applications are reviewed before business benefits are activated.'
+                    )
+                ) ?>
+            </p>
 
-        </p>
+        <?php elseif ($block->isRejected()): ?>
+
+            <p class="brewcraft-business-registration-cta__note">
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Rejected applications cannot currently be resubmitted online. Contact BrewCraft support if your business information has changed.'
+                    )
+                ) ?>
+            </p>
+
+        <?php endif; ?>
 
     </div>
 

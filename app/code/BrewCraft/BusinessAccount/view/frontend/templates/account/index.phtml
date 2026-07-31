@@ -50,9 +50,9 @@ $businessAccount = $block->getBusinessAccount();
                 <div class="primary">
 
                     <a class="action primary"
-                       href="<?= $escaper->escapeUrl(
-                           $block->getApplicationUrl()
-                       ) ?>">
+                        href="<?= $escaper->escapeUrl(
+                                    $block->getApplicationUrl()
+                                ) ?>">
 
                         <span>
                             <?= $escaper->escapeHtml(
@@ -96,8 +96,8 @@ $businessAccount = $block->getBusinessAccount();
 
             <div class="brewcraft-business-account-status
                         brewcraft-business-account-status--<?= $escaper->escapeHtmlAttr(
-                            $block->getStatusCssClass()
-                        ) ?>">
+                                                                $block->getStatusCssClass()
+                                                            ) ?>">
 
                 <span>
                     <?= $escaper->escapeHtml(
@@ -150,7 +150,7 @@ $businessAccount = $block->getBusinessAccount();
                 <div>
                     <?= $escaper->escapeHtml(
                         __(
-                            'Your business application was not approved. Your regular customer account remains available.'
+                            'Your business application was not approved. Your regular customer account remains active. Online resubmission is not currently available.'
                         )
                     ) ?>
                 </div>
@@ -191,7 +191,29 @@ $businessAccount = $block->getBusinessAccount();
                 </div>
 
             </section>
+            <?php if ($block->isRejected()): ?>
 
+                <section class="brewcraft-business-account-section">
+
+                    <div class="brewcraft-business-account-section__title">
+                        <h2>
+                            <?= $escaper->escapeHtml(
+                                __('Need Another Review?')
+                            ) ?>
+                        </h2>
+                    </div>
+
+                    <p>
+                        <?= $escaper->escapeHtml(
+                            __(
+                                'If your company information has changed or you believe another review is required, contact BrewCraft customer support.'
+                            )
+                        ) ?>
+                    </p>
+
+                </section>
+
+            <?php endif; ?>
         <?php elseif (
             $block->isApproved()
             && trim((string)$businessAccount->getAdminComment()) !== ''
@@ -241,89 +263,89 @@ $businessAccount = $block->getBusinessAccount();
 
                     <tbody>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Application Number')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Application Number')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                '#' . (string)$businessAccount->getEntityId()
-                            ) ?>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Status')
-                            ) ?>
-                        </th>
-
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->getStatusLabel()
-                            ) ?>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Submitted At')
-                            ) ?>
-                        </th>
-
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->formatApplicationDate(
-                                    $businessAccount->getData(
-                                        'created_at'
-                                    )
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
-
-                    <?php if ($block->isApproved()): ?>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    '#' . (string)$businessAccount->getEntityId()
+                                ) ?>
+                            </td>
+                        </tr>
 
                         <tr>
                             <th scope="row">
                                 <?= $escaper->escapeHtml(
-                                    __('Approved At')
+                                    __('Status')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->getStatusLabel()
+                                ) ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Submitted At')
                                 ) ?>
                             </th>
 
                             <td>
                                 <?= $escaper->escapeHtml(
                                     $block->formatApplicationDate(
-                                        $businessAccount->getApprovedAt()
+                                        $businessAccount->getData(
+                                            'created_at'
+                                        )
                                     )
                                 ) ?>
                             </td>
                         </tr>
 
-                    <?php endif; ?>
+                        <?php if ($block->isApproved()): ?>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Last Updated')
-                            ) ?>
-                        </th>
+                            <tr>
+                                <th scope="row">
+                                    <?= $escaper->escapeHtml(
+                                        __('Approved At')
+                                    ) ?>
+                                </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->formatApplicationDate(
-                                    $businessAccount->getData(
-                                        'updated_at'
+                                <td>
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatApplicationDate(
+                                            $businessAccount->getApprovedAt()
+                                        )
+                                    ) ?>
+                                </td>
+                            </tr>
+
+                        <?php endif; ?>
+
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Last Updated')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->formatApplicationDate(
+                                        $businessAccount->getData(
+                                            'updated_at'
+                                        )
                                     )
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                                ) ?>
+                            </td>
+                        </tr>
 
                     </tbody>
 
@@ -357,81 +379,81 @@ $businessAccount = $block->getBusinessAccount();
 
                     <tbody>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Company Name')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Company Name')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $businessAccount->getCompanyName()
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $businessAccount->getCompanyName()
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Registration Number')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Registration Number')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $businessAccount->getRegistrationNumber()
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $businessAccount->getRegistrationNumber()
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Tax / VAT Number')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Tax / VAT Number')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->displayNullableValue(
-                                    $businessAccount->getTaxNumber()
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->displayNullableValue(
+                                        $businessAccount->getTaxNumber()
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Company Type')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Company Type')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->displayNullableValue(
-                                    $businessAccount->getCompanyType()
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->displayNullableValue(
+                                        $businessAccount->getCompanyType()
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Years in Business')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Years in Business')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->displayNullableValue(
-                                    $businessAccount->getBusinessYears()
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->displayNullableValue(
+                                        $businessAccount->getBusinessYears()
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
 
                     </tbody>
 
@@ -465,47 +487,47 @@ $businessAccount = $block->getBusinessAccount();
 
                     <tbody>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Contact Name')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Contact Name')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $businessAccount->getContactName()
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $businessAccount->getContactName()
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Contact Email')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Contact Email')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $businessAccount->getContactEmail()
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $businessAccount->getContactEmail()
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Contact Phone')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Contact Phone')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $businessAccount->getContactPhone()
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $businessAccount->getContactPhone()
+                                ) ?>
+                            </td>
+                        </tr>
 
                     </tbody>
 
@@ -539,89 +561,89 @@ $businessAccount = $block->getBusinessAccount();
 
                     <tbody>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Street')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Street')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= nl2br(
-                                $escaper->escapeHtml(
+                            <td>
+                                <?= nl2br(
+                                    $escaper->escapeHtml(
+                                        (string)$businessAccount->getData(
+                                            'street'
+                                        )
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('City')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?= $escaper->escapeHtml(
                                     (string)$businessAccount->getData(
-                                        'street'
+                                        'city'
                                     )
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('City')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('State / Region')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                (string)$businessAccount->getData(
-                                    'city'
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('State / Region')
-                            ) ?>
-                        </th>
-
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                $block->displayNullableValue(
-                                    $businessAccount->getData(
-                                        'region'
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    $block->displayNullableValue(
+                                        $businessAccount->getData(
+                                            'region'
+                                        )
                                     )
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Postcode')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Postcode')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                (string)$businessAccount->getData(
-                                    'postcode'
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    (string)$businessAccount->getData(
+                                        'postcode'
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th scope="row">
-                            <?= $escaper->escapeHtml(
-                                __('Country')
-                            ) ?>
-                        </th>
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Country')
+                                ) ?>
+                            </th>
 
-                        <td>
-                            <?= $escaper->escapeHtml(
-                                (string)$businessAccount->getData(
-                                    'country_id'
-                                )
-                            ) ?>
-                        </td>
-                    </tr>
+                            <td>
+                                <?= $escaper->escapeHtml(
+                                    (string)$businessAccount->getData(
+                                        'country_id'
+                                    )
+                                ) ?>
+                            </td>
+                        </tr>
 
                     </tbody>
 
@@ -636,9 +658,9 @@ $businessAccount = $block->getBusinessAccount();
             <div class="primary">
 
                 <a class="action primary"
-                   href="<?= $escaper->escapeUrl(
-                       $block->getContinueShoppingUrl()
-                   ) ?>">
+                    href="<?= $escaper->escapeUrl(
+                                $block->getContinueShoppingUrl()
+                            ) ?>">
 
                     <span>
                         <?= $escaper->escapeHtml(
@@ -653,9 +675,9 @@ $businessAccount = $block->getBusinessAccount();
             <div class="secondary">
 
                 <a class="action secondary"
-                   href="<?= $escaper->escapeUrl(
-                       $block->getCustomerAccountUrl()
-                   ) ?>">
+                    href="<?= $escaper->escapeUrl(
+                                $block->getCustomerAccountUrl()
+                            ) ?>">
 
                     <span>
                         <?= $escaper->escapeHtml(

@@ -7,18 +7,17 @@
 
         <referenceContainer name="content">
 
-            <block class="Magento\Framework\View\Element\Template"
+            <block class="BrewCraft\BusinessAccount\Block\Account\BusinessRegistrationLink"
                    name="brewcraft.business.registration.login.link"
                    template="BrewCraft_BusinessAccount::account/business-registration-link.phtml"
-                   after="-">
+                   after="-"
+                   cacheable="false">
 
                 <arguments>
-
                     <argument name="context_type"
                               xsi:type="string">
                         login
                     </argument>
-
                 </arguments>
 
             </block>
