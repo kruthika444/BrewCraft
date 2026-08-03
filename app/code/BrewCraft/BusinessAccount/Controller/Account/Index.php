@@ -9,6 +9,7 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
@@ -17,7 +18,8 @@ class Index implements HttpGetActionInterface
     public function __construct(
         private readonly CustomerSession $customerSession,
         private readonly PageFactory $pageFactory,
-        private readonly RedirectFactory $redirectFactory
+        private readonly RedirectFactory $redirectFactory,
+        private readonly UrlInterface $urlBuilder
     ) {
     }
 
@@ -28,19 +30,24 @@ class Index implements HttpGetActionInterface
          * information, so only logged-in customers may access it.
          */
         if (!$this->customerSession->isLoggedIn()) {
-            /** @var Redirect $resultRedirect */
-            $resultRedirect = $this->redirectFactory->create();
-
             /*
-             * Save the requested URL so Magento can return the customer
-             * to this page after login.
+             * Store a complete URL, not only the Magento route.
              */
-            $this->customerSession->setBeforeAuthUrl(
+            $businessAccountUrl = $this->urlBuilder->getUrl(
                 'businessaccount/account/index'
             );
 
-            return $resultRedirect->setPath(
-                'customer/account/login'
+            $this->customerSession->setBeforeAuthUrl(
+                $businessAccountUrl
+            );
+
+            /** @var Redirect $resultRedirect */
+            $resultRedirect = $this->redirectFactory->create();
+
+            return $resultRedirect->setUrl(
+                $this->urlBuilder->getUrl(
+                    'customer/account/login'
+                )
             );
         }
 

@@ -60,16 +60,16 @@ $countryOptions = $block->getCountryOptions();
     </div>
 
     <form class="form business-account-form"
-          action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
-          method="post"
-          id="business-account-form"
-          data-mage-init='{
+        action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
+        method="post"
+        id="business-account-form"
+        data-mage-init='{
               "validation": {}
           }'>
 
         <input type="hidden"
-               name="form_key"
-               value="<?= $escaper->escapeHtmlAttr($block->getFormKey()) ?>"/>
+            name="form_key"
+            value="<?= $escaper->escapeHtmlAttr($block->getFormKey()) ?>" />
 
         <fieldset class="fieldset business-account-section">
 
@@ -88,14 +88,14 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="company_name"
-                           id="company_name"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(__('Company Name')) ?>"
-                           data-validate='{
+                        name="company_name"
+                        id="company_name"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('Company Name')) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 255
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -108,16 +108,16 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="registration_number"
-                           id="registration_number"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(
-                               __('Business Registration Number')
-                           ) ?>"
-                           data-validate='{
+                        name="registration_number"
+                        id="registration_number"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(
+                                    __('Business Registration Number')
+                                ) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 100
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -130,13 +130,13 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="tax_number"
-                           id="tax_number"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(__('Tax / VAT Number')) ?>"
-                           data-validate='{
+                        name="tax_number"
+                        id="tax_number"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('Tax / VAT Number')) ?>"
+                        data-validate='{
                                "maxlength": 100
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -149,8 +149,8 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <select name="company_type"
-                            id="company_type"
-                            class="select">
+                        id="company_type"
+                        class="select">
 
                         <option value="">
                             <?= $escaper->escapeHtml(__('Please select')) ?>
@@ -175,16 +175,16 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="number"
-                           name="business_years"
-                           id="business_years"
-                           class="input-text"
-                           min="0"
-                           max="500"
-                           title="<?= $escaper->escapeHtmlAttr(__('Years in Business')) ?>"
-                           data-validate='{
+                        name="business_years"
+                        id="business_years"
+                        class="input-text"
+                        min="0"
+                        max="500"
+                        title="<?= $escaper->escapeHtmlAttr(__('Years in Business')) ?>"
+                        data-validate='{
                                "validate-digits": true,
                                "validate-zero-or-greater": true
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -207,17 +207,17 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="contact_firstname"
-                           id="contact_firstname"
-                           class="input-text"
-                           value="<?= $escaper->escapeHtmlAttr(
-                               $block->getCustomerFirstname()
-                           ) ?>"
-                           title="<?= $escaper->escapeHtmlAttr(__('First Name')) ?>"
-                           data-validate='{
+                        name="contact_firstname"
+                        id="contact_firstname"
+                        class="input-text"
+                        value="<?= $escaper->escapeHtmlAttr(
+                                    $block->getCustomerFirstname()
+                                ) ?>"
+                        title="<?= $escaper->escapeHtmlAttr(__('First Name')) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 100
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -230,17 +230,17 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="contact_lastname"
-                           id="contact_lastname"
-                           class="input-text"
-                           value="<?= $escaper->escapeHtmlAttr(
-                               $block->getCustomerLastname()
-                           ) ?>"
-                           title="<?= $escaper->escapeHtmlAttr(__('Last Name')) ?>"
-                           data-validate='{
+                        name="contact_lastname"
+                        id="contact_lastname"
+                        class="input-text"
+                        value="<?= $escaper->escapeHtmlAttr(
+                                    $block->getCustomerLastname()
+                                ) ?>"
+                        title="<?= $escaper->escapeHtmlAttr(__('Last Name')) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 100
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -253,18 +253,18 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="email"
-                           name="contact_email"
-                           id="contact_email"
-                           class="input-text"
-                           value="<?= $escaper->escapeHtmlAttr(
-                               $block->getCustomerEmail()
-                           ) ?>"
-                           title="<?= $escaper->escapeHtmlAttr(__('Business Email')) ?>"
-                           data-validate='{
+                        name="contact_email"
+                        id="contact_email"
+                        class="input-text"
+                        value="<?= $escaper->escapeHtmlAttr(
+                                    $block->getCustomerEmail()
+                                ) ?>"
+                        title="<?= $escaper->escapeHtmlAttr(__('Business Email')) ?>"
+                        data-validate='{
                                "required": true,
                                "validate-email": true,
                                "maxlength": 255
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -277,14 +277,14 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="contact_phone"
-                           id="contact_phone"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(__('Business Phone')) ?>"
-                           data-validate='{
+                        name="contact_phone"
+                        id="contact_phone"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('Business Phone')) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 50
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -307,11 +307,11 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <textarea name="street"
-                              id="street"
-                              rows="3"
-                              class="input-text"
-                              title="<?= $escaper->escapeHtmlAttr(__('Street Address')) ?>"
-                              data-validate='{
+                        id="street"
+                        rows="3"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('Street Address')) ?>"
+                        data-validate='{
                                   "required": true
                               }'></textarea>
                 </div>
@@ -326,14 +326,14 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="city"
-                           id="city"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(__('City')) ?>"
-                           data-validate='{
+                        name="city"
+                        id="city"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('City')) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 255
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -346,13 +346,13 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="region"
-                           id="region"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(__('State / Region')) ?>"
-                           data-validate='{
+                        name="region"
+                        id="region"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('State / Region')) ?>"
+                        data-validate='{
                                "maxlength": 255
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -365,14 +365,14 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <input type="text"
-                           name="postcode"
-                           id="postcode"
-                           class="input-text"
-                           title="<?= $escaper->escapeHtmlAttr(__('Postcode')) ?>"
-                           data-validate='{
+                        name="postcode"
+                        id="postcode"
+                        class="input-text"
+                        title="<?= $escaper->escapeHtmlAttr(__('Postcode')) ?>"
+                        data-validate='{
                                "required": true,
                                "maxlength": 20
-                           }'/>
+                           }' />
                 </div>
             </div>
 
@@ -385,9 +385,9 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="control">
                     <select name="country_id"
-                            id="country_id"
-                            class="select"
-                            data-validate='{
+                        id="country_id"
+                        class="select"
+                        data-validate='{
                                 "required": true
                             }'>
 
@@ -444,17 +444,17 @@ $countryOptions = $block->getCountryOptions();
 
                     <div class="control">
                         <input type="password"
-                               name="password"
-                               id="password"
-                               class="input-text"
-                               autocomplete="new-password"
-                               title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
-                               data-password-min-length="8"
-                               data-password-min-character-sets="3"
-                               data-validate='{
+                            name="password"
+                            id="password"
+                            class="input-text"
+                            autocomplete="new-password"
+                            title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                            data-password-min-length="8"
+                            data-password-min-character-sets="3"
+                            data-validate='{
                                    "required": true,
                                    "validate-customer-password": true
-                               }'/>
+                               }' />
                     </div>
                 </div>
 
@@ -467,17 +467,17 @@ $countryOptions = $block->getCountryOptions();
 
                     <div class="control">
                         <input type="password"
-                               name="password_confirmation"
-                               id="password_confirmation"
-                               class="input-text"
-                               autocomplete="new-password"
-                               title="<?= $escaper->escapeHtmlAttr(
-                                   __('Confirm Password')
-                               ) ?>"
-                               data-validate='{
+                            name="password_confirmation"
+                            id="password_confirmation"
+                            class="input-text"
+                            autocomplete="new-password"
+                            title="<?= $escaper->escapeHtmlAttr(
+                                        __('Confirm Password')
+                                    ) ?>"
+                            data-validate='{
                                    "required": true,
                                    "equalTo": "#password"
-                               }'/>
+                               }' />
                     </div>
                 </div>
 
@@ -498,13 +498,13 @@ $countryOptions = $block->getCountryOptions();
                 <div class="control">
 
                     <input type="checkbox"
-                           name="terms"
-                           id="terms"
-                           value="1"
-                           class="checkbox"
-                           data-validate='{
+                        name="terms"
+                        id="terms"
+                        value="1"
+                        class="checkbox"
+                        data-validate='{
                                "required": true
-                           }'/>
+                           }' />
 
                     <label class="label" for="terms">
                         <span>
@@ -527,10 +527,10 @@ $countryOptions = $block->getCountryOptions();
             <div class="primary">
 
                 <button type="submit"
-                        class="action submit primary"
-                        title="<?= $escaper->escapeHtmlAttr(
-                            __('Submit Business Application')
-                        ) ?>">
+                    class="action submit primary"
+                    title="<?= $escaper->escapeHtmlAttr(
+                                __('Submit Business Application')
+                            ) ?>">
 
                     <span>
                         <?= $escaper->escapeHtml(
@@ -545,9 +545,9 @@ $countryOptions = $block->getCountryOptions();
             <div class="secondary">
 
                 <a class="action back"
-                   href="<?= $escaper->escapeUrl(
-                       $block->getUrl('')
-                   ) ?>">
+                    href="<?= $escaper->escapeUrl(
+                                $block->getUrl('')
+                            ) ?>">
 
                     <span>
                         <?= $escaper->escapeHtml(__('Back to Home')) ?>
