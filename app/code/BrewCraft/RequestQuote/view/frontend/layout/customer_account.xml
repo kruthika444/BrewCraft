@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+
+        <referenceBlock name="customer_account_navigation">
+
+            <block class="BrewCraft\RequestQuote\Block\Account\QuoteNavigationLink"
+                   name="customer-account-navigation-quote-requests-link">
+
+                <arguments>
+
+                    <argument name="label"
+                              xsi:type="string"
+                              translate="true">
+                        My Quote Requests
+                    </argument>
+
+                    <argument name="path"
+                              xsi:type="string">
+                        requestquote/account/index
+                    </argument>
+
+                    <argument name="sortOrder"
+                              xsi:type="number">
+                        240
+                    </argument>
+
+                </arguments>
+
+            </block>
+
+        </referenceBlock>
+
+    </body>
+
+</page>

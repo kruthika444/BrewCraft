@@ -358,6 +358,7 @@ return [
         'Magento_WishlistGraphQl' => 1,
         'BrewCraft_BusinessAccount' => 1,
         'BrewCraft_ErpIntegration' => 1,
+        'BrewCraft_RequestQuote' => 1,
         'CyberSource_Payment' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework/View/Layout/etc/page_configuration.xsd"
+      layout="1column">
+
+    <body>
+
+        <referenceContainer name="content">
+
+            <block class="BrewCraft\RequestQuote\Block\Request\Success"
+                   name="brewcraft.request.quote.success"
+                   template="BrewCraft_RequestQuote::request/success.phtml"
+                   cacheable="false"/>
+
+        </referenceContainer>
+
+    </body>
+
+</page>

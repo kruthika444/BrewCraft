@@ -1,0 +1,307 @@
+<?xml version="1.0"?>
+
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+
+    <argument name="data" xsi:type="array">
+
+        <item name="js_config" xsi:type="array">
+
+            <item name="provider" xsi:type="string">
+                brewcraft_quote_request_listing.brewcraft_quote_request_listing_data_source
+            </item>
+
+        </item>
+
+    </argument>
+
+    <settings>
+
+        <spinner>brewcraft_quote_request_columns</spinner>
+
+        <deps>
+            <dep>
+                brewcraft_quote_request_listing.brewcraft_quote_request_listing_data_source
+            </dep>
+        </deps>
+
+    </settings>
+
+    <dataSource name="brewcraft_quote_request_listing_data_source" component="Magento_Ui/js/grid/provider">
+
+        <settings>
+
+            <storageConfig>
+                <param name="indexField" xsi:type="string">
+                entity_id
+                </param>
+            </storageConfig>
+
+            <updateUrl path="mui/index/render"/>
+
+        </settings>
+
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="brewcraft_quote_request_listing_data_source">
+
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+
+        </dataProvider>
+
+    </dataSource>
+    <listingToolbar name="listing_top">
+
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+
+        <bookmark name="bookmarks"/>
+
+        <columnsControls name="columns_controls"/>
+
+        <filters name="listing_filters"/>
+
+        <paging name="listing_paging"/>
+
+    </listingToolbar>
+
+    <columns name="brewcraft_quote_request_columns">
+
+        <settings>
+
+            <editorConfig>
+
+                <param name="selectProvider" xsi:type="string">
+                    brewcraft_quote_request_listing.brewcraft_quote_request_listing.brewcraft_quote_request_columns.ids
+                </param>
+
+                <param name="enabled" xsi:type="boolean">
+                    false
+                </param>
+
+            </editorConfig>
+
+            <childDefaults>
+
+                <param name="fieldAction" xsi:type="array">
+
+                    <item name="provider" xsi:type="string">
+                        brewcraft_quote_request_listing.brewcraft_quote_request_listing.brewcraft_quote_request_columns_editor
+                    </item>
+
+                    <item name="target" xsi:type="string">
+                        startEdit
+                    </item>
+
+                    <item name="params" xsi:type="array">
+
+                        <item name="0" xsi:type="string">
+                            ${ $.$data.rowIndex }
+                        </item>
+
+                        <item name="1" xsi:type="boolean">
+                            true
+                        </item>
+
+                    </item>
+
+                </param>
+
+            </childDefaults>
+
+        </settings>
+
+        <column name="entity_id">
+
+            <settings>
+
+                <filter>textRange</filter>
+
+                <label translate="true">
+                    ID
+                </label>
+
+                <sorting>desc</sorting>
+
+            </settings>
+
+        </column>
+
+        <column name="quote_number">
+
+            <settings>
+
+                <filter>text</filter>
+
+                <label translate="true">
+                    Quote Number
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="quote_name">
+
+            <settings>
+
+                <filter>text</filter>
+
+                <label translate="true">
+                    Quote Name
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="company_name">
+
+            <settings>
+
+                <filter>text</filter>
+
+                <label translate="true">
+                    Company
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="customer_email">
+
+            <settings>
+
+                <filter>text</filter>
+
+                <label translate="true">
+                    Customer Email
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="status" component="Magento_Ui/js/grid/columns/select">
+
+            <settings>
+
+                <options class="BrewCraft\RequestQuote\Model\Source\Status"/>
+
+                <filter>select</filter>
+
+                <dataType>select</dataType>
+
+                <label translate="true">
+                    Status
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="original_subtotal" class="Magento\Ui\Component\Listing\Columns\Column">
+
+            <settings>
+
+                <filter>textRange</filter>
+
+                <dataType>price</dataType>
+
+                <label translate="true">
+                    Original Subtotal
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="proposed_subtotal" class="Magento\Ui\Component\Listing\Columns\Column">
+
+            <settings>
+
+                <filter>textRange</filter>
+
+                <dataType>price</dataType>
+
+                <label translate="true">
+                    Proposed Subtotal
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="currency_code">
+
+            <settings>
+
+                <filter>text</filter>
+
+                <label translate="true">
+                    Currency
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date">
+
+            <settings>
+
+                <filter>dateRange</filter>
+
+                <dataType>date</dataType>
+
+                <label translate="true">
+                    Submitted At
+                </label>
+
+            </settings>
+
+        </column>
+
+        <column name="updated_at" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date">
+
+            <settings>
+
+                <filter>dateRange</filter>
+
+                <dataType>date</dataType>
+
+                <label translate="true">
+                    Updated At
+                </label>
+
+            </settings>
+
+        </column>
+
+        <actionsColumn name="actions" class="BrewCraft\RequestQuote\Ui\Component\Listing\Column\QuoteActions">
+
+            <settings>
+
+                <indexField>entity_id</indexField>
+
+                <label translate="true">
+            Actions
+                </label>
+
+                <sortable>false</sortable>
+
+                <filter>false</filter>
+
+                <resizeEnabled>false</resizeEnabled>
+
+                <resizeDefaultWidth>107</resizeDefaultWidth>
+
+            </settings>
+
+        </actionsColumn>
+
+    </columns>
+
+</listing>

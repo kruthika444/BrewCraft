@@ -1,0 +1,122 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\RequestQuote\Block\Request\Success;
+use Magento\Framework\Escaper;
+
+/**
+ * @var Success $block
+ * @var Escaper $escaper
+ */
+
+$quoteRequest = $block->getQuoteRequest();
+?>
+
+<?php if ($quoteRequest): ?>
+
+    <section class="brewcraft-request-quote-success">
+
+        <span>
+            <?= $escaper->escapeHtml(
+                __('BrewCraft Business')
+            ) ?>
+        </span>
+
+        <h1>
+            <?= $escaper->escapeHtml(
+                __('Your Quote Request Has Been Submitted')
+            ) ?>
+        </h1>
+
+        <p>
+            <?= $escaper->escapeHtml(
+                __(
+                    'Our business team will review your request and prepare a custom price proposal.'
+                )
+            ) ?>
+        </p>
+
+        <div class="brewcraft-request-quote-success__summary">
+
+            <p>
+                <strong>
+                    <?= $escaper->escapeHtml(
+                        __('Quote Number:')
+                    ) ?>
+                </strong>
+
+                <?= $escaper->escapeHtml(
+                    $quoteRequest->getQuoteNumber()
+                ) ?>
+            </p>
+
+            <p>
+                <strong>
+                    <?= $escaper->escapeHtml(
+                        __('Quote Name:')
+                    ) ?>
+                </strong>
+
+                <?= $escaper->escapeHtml(
+                    (string)$quoteRequest->getData(
+                        'quote_name'
+                    )
+                ) ?>
+            </p>
+
+            <p>
+                <strong>
+                    <?= $escaper->escapeHtml(
+                        __('Status:')
+                    ) ?>
+                </strong>
+
+                <?= $escaper->escapeHtml(
+                    __('Pending')
+                ) ?>
+            </p>
+
+        </div>
+
+        <div class="actions-toolbar">
+
+            <div class="primary">
+
+                <a class="action primary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getContinueShoppingUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Continue Shopping')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+            <div class="secondary">
+
+                <a class="action secondary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getCustomerAccountUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Go to My Account')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+<?php endif; ?>

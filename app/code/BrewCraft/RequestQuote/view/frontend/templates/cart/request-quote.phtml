@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\RequestQuote\Block\Cart\RequestQuote;
+use Magento\Framework\Escaper;
+
+/**
+ * @var RequestQuote $block
+ * @var Escaper $escaper
+ */
+?>
+
+<?php if ($block->canRequestQuote()): ?>
+
+    <section class="brewcraft-request-quote-cart">
+
+        <div class="brewcraft-request-quote-cart__content">
+
+            <h2>
+                <?= $escaper->escapeHtml(
+                    __('Need a Custom Business Quote?')
+                ) ?>
+            </h2>
+
+            <p>
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Submit the products in your shopping cart to the BrewCraft business team for a custom price proposal.'
+                    )
+                ) ?>
+            </p>
+
+            <div class="actions-toolbar">
+
+                <div class="primary">
+
+                    <a class="action primary"
+                       href="<?= $escaper->escapeUrl(
+                           $block->getRequestQuoteUrl()
+                       ) ?>">
+
+                        <span>
+                            <?= $escaper->escapeHtml(
+                                __('Request a Quote')
+                            ) ?>
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+<?php endif; ?>

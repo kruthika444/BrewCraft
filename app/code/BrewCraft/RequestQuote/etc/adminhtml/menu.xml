@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+
+    <menu>
+
+        <add id="BrewCraft_RequestQuote::quote_requests"
+             title="Quote Requests"
+             module="BrewCraft_RequestQuote"
+             sortOrder="30"
+             parent="BrewCraft_BusinessAccount::business"
+             action="requestquote/quote/index"
+             resource="BrewCraft_RequestQuote::quote_requests"/>
+
+    </menu>
+
+</config>

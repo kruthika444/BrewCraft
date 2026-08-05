@@ -1,0 +1,306 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\RequestQuote\Block\Account\Index;
+use Magento\Framework\Escaper;
+
+/**
+ * @var Index $block
+ * @var Escaper $escaper
+ */
+
+$quoteCollection = $block->getQuoteCollection();
+?>
+
+<div class="brewcraft-quote-account-list">
+
+    <div class="brewcraft-quote-account-list__header">
+
+        <h1>
+            <?= $escaper->escapeHtml(
+                __('My Quote Requests')
+            ) ?>
+        </h1>
+
+        <p>
+            <?= $escaper->escapeHtml(
+                __(
+                    'Review your submitted business quote requests and track their current status.'
+                )
+            ) ?>
+        </p>
+
+    </div>
+
+    <?php if ($block->hasQuotes() && $quoteCollection): ?>
+
+        <div class="table-wrapper orders-history">
+
+            <table class="data table table-order-items history"
+                   id="my-quote-requests-table">
+
+                <caption class="table-caption">
+                    <?= $escaper->escapeHtml(
+                        __('My Quote Requests')
+                    ) ?>
+                </caption>
+
+                <thead>
+                <tr>
+                    <th scope="col"
+                        class="col quote-number">
+
+                        <?= $escaper->escapeHtml(
+                            __('Quote Number')
+                        ) ?>
+
+                    </th>
+
+                    <th scope="col"
+                        class="col quote-name">
+
+                        <?= $escaper->escapeHtml(
+                            __('Quote Name')
+                        ) ?>
+
+                    </th>
+
+                    <th scope="col"
+                        class="col status">
+
+                        <?= $escaper->escapeHtml(
+                            __('Status')
+                        ) ?>
+
+                    </th>
+
+                    <th scope="col"
+                        class="col original-total">
+
+                        <?= $escaper->escapeHtml(
+                            __('Original Total')
+                        ) ?>
+
+                    </th>
+
+                    <th scope="col"
+                        class="col proposed-total">
+
+                        <?= $escaper->escapeHtml(
+                            __('Proposed Total')
+                        ) ?>
+
+                    </th>
+
+                    <th scope="col"
+                        class="col created-at">
+
+                        <?= $escaper->escapeHtml(
+                            __('Submitted')
+                        ) ?>
+
+                    </th>
+
+                    <th scope="col"
+                        class="col actions">
+
+                        <?= $escaper->escapeHtml(
+                            __('Action')
+                        ) ?>
+
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <?php foreach ($quoteCollection as $quoteRequest): ?>
+
+                    <?php
+                    $status = (string)$quoteRequest->getStatus();
+
+                    $proposedSubtotal = $quoteRequest->getData(
+                        'proposed_subtotal'
+                    );
+                    ?>
+
+                    <tr>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Quote Number')
+                        ) ?>"
+                            class="col quote-number">
+
+                            <?= $escaper->escapeHtml(
+                                $quoteRequest->getQuoteNumber()
+                            ) ?>
+
+                        </td>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Quote Name')
+                        ) ?>"
+                            class="col quote-name">
+
+                            <?= $escaper->escapeHtml(
+                                (string)$quoteRequest->getData(
+                                    'quote_name'
+                                )
+                            ) ?>
+
+                        </td>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Status')
+                        ) ?>"
+                            class="col status">
+
+                            <span class="brewcraft-quote-status
+                                         brewcraft-quote-status--<?= $escaper->escapeHtmlAttr(
+                                             $block->getStatusCssClass(
+                                                 $status
+                                             )
+                                         ) ?>">
+
+                                <?= $escaper->escapeHtml(
+                                    $block->getStatusLabel(
+                                        $status
+                                    )
+                                ) ?>
+
+                            </span>
+
+                        </td>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Original Total')
+                        ) ?>"
+                            class="col original-total">
+
+                            <?= $escaper->escapeHtml(
+                                $block->formatPrice(
+                                    (float)$quoteRequest->getData(
+                                        'original_subtotal'
+                                    )
+                                )
+                            ) ?>
+
+                        </td>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Proposed Total')
+                        ) ?>"
+                            class="col proposed-total">
+
+                            <?php if ($proposedSubtotal !== null): ?>
+
+                                <?= $escaper->escapeHtml(
+                                    $block->formatPrice(
+                                        (float)$proposedSubtotal
+                                    )
+                                ) ?>
+
+                            <?php else: ?>
+
+                                <?= $escaper->escapeHtml(
+                                    __('Not yet available')
+                                ) ?>
+
+                            <?php endif; ?>
+
+                        </td>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Submitted')
+                        ) ?>"
+                            class="col created-at">
+
+                            <?= $escaper->escapeHtml(
+                                $block->formatDateValue(
+                                    $quoteRequest->getData(
+                                        'created_at'
+                                    )
+                                )
+                            ) ?>
+
+                        </td>
+
+                        <td data-th="<?= $escaper->escapeHtmlAttr(
+                            __('Action')
+                        ) ?>"
+                            class="col actions">
+
+                            <a class="action view"
+                               href="<?= $escaper->escapeUrl(
+                                   $block->getViewUrl(
+                                       $quoteRequest->getQuoteNumber()
+                                   )
+                               ) ?>">
+
+                                <span>
+                                    <?= $escaper->escapeHtml(
+                                        __('View')
+                                    ) ?>
+                                </span>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                <?php endforeach; ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <?php if ($block->getPagerHtml()): ?>
+
+            <div class="toolbar bottom">
+                <?= $block->getPagerHtml() ?>
+            </div>
+
+        <?php endif; ?>
+
+    <?php else: ?>
+
+        <div class="message info empty">
+
+            <span>
+                <?= $escaper->escapeHtml(
+                    __(
+                        'You have not submitted any quote requests yet.'
+                    )
+                ) ?>
+            </span>
+
+        </div>
+
+        <div class="actions-toolbar">
+
+            <div class="primary">
+
+                <a class="action primary"
+                   href="<?= $escaper->escapeUrl(
+                       $block->getRequestQuoteUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __('Go to Shopping Cart')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    <?php endif; ?>
+
+</div>
