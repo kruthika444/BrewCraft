@@ -28,6 +28,10 @@ $businessAccount = $block->getBusinessAccount();
         (string)$quoteRequest->getData('admin_comment')
     );
 
+    $customerExpectedSubtotal = $quoteRequest->getData(
+        'customer_expected_subtotal'
+    );
+
     $proposedSubtotal = $quoteRequest->getData(
         'proposed_subtotal'
     );
@@ -221,6 +225,40 @@ $businessAccount = $block->getBusinessAccount();
                                             )
                                         )
                                     ) ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <?= $escaper->escapeHtml(
+                                        __('Customer Expected Subtotal')
+                                    ) ?>
+                                </th>
+
+                                <td>
+                                    <?php if ($customerExpectedSubtotal !== null): ?>
+
+                                        <?= $escaper->escapeHtml(
+                                            $block->formatPrice(
+                                                (float)$customerExpectedSubtotal
+                                            )
+                                        ) ?>
+
+                                        <div class="admin__field-note">
+                                            <span>
+                                                <?= $escaper->escapeHtml(
+                                                    __('Includes only items for which the customer entered an expected price.')
+                                                ) ?>
+                                            </span>
+                                        </div>
+
+                                    <?php else: ?>
+
+                                        <?= $escaper->escapeHtml(
+                                            __('Customer requested the best offer')
+                                        ) ?>
+
+                                    <?php endif; ?>
                                 </td>
                             </tr>
 
@@ -587,6 +625,12 @@ $businessAccount = $block->getBusinessAccount();
 
                             <th>
                                 <?= $escaper->escapeHtml(
+                                    __('Customer Expected Unit Price')
+                                ) ?>
+                            </th>
+
+                            <th>
+                                <?= $escaper->escapeHtml(
                                     __('Proposed Unit Price')
                                 ) ?>
                             </th>
@@ -594,6 +638,12 @@ $businessAccount = $block->getBusinessAccount();
                             <th>
                                 <?= $escaper->escapeHtml(
                                     __('Original Row Total')
+                                ) ?>
+                            </th>
+
+                            <th>
+                                <?= $escaper->escapeHtml(
+                                    __('Customer Expected Row Total')
                                 ) ?>
                             </th>
 
@@ -611,8 +661,16 @@ $businessAccount = $block->getBusinessAccount();
                         <?php foreach ($quoteItems as $quoteItem): ?>
 
                             <?php
+                            $expectedPrice = $quoteItem->getData(
+                                'expected_price'
+                            );
+
                             $proposedPrice = $quoteItem->getData(
                                 'proposed_price'
+                            );
+
+                            $expectedRowTotal = $quoteItem->getData(
+                                'expected_row_total'
                             );
 
                             $proposedRowTotal = $quoteItem->getData(
@@ -658,6 +716,24 @@ $businessAccount = $block->getBusinessAccount();
                                 </td>
 
                                 <td>
+                                    <?php if ($expectedPrice !== null): ?>
+
+                                        <?= $escaper->escapeHtml(
+                                            $block->formatPrice(
+                                                (float)$expectedPrice
+                                            )
+                                        ) ?>
+
+                                    <?php else: ?>
+
+                                        <?= $escaper->escapeHtml(
+                                            __('Best offer requested')
+                                        ) ?>
+
+                                    <?php endif; ?>
+                                </td>
+
+                                <td>
                                     <?php if ($proposedPrice !== null): ?>
 
                                         <?= $escaper->escapeHtml(
@@ -683,6 +759,24 @@ $businessAccount = $block->getBusinessAccount();
                                             )
                                         )
                                     ) ?>
+                                </td>
+
+                                <td>
+                                    <?php if ($expectedRowTotal !== null): ?>
+
+                                        <?= $escaper->escapeHtml(
+                                            $block->formatPrice(
+                                                (float)$expectedRowTotal
+                                            )
+                                        ) ?>
+
+                                    <?php else: ?>
+
+                                        <?= $escaper->escapeHtml(
+                                            __('Not provided')
+                                        ) ?>
+
+                                    <?php endif; ?>
                                 </td>
 
                                 <td>
@@ -802,6 +896,12 @@ $businessAccount = $block->getBusinessAccount();
 
                                         <th>
                                             <?= $escaper->escapeHtml(
+                                                __('Customer Expected Price')
+                                            ) ?>
+                                        </th>
+
+                                        <th>
+                                            <?= $escaper->escapeHtml(
                                                 __('Proposed Unit Price')
                                             ) ?>
                                         </th>
@@ -859,6 +959,30 @@ $businessAccount = $block->getBusinessAccount();
                                                         )
                                                     )
                                                 ) ?>
+                                            </td>
+
+                                            <td>
+                                                <?php
+                                                $customerExpectedPrice = $quoteItem->getData(
+                                                    'expected_price'
+                                                );
+                                                ?>
+
+                                                <?php if ($customerExpectedPrice !== null): ?>
+
+                                                    <?= $escaper->escapeHtml(
+                                                        $block->formatPrice(
+                                                            (float)$customerExpectedPrice
+                                                        )
+                                                    ) ?>
+
+                                                <?php else: ?>
+
+                                                    <?= $escaper->escapeHtml(
+                                                        __('Not provided')
+                                                    ) ?>
+
+                                                <?php endif; ?>
                                             </td>
 
                                             <td>
@@ -1003,7 +1127,7 @@ $businessAccount = $block->getBusinessAccount();
 
                             <span>
                                 <?= $escaper->escapeHtml(
-                                    __('Save and Send Proposal')
+                                    __('Save Proposal')
                                 ) ?>
                             </span>
 

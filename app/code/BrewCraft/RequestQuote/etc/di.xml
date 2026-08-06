@@ -1,25 +1,18 @@
 <?xml version="1.0"?>
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
-    <preference
-        for="BrewCraft\RequestQuote\Api\QuoteRequestRepositoryInterface"
-        type="BrewCraft\RequestQuote\Model\QuoteRequestRepository"/>
+    <preference for="BrewCraft\RequestQuote\Api\QuoteRequestRepositoryInterface" type="BrewCraft\RequestQuote\Model\QuoteRequestRepository"/>
 
-    <preference
-        for="BrewCraft\RequestQuote\Api\QuoteRequestItemRepositoryInterface"
-        type="BrewCraft\RequestQuote\Model\QuoteRequestItemRepository"/>
+    <preference for="BrewCraft\RequestQuote\Api\QuoteRequestItemRepositoryInterface" type="BrewCraft\RequestQuote\Model\QuoteRequestItemRepository"/>
 
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
 
         <arguments>
 
-            <argument name="collections"
-                      xsi:type="array">
+            <argument name="collections" xsi:type="array">
 
-                <item name="brewcraft_quote_request_listing_data_source"
-                      xsi:type="string">
+                <item name="brewcraft_quote_request_listing_data_source" xsi:type="string">
                     BrewCraft\RequestQuote\Model\ResourceModel\QuoteRequest\Grid\Collection
                 </item>
 
@@ -28,5 +21,6 @@
         </arguments>
 
     </type>
+
 
 </config>

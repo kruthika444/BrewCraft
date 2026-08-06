@@ -19,6 +19,10 @@ $quoteItems = $block->getQuoteItems();
     <?php
     $status = (string)$quoteRequest->getStatus();
 
+    $customerExpectedSubtotal = $quoteRequest->getData(
+        'customer_expected_subtotal'
+    );
+
     $proposedSubtotal = $quoteRequest->getData(
         'proposed_subtotal'
     );
@@ -152,6 +156,38 @@ $quoteItems = $block->getQuoteItems();
                                         )
                                     )
                                 ) ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <?= $escaper->escapeHtml(
+                                    __('Your Expected Total')
+                                ) ?>
+                            </th>
+
+                            <td>
+                                <?php if ($customerExpectedSubtotal !== null): ?>
+
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatPrice(
+                                            (float)$customerExpectedSubtotal
+                                        )
+                                    ) ?>
+
+                                    <div class="field note">
+                                        <?= $escaper->escapeHtml(
+                                            __('Includes only products for which you entered an expected price.')
+                                        ) ?>
+                                    </div>
+
+                                <?php else: ?>
+
+                                    <?= $escaper->escapeHtml(
+                                        __('Best offer requested')
+                                    ) ?>
+
+                                <?php endif; ?>
                             </td>
                         </tr>
 
@@ -343,6 +379,12 @@ $quoteItems = $block->getQuoteItems();
 
                                 <th scope="col">
                                     <?= $escaper->escapeHtml(
+                                        __('Your Expected Unit Price')
+                                    ) ?>
+                                </th>
+
+                                <th scope="col">
+                                    <?= $escaper->escapeHtml(
                                         __('Proposed Unit Price')
                                     ) ?>
                                 </th>
@@ -350,6 +392,12 @@ $quoteItems = $block->getQuoteItems();
                                 <th scope="col">
                                     <?= $escaper->escapeHtml(
                                         __('Original Total')
+                                    ) ?>
+                                </th>
+
+                                <th scope="col">
+                                    <?= $escaper->escapeHtml(
+                                        __('Your Expected Total')
                                     ) ?>
                                 </th>
 
@@ -366,8 +414,16 @@ $quoteItems = $block->getQuoteItems();
                             <?php foreach ($quoteItems as $quoteItem): ?>
 
                                 <?php
+                                $expectedPrice = $quoteItem->getData(
+                                    'expected_price'
+                                );
+
                                 $proposedPrice = $quoteItem->getData(
                                     'proposed_price'
+                                );
+
+                                $expectedRowTotal = $quoteItem->getData(
+                                    'expected_row_total'
                                 );
 
                                 $proposedRowTotal = $quoteItem->getData(
@@ -407,6 +463,24 @@ $quoteItems = $block->getQuoteItems();
                                     </td>
 
                                     <td>
+                                        <?php if ($expectedPrice !== null): ?>
+
+                                            <?= $escaper->escapeHtml(
+                                                $block->formatPrice(
+                                                    (float)$expectedPrice
+                                                )
+                                            ) ?>
+
+                                        <?php else: ?>
+
+                                            <?= $escaper->escapeHtml(
+                                                __('Best offer requested')
+                                            ) ?>
+
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <td>
                                         <?php if ($proposedPrice !== null): ?>
 
                                             <?= $escaper->escapeHtml(
@@ -432,6 +506,24 @@ $quoteItems = $block->getQuoteItems();
                                                 )
                                             )
                                         ) ?>
+                                    </td>
+
+                                    <td>
+                                        <?php if ($expectedRowTotal !== null): ?>
+
+                                            <?= $escaper->escapeHtml(
+                                                $block->formatPrice(
+                                                    (float)$expectedRowTotal
+                                                )
+                                            ) ?>
+
+                                        <?php else: ?>
+
+                                            <?= $escaper->escapeHtml(
+                                                __('Not provided')
+                                            ) ?>
+
+                                        <?php endif; ?>
                                     </td>
 
                                     <td>

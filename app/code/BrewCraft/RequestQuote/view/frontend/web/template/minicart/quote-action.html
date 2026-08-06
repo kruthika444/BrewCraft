@@ -1,0 +1,23 @@
+<!-- ko if: canRequestQuote() -->
+
+<div class="actions brewcraft-minicart-quote-action">
+
+    <div class="primary">
+
+        <a class="action primary request-quote"
+           data-bind="
+               attr: {
+                   href: getRequestQuoteUrl(),
+                   title: $t('Request a Quote')
+               }
+           ">
+
+            <span data-bind="i18n: 'Request a Quote'"></span>
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- /ko -->

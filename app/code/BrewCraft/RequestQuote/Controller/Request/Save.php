@@ -26,8 +26,7 @@ class Save implements HttpPostActionInterface
         private readonly RedirectFactory $redirectFactory,
         private readonly ManagerInterface $messageManager,
         private readonly LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
     public function execute(): ResultInterface
     {
@@ -43,26 +42,44 @@ class Save implements HttpPostActionInterface
             );
 
             return $this->createRedirect(
-                'checkout/cart'
+                'requestquote/request/create'
             );
         }
 
-        $customerId = (int)$this->customerSession->getCustomerId();
+        $customerId = (int)$this
+            ->customerSession
+            ->getCustomerId();
 
         $quoteName = trim(
-            (string)$this->request->getParam('quote_name')
+            (string)$this->request->getParam(
+                'quote_name'
+            )
         );
 
         $customerMessage = trim(
-            (string)$this->request->getParam('customer_message')
+            (string)$this->request->getParam(
+                'customer_message'
+            )
         );
 
+        $itemRequests = $this->request->getParam(
+            'items',
+            []
+        );
+
+        if (!is_array($itemRequests)) {
+            $itemRequests = [];
+        }
+
         try {
-            $quoteRequest = $this->quoteSubmissionService->submit(
-                $customerId,
-                $quoteName,
-                $customerMessage
-            );
+            $quoteRequest = $this
+                ->quoteSubmissionService
+                ->submit(
+                    $customerId,
+                    $quoteName,
+                    $customerMessage,
+                    $itemRequests
+                );
 
             $this->messageManager->addSuccessMessage(
                 __(
@@ -74,7 +91,8 @@ class Save implements HttpPostActionInterface
             return $this->createRedirect(
                 'requestquote/request/success',
                 [
-                    'quote_number' => $quoteRequest->getQuoteNumber()
+                    'quote_number' =>
+                    $quoteRequest->getQuoteNumber()
                 ]
             );
         } catch (LocalizedException $exception) {
@@ -110,7 +128,9 @@ class Save implements HttpPostActionInterface
         string $path,
         array $arguments = []
     ): Redirect {
-        $resultRedirect = $this->redirectFactory->create();
+        $resultRedirect = $this
+            ->redirectFactory
+            ->create();
 
         return $resultRedirect->setPath(
             $path,

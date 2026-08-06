@@ -4378,3 +4378,1348 @@ Customer chooses:
 > On the customer side, Accept and Reject are implemented as POST actions with form-key validation. The response service verifies that the customer owns the quote, remains an approved Business Customer, the quote is in quoted status, a proposal exists, and it has not expired. It then performs the controlled transition to accepted or rejected.
 
 > The workflow is secured through Admin ACL, customer authentication, business eligibility checks, quote ownership validation, CSRF protection and strict status-transition rules. The next phase is converting an accepted quote into a Magento cart while applying the negotiated prices.
+
+
+
+# 3.BrewCraft Request Quote — Development Log
+
+### Enhancement: Customer Expected Price and Mini-Cart Request Quote
+
+This development phase improved the original Request for Quote experience in two areas:
+
+```text
+1. Customers can specify requested quantities and optional expected prices.
+2. Approved Business Customers can access Request a Quote from the mini-cart.
+```
+
+These improvements were made before starting accepted-quote cart conversion because they affect how the quote request is originally created.
+
+---
+
+## 1. Original Request Quote behavior
+
+Initially, the Request Quote workflow was:
+
+```text
+Customer adds products to cart
+        ↓
+Opens the shopping cart
+        ↓
+Clicks Request a Quote
+        ↓
+Enters quote name and message
+        ↓
+Magento copies cart products and quantities
+        ↓
+Admin provides proposed prices
+```
+
+The quote request stored:
+
+```text
+Product
+SKU
+Cart quantity
+Current business price
+Current row total
+Customer message
+```
+
+The customer could describe their expectations only through the general message field.
+
+Example:
+
+```text
+We need 100 units and expect approximately ₹750 per unit.
+```
+
+This technically worked, but it had limitations.
+
+---
+
+## 2. Problems identified in the original workflow
+
+### 2.1 Customer could not enter a structured expected price
+
+There was no dedicated field for:
+
+```text
+Customer expected unit price
+```
+
+The customer could mention a target price only in the message.
+
+This caused several problems:
+
+```text
+The Admin had to read and interpret free-text messages.
+Expected prices could not be compared item by item.
+Expected totals could not be calculated automatically.
+The customer’s pricing expectation was not stored structurally.
+Reporting and future negotiation history would be difficult.
+```
+
+For a quote containing multiple products, a message such as:
+
+```text
+We expect a total price of around ₹50,000.
+```
+
+does not clearly explain the expected price for each item.
+
+### 2.2 Customer was forced to use the cart quantity
+
+The original service used:
+
+```php
+$quantity = (float)$cartItem->getQty();
+```
+
+Therefore:
+
+```text
+Cart quantity = Quote requested quantity
+```
+
+But those values may represent different intentions.
+
+Example:
+
+```text
+Customer adds 1 sample machine to the cart
+but wants pricing for 25 machines.
+```
+
+The old implementation required the customer to modify the shopping-cart quantity before requesting a quote.
+
+That was not ideal because the cart was being used both as:
+
+```text
+Product-selection tool
+and
+Quote quantity configuration
+```
+
+### 2.3 Request Quote was not easy to discover
+
+The Request Quote button was available only on:
+
+```text
+/checkout/cart
+```
+
+When a customer used:
+
+```text
+Mini-cart → Proceed to Checkout
+```
+
+the full cart page was skipped.
+
+Therefore, even an approved Business Customer might never see the Request Quote feature.
+
+---
+
+## 3. Final design decision
+
+We changed the quote request form to support:
+
+```text
+Requested quantity
+→ Required and editable
+
+Expected unit price
+→ Optional
+
+Customer message
+→ Optional
+```
+
+The expected price was deliberately kept optional.
+
+This supports two different customer intentions.
+
+### Customer knows their target price
+
+```text
+Requested quantity: 100
+Expected unit price: ₹750
+```
+
+### Customer wants BrewCraft’s best offer
+
+```text
+Requested quantity: 100
+Expected unit price: blank
+```
+
+The blank value means:
+
+```text
+Best offer requested
+```
+
+This is more flexible than forcing every customer to enter a target price.
+
+---
+
+## 4. Enhanced RFQ workflow
+
+The new customer workflow is:
+
+```text
+Customer selects products
+        ↓
+Opens Request a Quote
+        ↓
+Reviews current product prices
+        ↓
+Enters requested quantity for every item
+        ↓
+Optionally enters expected unit price
+        ↓
+Adds quote name and message
+        ↓
+Submits quote
+```
+
+The Admin can now compare:
+
+```text
+Original unit price
+Customer expected unit price
+Admin proposed unit price
+```
+
+Example:
+
+| Product        | Requested Qty | Original Price | Customer Expected | Admin Proposed |
+| -------------- | ------------: | -------------: | ----------------: | -------------: |
+| Coffee Beans   |           100 |           ₹900 |              ₹750 |           ₹800 |
+| Coffee Machine |            10 |         ₹9,000 |      Not provided |         ₹8,500 |
+
+This produces a clearer negotiation workflow.
+
+---
+
+## 5. Database changes
+
+The existing declarative schema was updated in:
+
+```text
+app/code/BrewCraft/RequestQuote/etc/db_schema.xml
+```
+
+### Quote header table
+
+Table:
+
+```text
+brewcraft_quote_request
+```
+
+New column:
+
+```text
+customer_expected_subtotal
+```
+
+Purpose:
+
+```text
+Stores the sum of customer expected row totals.
+```
+
+The field is nullable because the customer may leave every expected-price field blank.
+
+Conceptually:
+
+```text
+customer_expected_subtotal
+= SUM(expected_price × requested_qty)
+```
+
+Only items with an entered expected price contribute to this total.
+
+### Quote item table
+
+Table:
+
+```text
+brewcraft_quote_request_item
+```
+
+New columns:
+
+```text
+expected_price
+expected_row_total
+```
+
+#### `expected_price`
+
+Stores the optional customer-requested unit price.
+
+Example:
+
+```text
+₹750 per unit
+```
+
+#### `expected_row_total`
+
+Stores:
+
+```text
+expected_price × requested_qty
+```
+
+Example:
+
+```text
+Expected price = ₹750
+Requested quantity = 100
+
+Expected row total = ₹75,000
+```
+
+Both columns are nullable.
+
+When the customer requests BrewCraft’s best offer:
+
+```text
+expected_price = NULL
+expected_row_total = NULL
+```
+
+---
+
+## 6. Request Quote form changes
+
+Template:
+
+```text
+view/frontend/templates/request/create.phtml
+```
+
+The form originally displayed products and current cart information.
+
+It was changed to show:
+
+```text
+Product
+SKU
+Current Unit Price
+Cart Quantity
+Requested Quantity
+Expected Unit Price
+```
+
+### Requested quantity input
+
+Each product now submits:
+
+```text
+items[cart_item_id][requested_qty]
+```
+
+Example:
+
+```php
+items[41][requested_qty] = 100
+```
+
+The field is:
+
+```text
+Required
+Numeric
+Greater than zero
+Editable independently of cart quantity
+```
+
+### Expected unit price input
+
+Each product also submits:
+
+```text
+items[cart_item_id][expected_price]
+```
+
+Example:
+
+```php
+items[41][expected_price] = 750
+```
+
+The field is:
+
+```text
+Optional
+Numeric when provided
+Greater than zero when provided
+```
+
+### Important HTML form correction
+
+During implementation, the product table was initially outside the `<form>` element.
+
+That meant inputs such as:
+
+```text
+items[41][requested_qty]
+items[41][expected_price]
+```
+
+would not be included in the POST request.
+
+The corrected structure became:
+
+```text
+<form>
+    Form key
+    Product table
+    Requested quantities
+    Expected prices
+    Quote name
+    Customer message
+    Submit button
+</form>
+```
+
+This ensured all item values were submitted to the Save controller.
+
+---
+
+## 7. Save controller changes
+
+Controller:
+
+```text
+Controller/Request/Save.php
+```
+
+The controller already received:
+
+```text
+quote_name
+customer_message
+```
+
+It was updated to also receive:
+
+```php
+$itemRequests = $this->request->getParam(
+    'items',
+    []
+);
+```
+
+A type check was added:
+
+```php
+if (!is_array($itemRequests)) {
+    $itemRequests = [];
+}
+```
+
+The item information is then passed to the submission service:
+
+```php
+$quoteRequest = $this->quoteSubmissionService->submit(
+    $customerId,
+    $quoteName,
+    $customerMessage,
+    $itemRequests
+);
+```
+
+The controller remains thin.
+
+Its responsibility is:
+
+```text
+Validate login
+Validate form key
+Read POST parameters
+Call submission service
+Display success or error message
+Redirect customer
+```
+
+The controller does not calculate expected totals.
+
+---
+
+## 8. QuoteSubmissionService changes
+
+Service:
+
+```text
+Model/Service/QuoteSubmissionService.php
+```
+
+This service received the main business-logic changes.
+
+The method signature changed from:
+
+```php
+submit(
+    int $customerId,
+    string $quoteName,
+    string $customerMessage
+)
+```
+
+to:
+
+```php
+submit(
+    int $customerId,
+    string $quoteName,
+    string $customerMessage,
+    array $itemRequests = []
+)
+```
+
+---
+
+## 9. Active-cart item validation
+
+The service does not blindly trust submitted cart-item IDs.
+
+The secure flow is:
+
+```text
+Load the logged-in customer’s active cart
+        ↓
+Get real visible cart items
+        ↓
+Loop through those real items
+        ↓
+Find submitted values for each real cart item ID
+        ↓
+Validate and save
+```
+
+The service does not loop through arbitrary submitted item IDs and create quote items from them.
+
+This protects against a modified request such as:
+
+```text
+items[another_customer_cart_item_id][requested_qty]
+```
+
+Only items actually present in the customer’s active cart are processed.
+
+---
+
+## 10. Requested-quantity validation
+
+For every real cart item, the service validates:
+
+```text
+Value exists
+Value is numeric
+Value is greater than zero
+```
+
+Invalid examples:
+
+```text
+Blank
+0
+-5
+abc
+```
+
+These values produce a `LocalizedException`, and the quote is not created.
+
+The requested quantity is rounded to four decimal places:
+
+```php
+$requestedQty = round(
+    (float)$rawValue,
+    4
+);
+```
+
+This supports both:
+
+```text
+Whole quantities
+Decimal quantities
+```
+
+depending on product configuration.
+
+---
+
+## 11. Expected-price validation
+
+Expected price is optional.
+
+When blank:
+
+```php
+$expectedPrice = null;
+$expectedRowTotal = null;
+```
+
+When provided, the service checks:
+
+```text
+Numeric
+Greater than zero
+```
+
+Invalid examples:
+
+```text
+0
+-100
+text
+```
+
+The normalized price is rounded to four decimal places.
+
+---
+
+## 12. Total calculation changes
+
+Previously, the original row total was based on cart quantity:
+
+```text
+Original price × cart quantity
+```
+
+Now it is based on the quantity requested for quotation:
+
+```text
+Original price × requested quantity
+```
+
+Example:
+
+```text
+Cart quantity = 2
+Requested quote quantity = 100
+Original price = ₹900
+```
+
+The quote now stores:
+
+```text
+Original row total = ₹900 × 100 = ₹90,000
+```
+
+It does not use:
+
+```text
+₹900 × 2
+```
+
+because the quote is for 100 units.
+
+### Expected row total
+
+When the customer enters an expected price:
+
+```text
+Expected row total
+= expected unit price × requested quantity
+```
+
+Example:
+
+```text
+₹750 × 100 = ₹75,000
+```
+
+### Header original subtotal
+
+The header total is recalculated from the prepared quote items:
+
+```text
+original_subtotal
+= sum of original row totals
+```
+
+### Customer expected subtotal
+
+The new header field is calculated as:
+
+```text
+customer_expected_subtotal
+= sum of non-null expected row totals
+```
+
+When no expected price is supplied for any item:
+
+```text
+customer_expected_subtotal = NULL
+```
+
+---
+
+## 13. Transaction behavior
+
+Quote creation continues to use a database transaction.
+
+The operation writes:
+
+```text
+One quote-request header
+Multiple quote-request items
+```
+
+Flow:
+
+```text
+Validate all request data
+        ↓
+Begin transaction
+        ↓
+Create quote header
+        ↓
+Create quote items
+        ↓
+Commit
+```
+
+On failure:
+
+```text
+Rollback
+```
+
+This prevents partial data such as:
+
+```text
+Header saved
+Item 1 saved
+Item 2 failed
+```
+
+The result is:
+
+```text
+Everything saves
+or
+Nothing saves
+```
+
+---
+
+## 14. Admin quote-details changes
+
+Template:
+
+```text
+view/adminhtml/templates/quote/view.phtml
+```
+
+The Admin page was enhanced to show customer pricing expectations.
+
+### Quote summary
+
+The summary now displays:
+
+```text
+Original Subtotal
+Customer Expected Subtotal
+Proposed Subtotal
+```
+
+When the customer did not provide expected prices, Admin sees:
+
+```text
+Best offer requested
+```
+
+### Requested-products table
+
+The table now compares:
+
+```text
+Original Unit Price
+Customer Expected Unit Price
+Admin Proposed Unit Price
+Original Row Total
+Customer Expected Row Total
+Admin Proposed Row Total
+```
+
+### Admin proposal form
+
+The proposal form now shows the customer expected price beside the Admin input.
+
+Example:
+
+```text
+Current price: ₹900
+Customer expected price: ₹750
+Admin proposed price: [₹800]
+```
+
+This makes the negotiation decision easier for Admin.
+
+### Button wording
+
+Because email is not configured yet, wording such as:
+
+```text
+Save and Send Proposal
+```
+
+was changed to:
+
+```text
+Save Proposal
+```
+
+The proposal is stored and becomes visible in My Account, but no email is sent at this stage.
+
+---
+
+## 15. Customer quote-details changes
+
+Template:
+
+```text
+view/frontend/templates/account/view.phtml
+```
+
+The customer page was enhanced to show:
+
+```text
+Original Total
+Your Expected Total
+BrewCraft Proposed Total
+```
+
+At item level, the customer sees:
+
+```text
+Requested Quantity
+Original Unit Price
+Your Expected Unit Price
+BrewCraft Proposed Unit Price
+Original Row Total
+Your Expected Row Total
+Proposed Row Total
+```
+
+When expected price was left blank:
+
+```text
+Best offer requested
+```
+
+The existing customer actions were preserved:
+
+```text
+Accept Proposal
+Reject Proposal
+Accepted message
+Rejected message
+Expired message
+```
+
+---
+
+## 16. Why the mini-cart enhancement was needed
+
+The original Request Quote button was placed on the full cart page:
+
+```text
+checkout_cart_index
+```
+
+This meant the button appeared only when the customer opened:
+
+```text
+/checkout/cart
+```
+
+However, Magento allows customers to proceed directly from the mini-cart:
+
+```text
+Open mini-cart
+        ↓
+Click Proceed to Checkout
+        ↓
+Full cart page skipped
+```
+
+As a result, approved Business Customers could miss the RFQ option entirely.
+
+The feature was working, but its discovery depended on the customer visiting the full cart page.
+
+---
+
+## 17. Mini-cart design decision
+
+We decided to show the Request Quote option in both:
+
+```text
+Full shopping cart
+Mini-cart
+```
+
+We deliberately did not add the action inside checkout.
+
+The two paths represent different intentions:
+
+```text
+Proceed to Checkout
+→ Customer agrees to current prices and wants to buy.
+
+Request a Quote
+→ Customer wants negotiation before purchasing.
+```
+
+Therefore, the correct choice point is:
+
+```text
+Cart or mini-cart
+├── Proceed to Checkout
+└── Request a Quote
+```
+
+---
+
+## 18. Why we did not override the complete mini-cart template
+
+A possible implementation would have been to override Magento’s mini-cart template.
+
+That approach was avoided because a complete override could:
+
+```text
+Duplicate core template code
+Break after Magento updates
+Conflict with custom themes
+Conflict with checkout extensions
+Make future maintenance harder
+```
+
+Instead, we used Magento’s existing mini-cart UI Component region:
+
+```text
+extraInfo
+```
+
+This allowed us to add a small child component without replacing Magento’s mini-cart implementation.
+
+---
+
+## 19. Mini-cart files added
+
+The implementation added:
+
+```text
+CustomerData/QuoteEligibility.php
+
+etc/frontend/di.xml
+
+view/frontend/layout/default.xml
+
+view/frontend/web/js/view/minicart-quote.js
+
+view/frontend/web/template/minicart/quote-action.html
+```
+
+Optional styling may also exist in:
+
+```text
+view/frontend/web/css/source/_module.less
+```
+
+---
+
+## 20. Customer-data section
+
+Class:
+
+```text
+CustomerData/QuoteEligibility.php
+```
+
+The class implements:
+
+```php
+Magento\Customer\CustomerData\SectionSourceInterface
+```
+
+Its responsibility is to provide customer-specific private data:
+
+```php
+[
+    'can_request_quote' => true,
+    'request_quote_url' => '...'
+]
+```
+
+It checks:
+
+```text
+Customer is logged in
+Customer ID is valid
+BusinessCustomerEligibilityService passes
+```
+
+When the customer is not eligible:
+
+```php
+[
+    'can_request_quote' => false,
+    'request_quote_url' => ''
+]
+```
+
+### Why customer-data was used
+
+Eligibility is customer-specific information.
+
+It must not be placed directly into cacheable public page HTML because Magento Full Page Cache may reuse that HTML between visitors.
+
+Magento customer-data provides private browser-side sections that can vary per logged-in customer.
+
+This makes it suitable for:
+
+```text
+Approved customer → show button
+Other customer → hide button
+```
+
+---
+
+## 21. Frontend DI registration
+
+The custom section was registered in:
+
+```text
+etc/frontend/di.xml
+```
+
+Section name:
+
+```text
+brewcraft_quote_eligibility
+```
+
+It maps to:
+
+```text
+BrewCraft\RequestQuote\CustomerData\QuoteEligibility
+```
+
+The registration initially caused an error:
+
+```json
+{
+  "message": "The \"brewcraft_quote_eligibility\" section source isn't supported."
+}
+```
+
+The mapping had been added to the existing global:
+
+```text
+etc/di.xml
+```
+
+The final fix was to move the customer-data mapping into the frontend-area DI file:
+
+```text
+etc/frontend/di.xml
+```
+
+The global DI file continued to contain:
+
+```text
+Repository preferences
+Admin grid collection mapping
+```
+
+The frontend file contains:
+
+```text
+Customer-data section registration
+```
+
+After recompilation, Magento recognized the custom section.
+
+---
+
+## 22. Mini-cart layout integration
+
+File:
+
+```text
+view/frontend/layout/default.xml
+```
+
+The custom component was added as a child of:
+
+```text
+minicart_content
+```
+
+Its display area is:
+
+```text
+extraInfo
+```
+
+The configured component is:
+
+```text
+BrewCraft_RequestQuote/js/view/minicart-quote
+```
+
+The Knockout template is:
+
+```text
+BrewCraft_RequestQuote/minicart/quote-action
+```
+
+The component was verified in `uiRegistry` as:
+
+```text
+minicart_content.brewcraft.quote.action
+```
+
+This confirmed:
+
+```text
+Layout merged successfully
+JavaScript component loaded
+Template was assigned
+extraInfo display area was registered
+```
+
+---
+
+## 23. Mini-cart JavaScript component
+
+File:
+
+```text
+view/frontend/web/js/view/minicart-quote.js
+```
+
+The component observes:
+
+```text
+brewcraft_quote_eligibility
+cart
+```
+
+The first section answers:
+
+```text
+Is this customer allowed to request a quote?
+```
+
+The standard cart section answers:
+
+```text
+Does the cart have any products?
+```
+
+The button is displayed only when:
+
+```text
+can_request_quote = true
+and
+summary_count > 0
+and
+request_quote_url is available
+```
+
+Conceptually:
+
+```javascript
+return eligibility.can_request_quote === true
+    && itemCount > 0
+    && Boolean(eligibility.request_quote_url);
+```
+
+---
+
+## 24. Knockout mini-cart template
+
+File:
+
+```text
+view/frontend/web/template/minicart/quote-action.html
+```
+
+The template uses a Knockout condition:
+
+```text
+Show action only when canRequestQuote() is true
+```
+
+The action links to:
+
+```text
+requestquote/request/create
+```
+
+From there, the approved customer can enter:
+
+```text
+Requested quantities
+Expected prices
+Quote name
+Message
+```
+
+---
+
+## 25. Mini-cart debugging and correction
+
+The UI Component was successfully found in `uiRegistry`, but its eligibility observable contained:
+
+```text
+{}
+```
+
+The customer-data endpoint returned HTTP 400.
+
+Direct endpoint response:
+
+```json
+{
+  "message": "The \"brewcraft_quote_eligibility\" section source isn't supported."
+}
+```
+
+This showed that:
+
+```text
+The layout and JavaScript component were correct.
+The customer-data section registration was the failing part.
+```
+
+After moving the mapping into:
+
+```text
+etc/frontend/di.xml
+```
+
+and rebuilding DI:
+
+```text
+The customer-data endpoint returned valid JSON.
+The eligibility observable received data.
+The visibility function returned true for approved customers.
+The mini-cart button appeared.
+```
+
+---
+
+## 26. Final mini-cart behavior
+
+### Approved Business Customer with cart items
+
+```text
+Request a Quote button visible
+```
+
+### Approved Business Customer with empty cart
+
+```text
+Button hidden
+```
+
+### Guest customer
+
+```text
+Button hidden
+```
+
+### Normal registered customer
+
+```text
+Button hidden
+```
+
+### Pending Business Account customer
+
+```text
+Button hidden
+```
+
+### Rejected Business Account customer
+
+```text
+Button hidden
+```
+
+This matches the same eligibility rules used by:
+
+```text
+Full cart RFQ button
+Direct Request Quote page
+Quote submission service
+Customer My Quote Requests navigation
+```
+
+---
+
+## 27. Complete improved RFQ journey
+
+The current flow is now:
+
+```text
+Approved Business Customer
+        ↓
+Adds products to cart
+        ↓
+Can use:
+    Full cart Request Quote button
+    or
+    Mini-cart Request Quote button
+        ↓
+Opens Request Quote form
+        ↓
+Reviews current prices and cart quantities
+        ↓
+Enters requested quantities
+        ↓
+Optionally enters expected unit prices
+        ↓
+Adds quote name and message
+        ↓
+Submits request
+        ↓
+Admin sees:
+    Requested quantity
+    Original price
+    Customer expected price
+        ↓
+Admin marks request Under Review
+        ↓
+Admin enters proposed prices
+        ↓
+Status becomes Quoted
+        ↓
+Customer compares:
+    Original price
+    Their expected price
+    BrewCraft proposed price
+        ↓
+Customer accepts or rejects
+```
+
+---
+
+## 31. Interview-ready explanation
+
+> Initially, the RFQ feature copied the product quantities directly from the shopping cart, and customers could mention their target price only in a free-text message. I improved this by adding editable requested quantities and an optional expected unit price for every quote item.
+
+> The expected price is optional because some customers know their target price, while others simply want the seller’s best offer. I added item-level expected price and expected row-total fields, as well as a header expected subtotal. The submission service validates the customer’s input, processes only items from the customer’s real active cart, calculates totals using the requested quote quantity, and saves the request inside a transaction.
+
+> I also improved discoverability by adding Request a Quote to the mini-cart. Instead of overriding Magento’s core mini-cart template, I added a Knockout UI Component through the existing `extraInfo` region. Customer eligibility is exposed through a custom Magento customer-data section, which is private and safe with Full Page Cache. The mini-cart action appears only for approved Business Customers with products in the cart and remains hidden for guests, normal customers, and pending or rejected applicants.
