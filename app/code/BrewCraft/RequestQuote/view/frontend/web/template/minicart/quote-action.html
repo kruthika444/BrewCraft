@@ -1,9 +1,22 @@
+<!-- ko if: isAcceptedQuoteCart() -->
+
+<div class="message info brewcraft-minicart-accepted-quote-message">
+    <span data-bind="i18n: 'Accepted quote cart: quantities and prices are locked.'"></span>
+</div>
+
+<style>
+    .brewcraft-accepted-quote-cart .minicart-items .product-item-details .action.delete,
+    .brewcraft-accepted-quote-cart .minicart-items .product-item-details .action.edit {
+        display: none !important;
+    }
+</style>
+
+<!-- /ko -->
+
 <!-- ko if: canRequestQuote() -->
 
 <div class="actions brewcraft-minicart-quote-action">
-
     <div class="primary">
-
         <a class="action primary request-quote"
            data-bind="
                attr: {
@@ -11,13 +24,9 @@
                    title: $t('Request a Quote')
                }
            ">
-
             <span data-bind="i18n: 'Request a Quote'"></span>
-
         </a>
-
     </div>
-
 </div>
 
 <!-- /ko -->

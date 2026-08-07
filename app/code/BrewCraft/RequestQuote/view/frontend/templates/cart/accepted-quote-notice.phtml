@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\RequestQuote\Block\Cart\AcceptedQuoteNotice;
+use Magento\Framework\Escaper;
+
+/**
+ * @var AcceptedQuoteNotice $block
+ * @var Escaper $escaper
+ */
+?>
+
+<?php if ($block->isAcceptedQuoteCart()): ?>
+    <div class="message info brewcraft-accepted-quote-cart-message">
+        <span>
+            <?= $escaper->escapeHtml(
+                __('This cart was created from an accepted quotation. Product quantities and negotiated prices are locked. Complete checkout to place the order.')
+            ) ?>
+        </span>
+    </div>
+
+    <style>
+        .checkout-cart-index .cart.table-wrapper .action-delete,
+        .checkout-cart-index .cart.table-wrapper .action-edit,
+        .checkout-cart-index .cart.main.actions .action.update,
+        .checkout-cart-index .cart.main.actions .action.clear {
+            display: none !important;
+        }
+
+        .checkout-cart-index .cart.table-wrapper .col.qty .input-text.qty {
+            pointer-events: none;
+            opacity: .7;
+        }
+    </style>
+
+    <script>
+        require(['jquery'], function ($) {
+            'use strict';
+
+            $('.cart.table-wrapper .col.qty .input-text.qty')
+                .prop('readonly', true)
+                .attr(
+                    'title',
+                    '<?= $escaper->escapeJs(
+                        __('Quantity is fixed by the accepted quote.')
+                    ) ?>'
+                );
+        });
+    </script>
+<?php endif; ?>

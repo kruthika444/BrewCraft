@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="urn:magento:framework/View/Layout/etc/page_configuration.xsd">
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 
     <body>
 
         <referenceContainer name="content">
+
+            <block class="BrewCraft\RequestQuote\Block\Cart\AcceptedQuoteNotice"
+                   name="brewcraft.accepted.quote.cart.notice"
+                   template="BrewCraft_RequestQuote::cart/accepted-quote-notice.phtml"
+                   before="-"
+                   cacheable="false"/>
 
             <block class="BrewCraft\RequestQuote\Block\Cart\RequestQuote"
                    name="brewcraft.request.quote.cart.action"

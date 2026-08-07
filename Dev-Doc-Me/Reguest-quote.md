@@ -5723,3 +5723,1409 @@ Customer accepts or rejects
 > The expected price is optional because some customers know their target price, while others simply want the seller’s best offer. I added item-level expected price and expected row-total fields, as well as a header expected subtotal. The submission service validates the customer’s input, processes only items from the customer’s real active cart, calculates totals using the requested quote quantity, and saves the request inside a transaction.
 
 > I also improved discoverability by adding Request a Quote to the mini-cart. Instead of overriding Magento’s core mini-cart template, I added a Knockout UI Component through the existing `extraInfo` region. Customer eligibility is exposed through a custom Magento customer-data section, which is private and safe with Full Page Cache. The mini-cart action appears only for approved Business Customers with products in the cart and remains hidden for guests, normal customers, and pending or rejected applicants.
+
+
+---
+---
+
+# 4.BrewCraft Supply — Updated Project Status
+ **DATE:** 6th Aug
+### Overall completion
+
+| Module                 | Current completion |
+| ---------------------- | -----------------: |
+| Project Setup          |             ✅ 100% |
+| ERP Integration        |              ✅ 95% |
+| Storefront & Catalog   |             ⚠️ 45% |
+| B2C Store              |             ⚠️ 55% |
+| B2B Features           |              ✅ 90% |
+| Admin Features         |             ⚠️ 70% |
+| ERP Simulation         |             ⚠️ 75% |
+| Payment Integration    |             ⚠️ 20% |
+| Theme and Store Design |              ❌ 10% |
+| Final Documentation    |              ❌ 10% |
+
+The project overall is approximately:
+
+```text
+70–75% complete
+```
+
+The backend business functionality is much further ahead than the storefront design.
+
+---
+
+## Phase 1 — Project Setup ✅ 100%
+
+| Item                       | Status |
+| -------------------------- | ------ |
+| Magento installation       | ✅      |
+| PHP and Docker environment | ✅      |
+| Reward setup               | ✅      |
+| Git repository             | ✅      |
+| Custom module structure    | ✅      |
+| OpenSearch                 | ✅      |
+| json-server ERP simulation | ✅      |
+| Developer mode setup       | ✅      |
+
+No significant work remains here.
+
+---
+
+## Phase 2 — ERP Integration ✅ 95%
+
+### Completed
+
+#### Imports
+
+| Feature                 | Status |
+| ----------------------- | ------ |
+| Category import         | ✅      |
+| Product import          | ✅      |
+| Inventory import        | ✅      |
+| Price import            | ✅      |
+| Product update handling | ✅      |
+| ERP data mapping        | ✅      |
+
+#### Exports
+
+| Feature              | Status |
+| -------------------- | ------ |
+| Magento order export | ✅      |
+| Order observer       | ✅      |
+| Async publishing     | ✅      |
+| RabbitMQ consumer    | ✅      |
+
+#### Scheduling and monitoring
+
+| Feature                          | Status    |
+| -------------------------------- | --------- |
+| Magento cron jobs                | ✅         |
+| Console commands                 | ✅         |
+| Sync-history records             | ✅         |
+| Manual sync execution            | ✅         |
+| Linux cron configuration locally | ⚠️ Manual |
+| Automatic sync logic             | ✅         |
+
+Your current local behavior is:
+
+```text
+Linux cron is not continuously running
+        ↓
+You manually run:
+bin/magento cron:run
+        ↓
+Magento scheduled jobs execute
+        ↓
+ERP synchronisation works
+```
+
+This is acceptable for the local learning environment.
+
+In production, the operating-system cron would call Magento automatically every minute.
+
+### Remaining
+
+| Item                                         | Status            |
+| -------------------------------------------- | ----------------- |
+| Retry mechanism for failed ERP records       | ⏳                 |
+| Replace json-server with a real ERP endpoint | Future/production |
+| Minor configuration cleanup                  | ⏳                 |
+
+Because this is not a production project, using json-server is acceptable.
+
+So ERP integration is practically complete for the current project goal.
+
+---
+
+## Phase 3 — Storefront and Catalog ⚠️ 45%
+
+### Completed
+
+| Feature                                    | Status            |
+| ------------------------------------------ | ----------------- |
+| ERP-imported products                      | ✅                 |
+| Category hierarchy                         | ✅                 |
+| Categories assigned under Default Category | ✅                 |
+| Product listing pages                      | ✅ Magento default |
+| Product detail pages                       | ✅ Magento default |
+| Cart and mini-cart                         | ✅                 |
+| Search engine available through OpenSearch | ✅ Technical setup |
+
+### Remaining
+
+| Feature                          | Status |
+| -------------------------------- | ------ |
+| Custom BrewCraft theme           | ❌      |
+| Figma-based implementation       | ❌      |
+| Custom homepage                  | ❌      |
+| Header and footer design         | ❌      |
+| Main navigation design           | ❌      |
+| Category landing pages           | ❌      |
+| CMS pages                        | ❌      |
+| Product-media import             | ❌      |
+| Search tuning/configuration      | ⏳      |
+| Layered-navigation configuration | ⏳      |
+| Responsive design review         | ❌      |
+| Store branding                   | ❌      |
+
+This is now one of the biggest remaining areas.
+
+The backend store works, but it still looks close to Magento’s default storefront.
+
+---
+
+## Phase 4 — B2C Store ⚠️ 55%
+
+### Completed
+
+| Feature                        | Status            |
+| ------------------------------ | ----------------- |
+| Standard customer registration | ✅ Magento default |
+| Customer login                 | ✅                 |
+| Product browsing               | ✅                 |
+| Cart                           | ✅                 |
+| Checkout                       | ✅                 |
+| Default Magento payment method | ✅                 |
+| Order placement                | ✅                 |
+| Customer order history         | ✅                 |
+| ERP order export               | ✅                 |
+
+### Remaining or optional
+
+| Feature                              | Priority                                                           |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| Custom customer-registration styling | Theme phase                                                        |
+| Wishlist                             | Magento default already available; configuration/design may remain |
+| Product reviews                      | Magento default available; configuration/design may remain         |
+| Reward points                        | Not required currently                                             |
+| Email-template customization         | Later                                                              |
+| Third-party payment gateway          | High priority                                                      |
+| Customer-facing store design         | High priority                                                      |
+
+The B2C transaction flow already works. The main missing work is presentation, payment integration, and final store configuration.
+
+---
+
+## Phase 5 — B2B Features ✅ 90%
+
+This is where the largest progress has happened.
+
+### Business Account module
+
+| Feature                           | Status |
+| --------------------------------- | ------ |
+| Business application form         | ✅      |
+| Company information               | ✅      |
+| Registration-number collection    | ✅      |
+| Pending application status        | ✅      |
+| Admin application grid            | ✅      |
+| Admin application details         | ✅      |
+| Approve business account          | ✅      |
+| Reject business account           | ✅      |
+| Approved Business Customer group  | ✅      |
+| My Account business status        | ✅      |
+| Eligibility service               | ✅      |
+| Approved-customer-only protection | ✅      |
+
+### Wholesale pricing
+
+| Feature                                | Status |
+| -------------------------------------- | ------ |
+| Business Customer group pricing        | ✅      |
+| 10% wholesale catalog rule             | ✅      |
+| Normal customers retain standard price | ✅      |
+| Pending/rejected customers excluded    | ✅      |
+
+### Request for Quote
+
+| Feature                                | Status   |
+| -------------------------------------- | -------- |
+| Request quote from full cart           | ✅        |
+| Request quote from mini-cart           | ✅        |
+| Approved customers only                | ✅        |
+| Requested quantity                     | ✅        |
+| Customer expected price                | ✅        |
+| Customer message                       | ✅        |
+| Quote header and items                 | ✅        |
+| Customer RFQ listing                   | ✅        |
+| Customer quote-details page            | ✅        |
+| Admin RFQ grid                         | ✅        |
+| Admin quote-details page               | ✅        |
+| Mark Under Review                      | ✅        |
+| Admin proposed prices                  | ✅        |
+| Admin comment                          | ✅        |
+| Expiry date                            | ✅        |
+| Customer Accept                        | ✅        |
+| Customer Reject                        | ✅        |
+| Accepted quote to cart                 | ✅        |
+| Existing cart replacement              | ✅        |
+| Negotiated price application           | ✅        |
+| Locked accepted quantity               | ✅        |
+| Prevent item removal                   | ✅        |
+| Prevent unrelated products             | ✅        |
+| Hide RFQ action on accepted cart       | ✅        |
+| Automatic order conversion             | ✅ Tested |
+| RFQ linked to Magento quote            | ✅        |
+| RFQ linked to sales order              | ✅        |
+| Customer/admin converted-order display | ✅        |
+| Duplicate conversion protection        | ✅        |
+
+### Remaining B2B work
+
+| Feature                   | Priority              |
+| ------------------------- | --------------------- |
+| Automatic RFQ expiry cron | Next                  |
+| RFQ email notifications   | Later                 |
+| Final RFQ development log | At project completion |
+
+You confirmed that Purchase Order, invoice-credit flow, and credit account are not needed.
+
+Therefore, for the actual business scope:
+
+```text
+B2B core functionality is nearly complete.
+```
+
+Once expiry cron is done, the functional B2B scope can be considered complete apart from low-priority emails.
+
+---
+
+## Phase 6 — Admin Features ⚠️ 70%
+
+### Completed
+
+| Feature                      | Status            |
+| ---------------------------- | ----------------- |
+| Business application grid    | ✅                 |
+| Business application details | ✅                 |
+| Approve/reject actions       | ✅                 |
+| RFQ grid                     | ✅                 |
+| RFQ details                  | ✅                 |
+| RFQ proposal form            | ✅                 |
+| Expected-price comparison    | ✅                 |
+| Converted-order link         | ✅                 |
+| Sync-history storage         | ✅                 |
+| Admin order management       | ✅ Magento default |
+
+### Remaining
+
+| Feature                             | Priority              |
+| ----------------------------------- | --------------------- |
+| ERP dashboard                       | Optional              |
+| Dedicated import-history Admin grid | Confirm current state |
+| Manual sync buttons in Admin        | Optional              |
+| Improved integration configuration  | Medium                |
+| Reporting dashboard                 | Optional              |
+| Store configuration cleanup         | Medium                |
+
+Some items from the older plan may no longer be necessary.
+
+For example, if console commands and sync-history tables already satisfy the learning objective, a large ERP dashboard is not essential.
+
+---
+
+## Phase 7 — ERP Simulation ⚠️ 75%
+
+### Completed
+
+| Feature              | Status |
+| -------------------- | ------ |
+| json-server setup    | ✅      |
+| Category endpoints   | ✅      |
+| Product endpoints    | ✅      |
+| Inventory endpoints  | ✅      |
+| Pricing endpoints    | ✅      |
+| Order endpoint       | ✅      |
+| Magento imports      | ✅      |
+| Magento order export | ✅      |
+
+### Not required for current scope
+
+| Feature               | Decision                                     |
+| --------------------- | -------------------------------------------- |
+| ERP customer endpoint | Not required                                 |
+| ERP quote endpoint    | Not required unless RFQ must sync externally |
+| ERP shipment endpoint | Not required                                 |
+| ERP invoice endpoint  | Not required                                 |
+
+The older status treated these as pending, but based on your clarified scope, they are not necessarily project blockers.
+
+Unless the business requirement specifically says RFQs, customers, invoices, and shipments must sync to ERP, we should not add them.
+
+---
+
+## Phase 8 — Payment Integration ⚠️ 20%
+
+### Current state
+
+| Feature                                       | Status       |
+| --------------------------------------------- | ------------ |
+| Magento default payment                       | ✅            |
+| Order placement                               | ✅            |
+| Cybersource investigation                     | ✅ Researched |
+| Amazon Payment Services/PayFort investigation | ✅ Researched |
+| External gateway implementation               | ❌            |
+
+You already decided that payment integration is still required, but the exact provider remains pending.
+
+Current sequence should be:
+
+```text
+Choose gateway with usable test credentials
+        ↓
+Install or build integration
+        ↓
+Configure sandbox
+        ↓
+Redirect/hosted payment or API payment
+        ↓
+Success handling
+        ↓
+Failure handling
+        ↓
+Cancel handling
+        ↓
+Transaction storage
+        ↓
+Order-status validation
+```
+
+This is a major remaining backend feature.
+
+---
+
+## Phase 9 — Theme, Figma and Store Design ❌ 10%
+
+You are correct that this has not been included enough in the recent completion estimate.
+
+This phase still contains substantial work.
+
+### Figma and design
+
+| Item                         | Status  |
+| ---------------------------- | ------- |
+| Figma design review          | Pending |
+| Extract design system        | Pending |
+| Colors and typography        | Pending |
+| Header design                | Pending |
+| Footer design                | Pending |
+| Homepage layout              | Pending |
+| Category page design         | Pending |
+| Product page design          | Pending |
+| Cart and checkout styling    | Pending |
+| Customer account styling     | Pending |
+| Business application styling | Pending |
+| RFQ pages styling            | Pending |
+
+### Magento theme work
+
+Likely structure:
+
+```text
+app/design/frontend/BrewCraft/default/
+├── registration.php
+├── theme.xml
+├── composer.json
+├── Magento_Theme/
+├── Magento_Catalog/
+├── Magento_Checkout/
+├── Magento_Customer/
+├── BrewCraft_BusinessAccount/
+├── BrewCraft_RequestQuote/
+└── web/
+    ├── css/
+    ├── fonts/
+    ├── images/
+    └── js/
+```
+
+### Store configuration
+
+| Item                      | Status               |
+| ------------------------- | -------------------- |
+| Store name                | Pending/final review |
+| Logo                      | Pending              |
+| Favicon                   | Pending              |
+| Currency                  | Pending/final review |
+| Locale                    | Pending/final review |
+| Timezone                  | Pending/final review |
+| Tax configuration         | Pending              |
+| Shipping methods          | Pending              |
+| Email sender identities   | Pending              |
+| Contact information       | Pending              |
+| CMS pages                 | Pending              |
+| URL rewrites              | Pending              |
+| SEO metadata              | Pending              |
+| Search configuration      | Pending              |
+| Layered navigation        | Pending              |
+| Category display settings | Pending              |
+
+This phase is large enough that it should be treated as a dedicated project phase, not as small final polish.
+
+---
+
+## Phase 10 — Final finishing work
+
+### Required
+
+| Item                            | Status  |
+| ------------------------------- | ------- |
+| Automatic RFQ expiry cron       | Next    |
+| Payment gateway                 | Pending |
+| BrewCraft theme                 | Pending |
+| Figma implementation            | Pending |
+| Homepage and CMS pages          | Pending |
+| Store configurations            | Pending |
+| Product media                   | Pending |
+| Final end-to-end testing        | Pending |
+| Final development documentation | Pending |
+
+### Lower priority
+
+| Item                        | Status       |
+| --------------------------- | ------------ |
+| RFQ emails                  | Later        |
+| Custom transactional emails | Later        |
+| ERP retry mechanism         | Later        |
+| Advanced reports            | Optional     |
+| Automated tests             | Not required |
+
+---
+
+## Correct project roadmap from here
+
+Based on your clarified requirements, the right sequence is:
+
+### Phase A — Finish RFQ
+
+```text
+Automatic expiry cron
+```
+
+Then RFQ is functionally complete.
+
+### Phase B — Payment integration
+
+```text
+Choose practical gateway
+→ Obtain sandbox credentials
+→ Integrate payment
+→ Test success/failure/cancel/refund behavior
+```
+
+### Phase C — Theme and Figma
+
+```text
+Review final Figma
+→ Create custom Magento theme
+→ Build header/footer
+→ Build homepage
+→ Style catalog/product/cart/checkout
+→ Style Business Account and RFQ pages
+```
+
+### Phase D — Store content and configuration
+
+```text
+CMS pages
+Navigation
+Logo and favicon
+Tax
+Shipping
+Search
+Layered navigation
+Product media
+Email identities
+SEO configuration
+```
+
+### Phase E — Final project completion
+
+```text
+RFQ emails
+Final end-to-end tests
+Code cleanup
+Development logs
+Architecture explanation
+Interview-ready project documentation
+```
+
+## Final status summary
+
+```text
+Project setup                    Complete
+ERP integration                 Complete for local simulation
+ERP scheduling                  Works through cron:run locally
+B2C transaction flow            Complete
+Business Account workflow       Complete
+Wholesale pricing               Complete
+RFQ workflow                    Complete
+Automatic RFQ conversion        Complete and tested
+RFQ automatic expiry            Pending
+Third-party payment             Pending
+Theme/Figma implementation      Largely pending
+Store configuration             Pending
+Emails                          Low priority
+Documentation                   Final phase
+```
+
+The project is currently:
+
+```text
+Backend business functionality: approximately 90% complete
+
+Storefront/design/configuration: approximately 35–40% complete
+
+Whole BrewCraft project: approximately 70–75% complete
+```
+
+So our next immediate task remains:
+
+```text
+Automatic RFQ expiry cron
+```
+
+After that, we should move to the payment gateway or theme work according to the priority you set earlier: payment/checkout integration first, then storefront design.
+
+
+
+# 5.BrewCraft Request Quote — Development Log
+
+### Automatic RFQ Expiry using Magento Cron
+
+#### Objective
+
+The RFQ module already allowed Admin to set an expiry date while creating a proposal. Before this enhancement, expiry was checked only when the customer interacted with the quotation.
+
+That meant a record could remain in the database as:
+
+```text
+status = quoted
+expires_at = already passed
+```
+
+even though the proposal was no longer valid.
+
+We therefore added an automatic Magento cron process to update expired quotations without requiring customer or Admin interaction.
+
+---
+
+### 1. Previous behavior
+
+The existing quotation flow was:
+
+```text
+pending
+   ↓
+under_review
+   ↓
+quoted
+```
+
+When Admin created a proposal, Admin could optionally set:
+
+```text
+expires_at
+```
+
+Example:
+
+```text
+Quote Number: BCQ-000025
+Status: quoted
+Expiry: 2026-08-07 10:00:00
+```
+
+Customer-side validation already prevented an expired proposal from being accepted or rejected.
+
+However, the actual database status could still remain:
+
+```text
+quoted
+```
+
+after the expiry time had passed.
+
+#### Problem
+
+This created an inconsistency:
+
+```text
+Database says:
+quoted
+
+Actual business state says:
+expired
+```
+
+It could also make Admin grids and customer quote listings misleading.
+
+---
+
+## 2. Required business behavior
+
+We defined the automatic transition as:
+
+```text
+status = quoted
+AND
+expires_at is set
+AND
+expires_at < current time
+        ↓
+status = expired
+```
+
+Only `quoted` RFQs should be automatically expired.
+
+The cron must not modify:
+
+```text
+pending
+under_review
+accepted
+rejected
+converted
+cancelled
+expired
+```
+
+For example:
+
+| Current Status | Expiry passed? | Cron result         |
+| -------------- | -------------: | ------------------- |
+| quoted         |            Yes | `expired`           |
+| quoted         |             No | Remains `quoted`    |
+| quoted         |           NULL | Remains `quoted`    |
+| accepted       |            Yes | Remains `accepted`  |
+| rejected       |            Yes | Remains `rejected`  |
+| converted      |            Yes | Remains `converted` |
+
+This protects completed or already-decided quotations from being changed incorrectly.
+
+---
+
+## 4. Why we separated Cron and Service
+
+We intentionally did not place the database update directly inside the cron class.
+
+Instead:
+
+```text
+Cron class
+→ Controls scheduled execution
+
+Service class
+→ Contains RFQ expiry business logic
+```
+
+This follows a cleaner Magento architecture.
+
+The cron class simply asks:
+
+```php
+$this->quoteExpiryService->expireQuotes();
+```
+
+The service performs the actual work.
+
+This means the same expiry functionality could later be reused from:
+
+```text
+Magento cron
+CLI command
+Admin action
+API
+Other business service
+```
+
+without duplicating the expiry logic.
+
+---
+
+## 5. `QuoteExpiryService`
+
+Created:
+
+```text
+Model/Service/QuoteExpiryService.php
+```
+
+Its responsibility is:
+
+```text
+Find expired quoted RFQs
+        ↓
+Change status to expired
+        ↓
+Return affected record count
+        ↓
+Log result
+```
+
+We defined the relevant states:
+
+```php
+private const STATUS_QUOTED = 'quoted';
+private const STATUS_EXPIRED = 'expired';
+```
+
+---
+
+## 6. Database update strategy
+
+Instead of loading every RFQ model individually:
+
+```text
+Load RFQ 1
+Save RFQ 1
+
+Load RFQ 2
+Save RFQ 2
+
+Load RFQ 3
+Save RFQ 3
+```
+
+we used one database update query through Magento's `ResourceConnection`.
+
+Conceptually:
+
+```sql
+UPDATE brewcraft_quote_request
+SET status = 'expired'
+WHERE status = 'quoted'
+  AND expires_at IS NOT NULL
+  AND expires_at < CURRENT_TIME;
+```
+
+This approach is efficient because the database can update all expired records in one operation.
+
+For a scheduled background process, this is preferable to repeatedly loading and saving individual Magento models.
+
+---
+
+## 7. Why `ResourceConnection` was used
+
+Magento's:
+
+```php
+Magento\Framework\App\ResourceConnection
+```
+
+was injected into the service.
+
+It provides access to Magento's configured database connection:
+
+```php
+$connection = $this->resourceConnection
+    ->getConnection();
+```
+
+The table name is resolved through Magento:
+
+```php
+$tableName = $this->resourceConnection
+    ->getTableName(
+        'brewcraft_quote_request'
+    );
+```
+
+Using `getTableName()` is important because Magento installations may use database table prefixes.
+
+We therefore did not hardcode the final physical table name into the SQL execution.
+
+---
+
+## 8. Time handling
+
+We used Magento's:
+
+```php
+Magento\Framework\Stdlib\DateTime\DateTime
+```
+
+and:
+
+```php
+$this->dateTime->gmtDate();
+```
+
+instead of PHP:
+
+```php
+date('Y-m-d H:i:s');
+```
+
+The reason is timezone consistency.
+
+Magento typically stores system timestamps in UTC, so comparing against GMT avoids issues where:
+
+```text
+PHP server timezone
+Magento configured timezone
+Database timestamps
+```
+
+might differ.
+
+The comparison becomes:
+
+```text
+expires_at < current UTC/GMT time
+```
+
+---
+
+## 9. Null expiry protection
+
+Expiry date is optional when Admin creates the proposal.
+
+Therefore:
+
+```text
+expires_at = NULL
+```
+
+means:
+
+```text
+No automatic expiration date was configured.
+```
+
+The query explicitly includes:
+
+```text
+expires_at IS NOT NULL
+```
+
+so quotations without an expiry date remain unchanged.
+
+---
+
+## 10. Cron execution class
+
+Created:
+
+```text
+Cron/ExpireQuoteRequests.php
+```
+
+The class has one scheduled method:
+
+```php
+public function execute(): void
+```
+
+Its responsibility is intentionally small:
+
+```text
+Magento calls execute()
+        ↓
+Call QuoteExpiryService
+        ↓
+Receive expired record count
+        ↓
+Write debug/error logging
+```
+
+It doesn't contain quotation business rules itself.
+
+---
+
+## 11. Error handling
+
+The cron job catches unexpected exceptions.
+
+This is important because one failing scheduled task should be logged clearly rather than silently disappear.
+
+We added logging for:
+
+```text
+Successful execution
+Number of expired RFQs
+Failure reason
+Execution errors
+```
+
+Example successful information:
+
+```text
+BrewCraft RFQ expiry cron completed.
+expired_count = 2
+```
+
+On failure:
+
+```text
+Unable to execute BrewCraft RFQ expiry cron.
+```
+
+with the exception message in the log context.
+
+---
+
+## 12. Cron registration
+
+Created:
+
+```text
+etc/crontab.xml
+```
+
+The job was registered under Magento's:
+
+```text
+default
+```
+
+cron group.
+
+Job code:
+
+```text
+brewcraft_requestquote_expire_quotes
+```
+
+Cron class:
+
+```text
+BrewCraft\RequestQuote\Cron\ExpireQuoteRequests
+```
+
+Method:
+
+```text
+execute
+```
+
+Schedule:
+
+```text
+*/5 * * * *
+```
+
+Meaning:
+
+```text
+Run every 5 minutes
+```
+
+---
+
+## 13. Cron expression explanation
+
+Our expression:
+
+```text
+*/5 * * * *
+```
+
+has five parts:
+
+```text
+Minute      */5
+Hour        *
+Day         *
+Month       *
+Weekday     *
+```
+
+Therefore:
+
+```text
+00
+05
+10
+15
+20
+25
+30
+35
+40
+45
+50
+55
+```
+
+minutes of every hour are eligible execution times.
+
+For the local learning project, this frequency is appropriate.
+
+---
+
+## 14. Magento cron vs Linux cron
+
+This was an important distinction in our environment.
+
+Magento cron configuration:
+
+```text
+etc/crontab.xml
+```
+
+does **not by itself continuously execute jobs**.
+
+There are two levels:
+
+```text
+Operating System Cron
+        ↓
+bin/magento cron:run
+        ↓
+Magento reads crontab.xml
+        ↓
+Magento schedules/runs jobs
+        ↓
+Our RFQ cron executes
+```
+
+In a production environment, Linux would normally contain something similar to:
+
+```bash
+* * * * * php /path/to/magento/bin/magento cron:run
+```
+
+so Magento cron is triggered automatically every minute.
+
+---
+
+## 15. Local Reward environment behavior
+
+In our local development environment, Linux cron is not continuously calling Magento automatically.
+
+Therefore we test using:
+
+```bash
+bin/magento cron:run
+```
+
+Often during testing we run:
+
+```bash
+bin/magento cron:run
+bin/magento cron:run
+```
+
+because Magento may first create scheduled entries and then execute jobs whose scheduled time is due.
+
+This is expected in the local setup and does not mean the custom cron implementation is incorrect.
+
+---
+
+## 16. Magento `cron_schedule` table
+
+Magento tracks cron executions in:
+
+```text
+cron_schedule
+```
+
+We verified our job using:
+
+```sql
+SELECT
+    schedule_id,
+    job_code,
+    status,
+    messages,
+    scheduled_at,
+    executed_at,
+    finished_at
+FROM cron_schedule
+WHERE job_code =
+    'brewcraft_requestquote_expire_quotes'
+ORDER BY schedule_id DESC;
+```
+
+Possible Magento cron statuses include:
+
+```text
+pending
+running
+success
+error
+missed
+```
+
+A successful RFQ expiry execution results in:
+
+```text
+job_code =
+brewcraft_requestquote_expire_quotes
+
+status =
+success
+```
+
+---
+
+## 17. Testing strategy
+
+To avoid waiting for a real future expiry date, we created a normal quotation through the application:
+
+```text
+Customer creates RFQ
+        ↓
+Admin marks Under Review
+        ↓
+Admin saves proposal
+        ↓
+Status = quoted
+```
+
+Then we manually changed only the test expiry timestamp in the database.
+
+Example:
+
+```sql
+UPDATE brewcraft_quote_request
+SET expires_at = DATE_SUB(
+    UTC_TIMESTAMP(),
+    INTERVAL 10 MINUTE
+)
+WHERE entity_id = <TEST_RFQ_ID>;
+```
+
+This simulated:
+
+```text
+Quote expired 10 minutes ago.
+```
+
+Before cron:
+
+```text
+status = quoted
+```
+
+Then we executed:
+
+```bash
+bin/magento cron:run
+```
+
+After cron:
+
+```text
+status = expired
+```
+
+This verified the complete scheduled behavior.
+
+---
+
+## 18. Customer-side result
+
+The RFQ customer page already understood the:
+
+```text
+expired
+```
+
+status.
+
+Therefore no additional frontend expiry system was required.
+
+After cron updates the database:
+
+```text
+My Account
+→ My Quote Requests
+```
+
+shows:
+
+```text
+Status: Expired
+```
+
+The customer cannot:
+
+```text
+Accept Proposal
+Reject Proposal
+Proceed with Accepted Quote
+```
+
+because an expired quotation is no longer eligible for those transitions.
+
+---
+
+## 19. Admin-side result
+
+The Admin RFQ grid and details use the same:
+
+```text
+brewcraft_quote_request.status
+```
+
+field.
+
+Therefore, after cron changes:
+
+```text
+quoted → expired
+```
+
+Admin automatically sees:
+
+```text
+Expired
+```
+
+No separate Admin synchronization process was required.
+
+---
+
+## 20. Why only `quoted` is automatically expired
+
+A proposal expiry date refers to the period during which the customer can decide whether to accept the Admin proposal.
+
+Therefore:
+
+```text
+quoted
+```
+
+is the state where expiration matters.
+
+Consider:
+
+```text
+quoted
+→ proposal awaiting customer decision
+→ expiry applies
+```
+
+But:
+
+```text
+accepted
+```
+
+means the customer already accepted the proposal.
+
+Similarly:
+
+```text
+rejected
+```
+
+means the customer already rejected it.
+
+And:
+
+```text
+converted
+```
+
+means the accepted quote already became an order.
+
+Changing those records to `expired` would destroy valid business-history information.
+
+---
+
+## 21. Final RFQ status lifecycle
+
+The completed lifecycle is now:
+
+```text
+                 pending
+                    ↓
+              under_review
+                    ↓
+                 quoted
+             ┌──────┼──────┐
+             ↓      ↓      ↓
+         accepted rejected expired
+             ↓
+     accepted quote cart
+             ↓
+          checkout
+             ↓
+        order placed
+             ↓
+         converted
+```
+
+Automatic cron handles specifically:
+
+```text
+quoted
+   │
+   │ expires_at < current time
+   ↓
+expired
+```
+
+Customer actions handle:
+
+```text
+quoted → accepted
+quoted → rejected
+```
+
+Order placement handles:
+
+```text
+accepted → converted
+```
+
+This gives each status transition a clear responsibility.
+
+---
+
+
+## 24. Why the job is safe to run repeatedly
+
+An important property of the cron is that it can run repeatedly.
+
+Suppose RFQ `25` is changed:
+
+```text
+quoted → expired
+```
+
+on the first execution.
+
+Five minutes later cron runs again.
+
+Its condition requires:
+
+```text
+status = quoted
+```
+
+but RFQ `25` now has:
+
+```text
+status = expired
+```
+
+so it is ignored.
+
+Therefore:
+
+```text
+Run 1 → expired
+Run 2 → ignored
+Run 3 → ignored
+...
+```
+
+This makes the job naturally idempotent for already-expired records.
+
+---
+---
+
+### Interview-ready explanation
+
+> In the BrewCraft Request Quote module, Admin can define an expiry date for a quotation proposal. Initially, expiry was validated only when the customer interacted with the quote, which meant an already-expired proposal could still remain with `quoted` status in the database.
+>
+> I implemented a Magento cron job that runs periodically and finds only quotations with `quoted` status whose `expires_at` timestamp has passed. A separate `QuoteExpiryService` contains the business logic, while the Cron class only handles scheduled execution. The service uses Magento's `ResourceConnection` to perform a bulk database update, which is more efficient than loading and saving each model individually.
+>
+> The job runs every five minutes through `crontab.xml`, uses Magento GMT time for consistent timestamp comparison, ignores quotations without an expiry date, and does not modify accepted, rejected, converted, or already-expired quotations. Magento tracks its execution through the `cron_schedule` table. In my local Docker environment I trigger Magento cron manually using `bin/magento cron:run`, whereas in production an OS-level cron would invoke Magento automatically.
+>
+> This completed the RFQ lifecycle so that a proposal can automatically transition from `quoted` to `expired` when its validity period ends.

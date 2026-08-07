@@ -235,6 +235,17 @@ $quoteItems = $block->getQuoteItems();
                             </td>
                         </tr>
 
+                        <?php if ($block->isConverted()): ?>
+                            <tr>
+                                <th scope="row"><?= $escaper->escapeHtml(__('Order Number')) ?></th>
+                                <td><?= $escaper->escapeHtml($block->getOrderNumber()) ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?= $escaper->escapeHtml(__('Converted At')) ?></th>
+                                <td><?= $escaper->escapeHtml($block->formatDateValue($quoteRequest->getData('converted_at'))) ?></td>
+                            </tr>
+                        <?php endif; ?>
+
                         <?php if (
                             trim(
                                 (string)$quoteRequest->getData(
@@ -657,18 +668,82 @@ $quoteItems = $block->getQuoteItems();
 
             </section>
 
-        <?php elseif ($block->isAccepted()): ?>
+        <?php elseif ($block->isConverted()): ?>
 
             <div class="message success">
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('This quotation was converted to order #%1.', $block->getOrderNumber())
+                    ) ?>
+                </span>
+            </div>
 
+            <?php if ($block->getOrderViewUrl() !== ''): ?>
+                <div class="actions-toolbar">
+                    <div class="primary">
+                        <a class="action primary"
+                           href="<?= $escaper->escapeUrl($block->getOrderViewUrl()) ?>">
+                            <span><?= $escaper->escapeHtml(__('View Order')) ?></span>
+                        </a>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+        <?php elseif ($block->canConvertToCart()): ?>
+
+            <section class="brewcraft-quote-account-view__conversion">
+
+                <div class="message success">
+                    <span>
+                        <?= $escaper->escapeHtml(
+                            __(
+                                'You accepted this quote proposal. You can now load its products and negotiated prices into your shopping cart.'
+                            )
+                        ) ?>
+                    </span>
+                </div>
+
+                <form method="post"
+                      action="<?= $escaper->escapeUrl(
+                          $block->getConvertToCartUrl()
+                      ) ?>">
+
+                    <?= $block->getBlockHtml('formkey') ?>
+
+                    <div class="actions-toolbar">
+                        <div class="primary">
+                            <button type="submit"
+                                    class="action primary"
+                                    onclick="return confirm(
+                                        '<?= $escaper->escapeJs(
+                                            __(
+                                                'Your current shopping cart will be replaced with the products, quantities and negotiated prices from this accepted quote. Continue?'
+                                            )
+                                        ) ?>'
+                                    );">
+                                <span>
+                                    <?= $escaper->escapeHtml(
+                                        __('Proceed with Accepted Quote')
+                                    ) ?>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </section>
+
+        <?php elseif ($block->isAccepted() && $block->isProposalExpired()): ?>
+
+            <div class="message warning">
                 <span>
                     <?= $escaper->escapeHtml(
                         __(
-                            'You accepted this quote proposal. The next step is to convert it into your shopping cart.'
+                            'This accepted quotation has expired and can no longer be loaded into the shopping cart.'
                         )
                     ) ?>
                 </span>
-
             </div>
 
         <?php elseif ($block->isRejected()): ?>

@@ -5,16 +5,18 @@
 
     <type name="Magento\Customer\CustomerData\SectionPoolInterface">
         <arguments>
-            <argument name="sectionSourceMap"
-                      xsi:type="array">
-
-                <item name="brewcraft_quote_eligibility"
-                      xsi:type="string">
+            <argument name="sectionSourceMap" xsi:type="array">
+                <item name="brewcraft_quote_eligibility" xsi:type="string">
                     BrewCraft\RequestQuote\CustomerData\QuoteEligibility
                 </item>
-
             </argument>
         </arguments>
+    </type>
+
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="brewcraft_request_quote_controlled_cart"
+                type="BrewCraft\RequestQuote\Plugin\Checkout\ControlledCartPlugin"
+                sortOrder="10"/>
     </type>
 
 </config>

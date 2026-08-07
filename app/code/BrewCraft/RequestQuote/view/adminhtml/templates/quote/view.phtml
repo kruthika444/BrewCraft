@@ -35,6 +35,9 @@ $businessAccount = $block->getBusinessAccount();
     $proposedSubtotal = $quoteRequest->getData(
         'proposed_subtotal'
     );
+    $orderId = (int)$quoteRequest->getData('order_id');
+    $orderIncrementId = trim((string)$quoteRequest->getData('order_increment_id'));
+    $convertedAt = trim((string)$quoteRequest->getData('converted_at'));
     ?>
 
     <div class="page-main-actions">
@@ -55,6 +58,13 @@ $businessAccount = $block->getBusinessAccount();
                     </span>
 
                 </a>
+
+                <?php if ($orderId > 0): ?>
+                    <a class="action-primary scalable"
+                       href="<?= $escaper->escapeUrl($block->getUrl('sales/order/view', ['order_id' => $orderId])) ?>">
+                        <span><?= $escaper->escapeHtml(__('View Order')) ?></span>
+                    </a>
+                <?php endif; ?>
 
                 <?php if ($block->canMarkUnderReview()): ?>
 
@@ -323,6 +333,12 @@ $businessAccount = $block->getBusinessAccount();
                                     ) ?>
                                 </td>
                             </tr>
+
+                            <?php if ($orderId > 0): ?>
+                                <tr><th><?= $escaper->escapeHtml(__('Magento Order ID')) ?></th><td><?= $escaper->escapeHtml((string)$orderId) ?></td></tr>
+                                <tr><th><?= $escaper->escapeHtml(__('Order Number')) ?></th><td><a href="<?= $escaper->escapeUrl($block->getUrl('sales/order/view', ['order_id' => $orderId])) ?>"><?= $escaper->escapeHtml($orderIncrementId) ?></a></td></tr>
+                                <tr><th><?= $escaper->escapeHtml(__('Converted At')) ?></th><td><?= $escaper->escapeHtml($convertedAt !== '' ? $block->formatDateValue($convertedAt) : __('Not available')) ?></td></tr>
+                            <?php endif; ?>
 
                             <tr>
                                 <th>

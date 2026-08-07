@@ -1,113 +1,86 @@
 <?xml version="1.0"?>
 
-<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
 
     <table name="brewcraft_quote_request" resource="default" engine="innodb" comment="BrewCraft Quote Request">
-
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Quote Request ID"/>
-
         <column xsi:type="int" name="customer_id" unsigned="true" nullable="false" comment="Customer ID"/>
-
         <column xsi:type="int" name="business_account_id" unsigned="true" nullable="false" comment="Business Account Application ID"/>
-
         <column xsi:type="varchar" name="quote_number" nullable="false" length="64" comment="Quote Request Number"/>
-
         <column xsi:type="varchar" name="quote_name" nullable="false" length="255" comment="Quote Name"/>
-
         <column xsi:type="text" name="customer_message" nullable="true" comment="Customer Message"/>
-
         <column xsi:type="text" name="admin_comment" nullable="true" comment="Admin Comment"/>
-
         <column xsi:type="varchar" name="status" nullable="false" length="32" default="pending" comment="Quote Status"/>
-
         <column xsi:type="decimal" name="original_subtotal" scale="4" precision="20" nullable="false" default="0.0000" comment="Original Subtotal"/>
-
+        <column xsi:type="decimal" name="customer_expected_subtotal" scale="4" precision="12" unsigned="true" nullable="true" comment="Customer Expected Subtotal"/>
         <column xsi:type="decimal" name="proposed_subtotal" scale="4" precision="20" nullable="true" comment="Proposed Subtotal"/>
-
         <column xsi:type="varchar" name="currency_code" nullable="false" length="3" comment="Currency Code"/>
-
+        <column xsi:type="int" name="checkout_quote_id" unsigned="true" nullable="true" comment="Magento Checkout Quote ID"/>
+        <column xsi:type="int" name="order_id" unsigned="true" nullable="true" comment="Magento Sales Order ID"/>
+        <column xsi:type="varchar" name="order_increment_id" nullable="true" length="50" comment="Magento Order Increment ID"/>
+        <column xsi:type="timestamp" name="converted_at" nullable="true" on_update="false" comment="Converted At"/>
         <column xsi:type="timestamp" name="expires_at" nullable="true" on_update="false" comment="Expiry Date"/>
-
         <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At"/>
-
         <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
 
-        <column xsi:type="decimal" name="customer_expected_subtotal" scale="4" precision="12" unsigned="true" nullable="true" comment="Customer Expected Subtotal"/>
-
-        <constraint xsi:type="primary" referenceId="PRIMARY">
-            <column name="entity_id"/>
-        </constraint>
-
-        <constraint xsi:type="unique" referenceId="BREWCRAFT_QUOTE_REQUEST_QUOTE_NUMBER_UNQ">
-            <column name="quote_number"/>
-        </constraint>
-
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="entity_id"/></constraint>
+        <constraint xsi:type="unique" referenceId="BREWCRAFT_QUOTE_REQUEST_QUOTE_NUMBER_UNQ"><column name="quote_number"/></constraint>
         <constraint xsi:type="foreign" referenceId="BREWCRAFT_QUOTE_REQUEST_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID" table="brewcraft_quote_request" column="customer_id" referenceTable="customer_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
-
         <constraint xsi:type="foreign" referenceId="BREWCRAFT_QUOTE_REQUEST_BUSINESS_ACCOUNT_ID_BUSINESS_ACCOUNT_ENTITY_ID" table="brewcraft_quote_request" column="business_account_id" referenceTable="brewcraft_business_account" referenceColumn="entity_id" onDelete="CASCADE"/>
 
-        <index referenceId="BREWCRAFT_QUOTE_REQUEST_CUSTOMER_ID" indexType="btree">
-            <column name="customer_id"/>
-        </index>
-
-        <index referenceId="BREWCRAFT_QUOTE_REQUEST_STATUS" indexType="btree">
-            <column name="status"/>
-        </index>
-
-        <index referenceId="BREWCRAFT_QUOTE_REQUEST_CREATED_AT" indexType="btree">
-            <column name="created_at"/>
-        </index>
-
+        <index referenceId="BREWCRAFT_QUOTE_REQUEST_CUSTOMER_ID" indexType="btree"><column name="customer_id"/></index>
+        <index referenceId="BREWCRAFT_QUOTE_REQUEST_STATUS" indexType="btree"><column name="status"/></index>
+        <index referenceId="BREWCRAFT_QUOTE_REQUEST_CHECKOUT_QUOTE_ID" indexType="btree"><column name="checkout_quote_id"/></index>
+        <index referenceId="BREWCRAFT_QUOTE_REQUEST_ORDER_ID" indexType="btree"><column name="order_id"/></index>
+        <index referenceId="BREWCRAFT_QUOTE_REQUEST_ORDER_INCREMENT_ID" indexType="btree"><column name="order_increment_id"/></index>
+        <index referenceId="BREWCRAFT_QUOTE_REQUEST_CREATED_AT" indexType="btree"><column name="created_at"/></index>
     </table>
 
     <table name="brewcraft_quote_request_item" resource="default" engine="innodb" comment="BrewCraft Quote Request Item">
-
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Quote Request Item ID"/>
-
         <column xsi:type="int" name="quote_request_id" unsigned="true" nullable="false" comment="Quote Request ID"/>
-
         <column xsi:type="int" name="product_id" unsigned="true" nullable="true" comment="Product ID"/>
-
         <column xsi:type="varchar" name="sku" nullable="false" length="255" comment="SKU"/>
-
         <column xsi:type="varchar" name="product_name" nullable="false" length="255" comment="Product Name"/>
-
         <column xsi:type="decimal" name="requested_qty" scale="4" precision="12" nullable="false" default="1.0000" comment="Requested Quantity"/>
-
         <column xsi:type="decimal" name="original_price" scale="4" precision="20" nullable="false" default="0.0000" comment="Original Unit Price"/>
-
         <column xsi:type="decimal" name="expected_price" scale="4" precision="12" unsigned="true" nullable="true" comment="Customer Expected Unit Price"/>
-
         <column xsi:type="decimal" name="proposed_price" scale="4" precision="20" nullable="true" comment="Proposed Unit Price"/>
-
         <column xsi:type="decimal" name="original_row_total" scale="4" precision="20" nullable="false" default="0.0000" comment="Original Row Total"/>
-
         <column xsi:type="decimal" name="expected_row_total" scale="4" precision="12" unsigned="true" nullable="true" comment="Customer Expected Row Total"/>
-
         <column xsi:type="decimal" name="proposed_row_total" scale="4" precision="20" nullable="true" comment="Proposed Row Total"/>
-
         <column xsi:type="text" name="product_options" nullable="true" comment="Product Options JSON"/>
-
         <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At"/>
-
         <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
 
-        <constraint xsi:type="primary" referenceId="PRIMARY">
-            <column name="entity_id"/>
-        </constraint>
-
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="entity_id"/></constraint>
         <constraint xsi:type="foreign" referenceId="BREWCRAFT_QUOTE_ITEM_QUOTE_REQUEST_ID_QUOTE_REQUEST_ENTITY_ID" table="brewcraft_quote_request_item" column="quote_request_id" referenceTable="brewcraft_quote_request" referenceColumn="entity_id" onDelete="CASCADE"/>
-
         <constraint xsi:type="foreign" referenceId="BREWCRAFT_QUOTE_ITEM_PRODUCT_ID_CATALOG_PRODUCT_ENTITY_ENTITY_ID" table="brewcraft_quote_request_item" column="product_id" referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="SET NULL"/>
 
-        <index referenceId="BREWCRAFT_QUOTE_ITEM_QUOTE_REQUEST_ID" indexType="btree">
-            <column name="quote_request_id"/>
-        </index>
+        <index referenceId="BREWCRAFT_QUOTE_ITEM_QUOTE_REQUEST_ID" indexType="btree"><column name="quote_request_id"/></index>
+        <index referenceId="BREWCRAFT_QUOTE_ITEM_SKU" indexType="btree"><column name="sku"/></index>
+    </table>
 
-        <index referenceId="BREWCRAFT_QUOTE_ITEM_SKU" indexType="btree">
-            <column name="sku"/>
-        </index>
+    <table name="quote" resource="checkout">
+        <column xsi:type="int" name="brewcraft_quote_request_id" unsigned="true" nullable="true" comment="BrewCraft Quote Request ID"/>
+        <constraint xsi:type="foreign" referenceId="QUOTE_BREWCRAFT_QUOTE_REQUEST_ID_BREWCRAFT_QUOTE_REQUEST_ENTITY_ID" table="quote" column="brewcraft_quote_request_id" referenceTable="brewcraft_quote_request" referenceColumn="entity_id" onDelete="SET NULL"/>
+        <index referenceId="QUOTE_BREWCRAFT_QUOTE_REQUEST_ID" indexType="btree"><column name="brewcraft_quote_request_id"/></index>
+    </table>
 
+    <table name="quote_item" resource="checkout">
+        <column xsi:type="int" name="brewcraft_quote_request_item_id" unsigned="true" nullable="true" comment="BrewCraft Quote Request Item ID"/>
+        <column xsi:type="decimal" name="brewcraft_locked_qty" scale="4" precision="12" nullable="true" comment="BrewCraft Locked Quoted Quantity"/>
+        <column xsi:type="decimal" name="brewcraft_negotiated_price" scale="4" precision="20" nullable="true" comment="BrewCraft Negotiated Unit Price"/>
+
+        <constraint xsi:type="foreign" referenceId="QUOTE_ITEM_BREWCRAFT_REQUEST_ITEM_ID_REQUEST_ITEM_ENTITY_ID" table="quote_item" column="brewcraft_quote_request_item_id" referenceTable="brewcraft_quote_request_item" referenceColumn="entity_id" onDelete="SET NULL"/>
+        <index referenceId="QUOTE_ITEM_BREWCRAFT_REQUEST_ITEM_ID" indexType="btree"><column name="brewcraft_quote_request_item_id"/></index>
+    </table>
+
+    <table name="sales_order" resource="sales">
+        <column xsi:type="int" name="brewcraft_quote_request_id" unsigned="true" nullable="true" comment="BrewCraft Quote Request ID"/>
+        <constraint xsi:type="foreign" referenceId="SALES_ORDER_BREWCRAFT_QUOTE_REQUEST_ID_REQUEST_ENTITY_ID" table="sales_order" column="brewcraft_quote_request_id" referenceTable="brewcraft_quote_request" referenceColumn="entity_id" onDelete="SET NULL"/>
+        <index referenceId="SALES_ORDER_BREWCRAFT_QUOTE_REQUEST_ID" indexType="btree"><column name="brewcraft_quote_request_id"/></index>
     </table>
 
 </schema>

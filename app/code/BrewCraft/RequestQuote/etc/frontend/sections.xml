@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
+
+    <action name="requestquote/account/convertToCart">
+        <section name="cart"/>
+        <section name="brewcraft_quote_eligibility"/>
+    </action>
+
+    <action name="checkout/cart/add">
+        <section name="cart"/>
+        <section name="brewcraft_quote_eligibility"/>
+    </action>
+
+    <action name="checkout/cart/updatePost">
+        <section name="cart"/>
+        <section name="brewcraft_quote_eligibility"/>
+    </action>
+
+    <action name="checkout/cart/delete">
+        <section name="cart"/>
+        <section name="brewcraft_quote_eligibility"/>
+    </action>
+
+</config>

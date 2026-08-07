@@ -37,9 +37,11 @@ class RequestQuote extends Template
         }
 
         try {
-            $cart = $this->cartRepository->getActiveForCustomer(
-                $customerId
-            );
+            $cart = $this->cartRepository->getActiveForCustomer($customerId);
+
+            if ((int)$cart->getData('brewcraft_quote_request_id') > 0) {
+                return false;
+            }
 
             return count($cart->getAllVisibleItems()) > 0;
         } catch (\Throwable $exception) {
@@ -57,8 +59,6 @@ class RequestQuote extends Template
 
     public function getRequestQuoteUrl(): string
     {
-        return $this->getUrl(
-            'requestquote/request/create'
-        );
+        return $this->getUrl('requestquote/request/create');
     }
 }
