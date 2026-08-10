@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="quote" resource="checkout" engine="innodb">
+
+        <column xsi:type="varchar" name="brewcraft_razorpay_order_id" nullable="true" length="100" comment="BrewCraft Razorpay Order ID"/>
+
+        <column xsi:type="varchar" name="brewcraft_razorpay_payment_id" nullable="true" length="100" comment="BrewCraft Razorpay Payment ID"/>
+
+        <column xsi:type="varchar" name="brewcraft_razorpay_signature" nullable="true" length="255" comment="BrewCraft Razorpay Signature"/>
+
+        <index referenceId="QUOTE_BREWCRAFT_RAZORPAY_ORDER_ID" indexType="btree">
+            <column name="brewcraft_razorpay_order_id"/>
+        </index>
+
+    </table>
+
+    <table name="brewcraft_razorpay_webhook_event" resource="default" engine="innodb" comment="BrewCraft Razorpay Webhook Events">
+
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+
+        <column xsi:type="varchar" name="event_id" nullable="false" length="100" comment="Razorpay Event ID"/>
+
+        <column xsi:type="varchar" name="event_type" nullable="false" length="100" comment="Razorpay Event Type"/>
+
+        <column xsi:type="varchar" name="payment_id" nullable="true" length="100" comment="Razorpay Payment ID"/>
+
+        <column xsi:type="varchar" name="razorpay_order_id" nullable="true" length="100" comment="Razorpay Order ID"/>
+
+        <column xsi:type="varchar" name="status" nullable="false" length="30" default="processing" comment="Processing Status"/>
+
+        <column xsi:type="text" name="error_message" nullable="true" comment="Processing Error"/>
+
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Created At"/>
+
+        <column xsi:type="timestamp" name="processed_at" nullable="true" on_update="false" comment="Processed At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+
+        <constraint xsi:type="unique" referenceId="BREWCRAFT_RAZORPAY_WEBHOOK_EVENT_ID_UNQ">
+            <column name="event_id"/>
+        </constraint>
+
+        <index referenceId="BREWCRAFT_RAZORPAY_WEBHOOK_PAYMENT_ID" indexType="btree">
+            <column name="payment_id"/>
+        </index>
+
+    </table>
+
+</schema>
