@@ -8,13 +8,15 @@ use BrewCraft\ErpIntegration\Logger\Logger;
 use BrewCraft\ErpIntegration\Model\Resolver\CategoryResolver;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
 
 class CategoryImportService
 {
     /**
-     * ERP Code => Magento Category ID
+     * ERP category code => Magento category ID.
+     *
+     * @var array<string, int>
      */
     private array $categoryMap = [];
 
@@ -27,106 +29,277 @@ class CategoryImportService
     ) {
     }
 
+    /**
+     * Import ERP categories into Magento.
+     */
     public function import(): void
     {
         $categories = $this->categoryService->getCategories();
 
-        /**
-         * Sort so parent categories are imported first.
+        if (empty($categories)) {
+            $this->logger->info(
+                'No categories received from ERP.'
+            );
+
+            return;
+        }
+
+        /*
+         * Reset map for every import execution.
          */
-        usort(
-            $categories,
-            function (array $a, array $b): int {
+        $this->categoryMap = [];
 
-                if ($a['parent_code'] === null && $b['parent_code'] !== null) {
-                    return -1;
+        /*
+         * Categories are processed in passes.
+         *
+         * A category is imported only when:
+         *
+         * 1. It has no ERP parent, or
+         * 2. Its ERP parent has already been imported/resolved.
+         *
+         * This makes the importer independent of the order
+         * in which ERP returns categories.
+         */
+        $pendingCategories = $categories;
+
+        while (!empty($pendingCategories)) {
+            $processedInCurrentPass = 0;
+
+            foreach ($pendingCategories as $key => $erpCategory) {
+                $this->validateCategoryData($erpCategory);
+
+                $parentCode = $erpCategory['parent_code'] ?? null;
+
+                /*
+                 * If the category has a parent but the parent has not
+                 * yet been resolved, skip it for the current pass.
+                 */
+                if (
+                    $parentCode !== null
+                    && !$this->canResolveParent($parentCode)
+                ) {
+                    continue;
                 }
 
-                if ($a['parent_code'] !== null && $b['parent_code'] === null) {
-                    return 1;
-                }
+                $this->importCategory($erpCategory);
 
-                return 0;
+                unset($pendingCategories[$key]);
+
+                $processedInCurrentPass++;
             }
+
+            /*
+             * If an entire pass could not process even one category,
+             * the ERP hierarchy contains a missing parent or circular
+             * parent relationship.
+             */
+            if ($processedInCurrentPass === 0) {
+                $unresolved = [];
+
+                foreach ($pendingCategories as $category) {
+                    $unresolved[] = sprintf(
+                        '%s(parent=%s)',
+                        $category['code'] ?? 'UNKNOWN',
+                        $category['parent_code'] ?? 'NULL'
+                    );
+                }
+
+                throw new LocalizedException(
+                    __(
+                        'Unable to resolve ERP category hierarchy. Unresolved categories: %1',
+                        implode(', ', $unresolved)
+                    )
+                );
+            }
+
+            /*
+             * Re-index array after unset().
+             */
+            $pendingCategories = array_values(
+                $pendingCategories
+            );
+        }
+
+        $this->logger->info(
+            sprintf(
+                'Category Sync Completed. Imported/Synchronized: %d',
+                count($this->categoryMap)
+            )
+        );
+    }
+
+    /**
+     * Import one ERP category.
+     */
+    private function importCategory(array $erpCategory): void
+    {
+        $code = (string)$erpCategory['code'];
+
+        $parentCode = $erpCategory['parent_code'] ?? null;
+
+        $parentId = $this->resolveParentId(
+            $parentCode
         );
 
-        foreach ($categories as $erpCategory) {
+        $category = $this->categoryResolver
+            ->getByErpCode($code);
 
-            $parentId = $this->resolveParentId(
-                $erpCategory['parent_code']
-            );
+        if (!$category) {
+            $category = $this->categoryResolver->create();
 
-            $category = $this->categoryResolver
-                ->getByErpCode(
-                    $erpCategory['code']
-                );
+            /*
+             * Store ID 0 means save category attributes
+             * at Admin / default scope.
+             *
+             * This is fine.
+             *
+             * It is NOT the same thing as parent_id = 0.
+             */
+            $category->setStoreId(0);
+        }
 
-            if (!$category) {
+        /*
+         * Set parent for both new and existing categories.
+         *
+         * This allows ERP hierarchy changes to move an
+         * existing Magento category to another parent.
+         */
+        $category->setParentId($parentId);
 
-                $category = $this->categoryResolver->create();
+        $this->mapCategory(
+            $category,
+            $erpCategory
+        );
 
-                $category->setStoreId(0);
-                $category->setParentId($parentId);
-            }
+        $savedCategory = $this->categoryRepository->save(
+            $category
+        );
 
-            $this->mapCategory(
-                $category,
-                $erpCategory
-            );
+        $categoryId = (int)$savedCategory->getId();
 
-            $this->categoryRepository->save(
-                $category
-            );
-
-            $this->categoryMap[
-                $erpCategory['code']
-            ] = (int)$category->getId();
-
-            $this->logger->info(
-                sprintf(
-                    'Category "%s" synchronized.',
-                    $erpCategory['name']
+        if ($categoryId <= 0) {
+            throw new LocalizedException(
+                __(
+                    'Magento category ID was not generated for ERP category "%1".',
+                    $code
                 )
             );
         }
+
+        $this->categoryMap[$code] = $categoryId;
+
+        $this->logger->info(
+            sprintf(
+                'Category "%s" [%s] synchronized. Magento ID: %d, Parent ID: %d.',
+                $erpCategory['name'],
+                $code,
+                $categoryId,
+                $parentId
+            )
+        );
+    }
+
+    /**
+     * Determine whether an ERP parent can currently be resolved.
+     */
+    private function canResolveParent(string $parentCode): bool
+    {
+        if (isset($this->categoryMap[$parentCode])) {
+            return true;
+        }
+
+        $parent = $this->categoryResolver
+            ->getByErpCode($parentCode);
+
+        if (!$parent) {
+            return false;
+        }
+
+        $parentId = (int)$parent->getId();
+
+        if ($parentId <= 0) {
+            return false;
+        }
+
+        $this->categoryMap[$parentCode] = $parentId;
+
+        return true;
     }
 
     /**
      * Resolve Magento parent category ID.
      */
-    private function resolveParentId(
-        ?string $parentCode
-    ): int {
+    private function resolveParentId(?string $parentCode): int
+    {
+        /*
+         * ERP top-level category.
+         *
+         * IMPORTANT:
+         * Do not use:
+         *
+         * $this->storeManager->getStore()
+         *
+         * here.
+         *
+         * During cron/CLI execution Magento may be in the
+         * Admin store context (store ID 0), whose root category
+         * is not the storefront catalog root.
+         */
+        if ($parentCode === null || $parentCode === '') {
+            $defaultStore = $this->storeManager
+                ->getDefaultStoreView();
 
-        if ($parentCode === null) {
-
-            return (int)$this->storeManager
-                ->getStore()
-                ->getRootCategoryId();
-        }
-
-        if (!isset($this->categoryMap[$parentCode])) {
-
-            $parent = $this->categoryResolver
-                ->getByErpCode(
-                    $parentCode
+            if ($defaultStore === null) {
+                throw new LocalizedException(
+                    __('Unable to resolve the default Magento store view.')
                 );
+            }
 
-            if (!$parent) {
+            $rootCategoryId = (int)$defaultStore
+                ->getRootCategoryId();
 
-                throw new \RuntimeException(
-                    sprintf(
-                        'Parent category "%s" not found.',
-                        $parentCode
+            if ($rootCategoryId <= 0) {
+                throw new LocalizedException(
+                    __(
+                        'Invalid Magento root category ID "%1".',
+                        $rootCategoryId
                     )
                 );
             }
 
-            $this->categoryMap[$parentCode]
-                = (int)$parent->getId();
+            return $rootCategoryId;
         }
 
-        return $this->categoryMap[$parentCode];
+        if (isset($this->categoryMap[$parentCode])) {
+            return $this->categoryMap[$parentCode];
+        }
+
+        $parent = $this->categoryResolver
+            ->getByErpCode($parentCode);
+
+        if (!$parent) {
+            throw new LocalizedException(
+                __(
+                    'Parent ERP category "%1" was not found in Magento.',
+                    $parentCode
+                )
+            );
+        }
+
+        $parentId = (int)$parent->getId();
+
+        if ($parentId <= 0) {
+            throw new LocalizedException(
+                __(
+                    'Invalid Magento category ID for ERP parent "%1".',
+                    $parentCode
+                )
+            );
+        }
+
+        $this->categoryMap[$parentCode] = $parentId;
+
+        return $parentId;
     }
 
     /**
@@ -136,18 +309,17 @@ class CategoryImportService
         Category $category,
         array $erpCategory
     ): void {
-
         $category->setName(
-            $erpCategory['name']
+            (string)$erpCategory['name']
         );
 
         $category->setData(
             'erp_category_code',
-            $erpCategory['code']
+            (string)$erpCategory['code']
         );
 
         $category->setIsActive(
-            $erpCategory['status'] === 'ACTIVE'
+            ($erpCategory['status'] ?? '') === 'ACTIVE'
         );
 
         $category->setUrlKey(
@@ -155,9 +327,26 @@ class CategoryImportService
                 str_replace(
                     ' ',
                     '-',
-                    $erpCategory['name']
+                    trim((string)$erpCategory['name'])
                 )
             )
         );
+    }
+
+    /**
+     * Validate required ERP fields.
+     */
+    private function validateCategoryData(array $erpCategory): void
+    {
+        if (
+            empty($erpCategory['code'])
+            || empty($erpCategory['name'])
+        ) {
+            throw new LocalizedException(
+                __(
+                    'Invalid ERP category data. Both code and name are required.'
+                )
+            );
+        }
     }
 }

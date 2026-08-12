@@ -358,13 +358,14 @@ return [
         'Magento_WishlistGraphQl' => 1,
         'BrewCraft_BusinessAccount' => 1,
         'BrewCraft_ErpIntegration' => 1,
-        'BrewCraft_RazorpayPayment' => 1,
+        'BrewCraft_RazorpayPayment' => 0,
         'BrewCraft_RequestQuote' => 1,
         'CyberSource_Payment' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,
         'PayPal_BraintreeGiftCardAccount' => 1,
         'PayPal_BraintreeGiftWrapping' => 1,
-        'PayPal_BraintreeGraphQl' => 1
+        'PayPal_BraintreeGraphQl' => 1,
+        'Razorpay_Magento' => 1
     ]
 ];

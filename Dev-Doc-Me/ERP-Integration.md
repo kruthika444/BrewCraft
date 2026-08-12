@@ -3155,3 +3155,643 @@ Configurable and failure-aware integration
 The main remaining ERP work is code cleanup and final module documentation.
 
 
+
+
+
+# Development Log 1: Category Import Enhancement
+**DATE:** 11th AUG 
+### Objective
+
+Improve the BrewCraft ERP category import so that:
+
+* ERP categories can be imported into Magento correctly
+* Top-level ERP categories are attached to the Magento storefront root category
+* Multi-level category hierarchies are handled safely
+* Category import does not depend on ERP JSON ordering
+* Parent-category errors are detected clearly
+* Existing categories can be moved if ERP hierarchy changes
+
+---
+
+### Initial Category Import Flow
+
+The ERP provided category data in this structure:
+
+```json
+{
+  "code": "COFFEE",
+  "name": "Coffee",
+  "parent_code": null,
+  "status": "ACTIVE"
+}
+```
+
+Child categories looked like:
+
+```json
+{
+  "code": "COFFEE_BEANS",
+  "name": "Coffee Beans",
+  "parent_code": "COFFEE",
+  "status": "ACTIVE"
+}
+```
+
+And deeper levels:
+
+```json
+{
+  "code": "ARABICA",
+  "name": "Arabica Beans",
+  "parent_code": "COFFEE_BEANS",
+  "status": "ACTIVE"
+}
+```
+
+The intended Magento hierarchy was:
+
+```text
+Default Category
+└── Coffee
+    └── Coffee Beans
+        └── Arabica Beans
+```
+
+---
+
+### Existing Implementation
+
+The importer already had several useful pieces:
+
+```php
+$category = $this->categoryResolver
+    ->getByErpCode($erpCategory['code']);
+```
+
+This checked whether a category already existed using the custom ERP code.
+
+If it did not exist:
+
+```php
+$category = $this->categoryResolver->create();
+
+$category->setStoreId(0);
+$category->setParentId($parentId);
+```
+
+ERP values were mapped into Magento:
+
+```php
+$category->setName(
+    $erpCategory['name']
+);
+
+$category->setData(
+    'erp_category_code',
+    $erpCategory['code']
+);
+
+$category->setIsActive(
+    $erpCategory['status'] === 'ACTIVE'
+);
+```
+
+The category was then saved through Magento's repository:
+
+```php
+$this->categoryRepository->save($category);
+```
+
+---
+
+## Problem Encountered
+
+After replacing the small test ERP dataset with the larger final BrewCraft category hierarchy, category sync failed.
+
+Log:
+
+```text
+Fetched 31 categories from ERP.
+
+Magento\Framework\Exception\NoSuchEntityException:
+No such entity with id = 0
+```
+
+The exception came from:
+
+```text
+Magento\Catalog\Model\CategoryRepository
+```
+
+during:
+
+```php
+$this->categoryRepository->save($category);
+```
+
+---
+
+## Root Cause
+
+The existing method used:
+
+```php
+$this->storeManager
+    ->getStore()
+    ->getRootCategoryId();
+```
+
+for ERP categories with:
+
+```json
+"parent_code": null
+```
+
+That looks reasonable during a normal storefront request.
+
+However, the category synchronization was running through:
+
+```text
+Cron / CLI
+```
+
+In that execution context Magento can use:
+
+```text
+Admin store
+store_id = 0
+```
+
+The Admin store is not a storefront store view with a normal catalog root category.
+
+Therefore the resolved root category ID became:
+
+```text
+0
+```
+
+Then Magento effectively received:
+
+```php
+$category->setParentId(0);
+```
+
+When `CategoryRepository` validated the category, Magento attempted to retrieve parent category:
+
+```text
+ID 0
+```
+
+which does not exist.
+
+Result:
+
+```text
+No such entity with id = 0
+```
+
+---
+
+## Fix 1: Resolve the Default Store View Root Category
+
+Instead of:
+
+```php
+$this->storeManager
+    ->getStore()
+    ->getRootCategoryId();
+```
+
+we changed the logic to explicitly resolve the default storefront:
+
+```php
+$defaultStore = $this->storeManager
+    ->getDefaultStoreView();
+```
+
+Then:
+
+```php
+$rootCategoryId = (int)$defaultStore
+    ->getRootCategoryId();
+```
+
+Now a top-level ERP category such as:
+
+```text
+COFFEE
+```
+
+gets:
+
+```text
+Magento Root Category ID
+```
+
+instead of:
+
+```text
+0
+```
+
+Result:
+
+```text
+Default Category
+├── Coffee
+├── Machines
+├── Grinders
+├── Brewing
+├── Accessories
+├── Parts
+└── Commercial
+```
+
+---
+
+## Important Magento Concept Learned
+
+These two values are completely different:
+
+```php
+$category->setStoreId(0);
+```
+
+and:
+
+```php
+$category->setParentId(0);
+```
+
+`store_id = 0` is valid.
+
+It means:
+
+```text
+Admin/default attribute scope
+```
+
+So this can remain:
+
+```php
+$category->setStoreId(0);
+```
+
+But:
+
+```text
+parent_id = 0
+```
+
+was invalid for our imported storefront categories.
+
+---
+
+## Fix 2: Removed Dependence on Simple `usort()`
+
+The original implementation tried to import parents first using:
+
+```php
+usort(...)
+```
+
+with logic roughly equivalent to:
+
+```text
+parent_code = null
+    → first
+
+parent_code != null
+    → later
+```
+
+This only distinguishes:
+
+```text
+Top-level categories
+vs
+Child categories
+```
+
+It does not truly understand multiple hierarchy levels.
+
+For example:
+
+```text
+Coffee
+└── Coffee Beans
+    └── Arabica
+```
+
+Both:
+
+```text
+Coffee Beans
+Arabica
+```
+
+have a non-null `parent_code`.
+
+Therefore a simple sorter cannot guarantee:
+
+```text
+Coffee Beans
+```
+
+is processed before:
+
+```text
+Arabica
+```
+
+---
+
+## New Hierarchy Processing Strategy
+
+We changed the importer to use multiple passes.
+
+Initial pending list:
+
+```text
+Coffee
+Arabica
+Coffee Beans
+Machines
+Espresso Machines
+...
+```
+
+#### Pass 1
+
+Import categories whose parents can already be resolved:
+
+```text
+Coffee
+Machines
+Grinders
+Brewing
+Accessories
+Parts
+Commercial
+```
+
+These use Magento's root category.
+
+#### Pass 2
+
+Now their immediate children can be imported:
+
+```text
+Coffee Beans
+Ground Coffee
+Espresso Machines
+Electric Grinders
+Pour Over
+...
+```
+
+#### Pass 3
+
+Deeper categories can now resolve their parents:
+
+```text
+Arabica Beans
+Espresso Roast
+```
+
+This means the importer no longer depends on the ERP returning categories in a specific order.
+
+---
+
+## Fix 3: Added Category Map
+
+A local map is maintained during the import:
+
+```php
+private array $categoryMap = [];
+```
+
+Example:
+
+```php
+[
+    'COFFEE' => 25,
+    'COFFEE_BEANS' => 32,
+    'ARABICA' => 41
+]
+```
+
+So when importing:
+
+```text
+ARABICA
+```
+
+with:
+
+```json
+"parent_code": "COFFEE_BEANS"
+```
+
+Magento parent ID can be quickly resolved as:
+
+```text
+32
+```
+
+instead of repeatedly searching the database.
+
+---
+
+## Fix 4: Existing Parent Lookup
+
+If the parent was not created during the current execution, the importer checks existing Magento data using:
+
+```php
+$this->categoryResolver
+    ->getByErpCode($parentCode);
+```
+
+This is useful during repeated ERP synchronization.
+
+Example:
+
+```text
+COFFEE already exists from yesterday's sync
+```
+
+The importer can still correctly create:
+
+```text
+COFFEE_BEANS
+```
+
+under it.
+
+---
+
+## Fix 5: Detect Broken ERP Hierarchies
+
+Another important improvement was added.
+
+Imagine ERP sends:
+
+```json
+{
+  "code": "ARABICA",
+  "parent_code": "COFFEE_BEANS"
+}
+```
+
+but ERP never sends:
+
+```text
+COFFEE_BEANS
+```
+
+Previously that could fail less clearly.
+
+Now if an entire processing pass imports zero categories, we know there is an unresolved hierarchy.
+
+Possible reasons:
+
+```text
+Missing parent
+Incorrect parent_code
+Circular parent relationship
+```
+
+Example circular data:
+
+```text
+A parent = B
+B parent = A
+```
+
+The importer throws a clear error containing unresolved categories.
+
+---
+
+## Fix 6: Category Parent Updated for Existing Categories
+
+Previously:
+
+```php
+$category->setParentId($parentId);
+```
+
+was mainly done while creating a category.
+
+We changed the flow so parent ID is assigned for both:
+
+```text
+New categories
+Existing categories
+```
+
+This matters if ERP changes:
+
+```text
+Accessories
+└── Filters
+```
+
+to:
+
+```text
+Brewing
+└── Filters
+```
+
+On the next sync Magento can follow the ERP hierarchy change.
+
+---
+
+## Fix 7: Added ERP Validation
+
+Before processing a category, required data is checked.
+
+At minimum:
+
+```text
+code
+name
+```
+
+must exist.
+
+Invalid ERP data now throws a meaningful exception instead of producing unpredictable Magento errors.
+
+---
+
+## Fix 8: Improved Logging
+
+Instead of logging only:
+
+```text
+Category "Coffee" synchronized.
+```
+
+we now log useful synchronization information such as:
+
+```text
+Category "Coffee" [COFFEE] synchronized.
+Magento ID: 25
+Parent ID: 2
+```
+
+This makes ERP debugging much easier.
+
+---
+
+## Final Category Import Flow
+
+```text
+ERP
+ ↓
+CategoryService
+ ↓
+Fetch category array
+ ↓
+Validate ERP data
+ ↓
+Keep categories in pending queue
+ ↓
+Can parent be resolved?
+ ├── NO → wait for next pass
+ └── YES
+       ↓
+Find category by ERP code
+       ↓
+Existing?
+ ├── YES → update it
+ └── NO → create it
+       ↓
+Resolve Magento parent
+       ↓
+Map ERP fields
+       ↓
+CategoryRepository->save()
+       ↓
+Store ERP code → Magento ID in categoryMap
+       ↓
+Continue until pending list is empty
+```
+
+---
+
+## Outcome
+
+The category importer is now more production-like because it supports:
+
+```text
+✔ Root-category resolution in cron/CLI
+✔ Multi-level category hierarchy
+✔ Unordered ERP category feeds
+✔ Existing category updates
+✔ Parent-category changes
+✔ Missing-parent detection
+✔ ERP-code mapping
+✔ Better validation
+✔ Better logging
+```
