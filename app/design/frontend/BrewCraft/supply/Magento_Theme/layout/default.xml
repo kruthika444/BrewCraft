@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+        <!-- HEADER -->
+        <!-- Move native Magento navigation into main header -->
+        <move element="catalog.topnav" destination="header-wrapper" after="logo" />
+
+        <!-- Custom BrewCraft top strip -->
+        <referenceContainer name="header.panel">
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.header.topbar" template="Magento_Theme::html/brewcraft-topbar.phtml" before="-" />
+        </referenceContainer>
+
+        <!-- Account icon inside main header -->
+        <referenceContainer name="header-wrapper">
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.header.account" template="Magento_Theme::html/brewcraft-account.phtml" after="top.search" />
+        </referenceContainer>
+
+        <!-- REMOVE DEFAULT FOOTER ELEMENTS -->
+        <referenceBlock name="footer_links" remove="true"/>
+        <referenceBlock name="report.bugs" remove="true"/>
+        <referenceBlock name="copyright" remove="true"/>
+        <referenceBlock name="form.subscribe" remove="true"/>
+
+        <!-- BREWCRAFT FOOTER -->
+        <referenceContainer name="footer-container">
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.footer" template="Magento_Theme::html/brewcraft-footer.phtml" />
+        </referenceContainer>
+
+    </body>
+</page>

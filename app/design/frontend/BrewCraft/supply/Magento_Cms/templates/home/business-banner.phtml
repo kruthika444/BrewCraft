@@ -1,0 +1,92 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * BrewCraft Business Homepage Banner
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+
+<section class="brewcraft-business">
+
+    <div class="brewcraft-business__content">
+
+        <span class="brewcraft-business__eyebrow">
+            <?= $block->escapeHtml(__('For Business')) ?>
+        </span>
+
+        <h2 class="brewcraft-business__title">
+            <?= $block->escapeHtml(
+                __('Built for Cafés, Offices & Hospitality')
+            ) ?>
+        </h2>
+
+        <p class="brewcraft-business__description">
+            <?= $block->escapeHtml(
+                __('Professional coffee equipment, wholesale pricing and flexible purchasing solutions designed for growing businesses.')
+            ) ?>
+        </p>
+
+        <div class="brewcraft-business__benefits">
+
+            <div class="brewcraft-business__benefit">
+                <span>✓</span>
+                <?= $block->escapeHtml(__('Wholesale Pricing')) ?>
+            </div>
+
+            <div class="brewcraft-business__benefit">
+                <span>✓</span>
+                <?= $block->escapeHtml(__('Commercial Equipment')) ?>
+            </div>
+
+            <div class="brewcraft-business__benefit">
+                <span>✓</span>
+                <?= $block->escapeHtml(__('Custom Quotations')) ?>
+            </div>
+
+            <div class="brewcraft-business__benefit">
+                <span>✓</span>
+                <?= $block->escapeHtml(__('Dedicated Support')) ?>
+            </div>
+
+        </div>
+
+        <div class="brewcraft-business__actions">
+
+            <a
+                class="brewcraft-business__button brewcraft-business__button--primary"
+                href="<?= $block->escapeUrl(
+                            $block->getUrl('customer/account/create')
+                        ) ?>">
+                <?= $block->escapeHtml(__('Create Business Account')) ?>
+            </a>
+
+            <a
+                class="brewcraft-business__button brewcraft-business__button--secondary"
+                href="#">
+                <?= $block->escapeHtml(__('Request a Quote')) ?>
+                <span aria-hidden="true">→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="brewcraft-business__media">
+
+        <img
+            src="<?= $block->escapeUrl(
+                        $block->getViewFileUrl(
+                            'images/home/commercial.png'
+                        )
+                    ) ?>"
+            alt="<?= $block->escapeHtmlAttr(
+                        __('BrewCraft commercial coffee solutions')
+                    ) ?>" />
+
+    </div>
+
+</section>

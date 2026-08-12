@@ -1,0 +1,169 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \BrewCraft\ErpIntegration\Block\Home\FeaturedProducts $block */
+
+$products = $block->getProducts();
+?>
+
+<?php if ($products): ?>
+    <section class="brewcraft-featured">
+
+        <div class="brewcraft-featured__heading">
+
+            <span class="brewcraft-featured__eyebrow">
+                <?= $block->escapeHtml(__('BrewCraft Picks')) ?>
+            </span>
+
+            <h2 class="brewcraft-featured__title">
+                <?= $block->escapeHtml(__('Featured Products')) ?>
+            </h2>
+
+            <p class="brewcraft-featured__description">
+                <?= $block->escapeHtml(
+                    __('Coffee equipment and brewing essentials selected for better everyday brewing.')
+                ) ?>
+            </p>
+
+        </div>
+
+
+        <div class="brewcraft-featured__grid">
+
+            <?php foreach ($products as $product): ?>
+
+                <article class="brewcraft-product-card">
+
+                    <a
+                        class="brewcraft-product-card__image"
+                        href="<?= $block->escapeUrl($product->getProductUrl()) ?>">
+
+                        <?php if ($block->hasSpecialPrice($product)): ?>
+                            <span class="brewcraft-product-card__badge">
+                                <?= $block->escapeHtml(__('Sale')) ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <img
+                            src="<?= $block->escapeUrl(
+                                        $block->getProductImageUrl($product)
+                                    ) ?>"
+                            alt="<?= $block->escapeHtmlAttr(
+                                        (string)$product->getName()
+                                    ) ?>" />
+
+                    </a>
+
+
+                    <div class="brewcraft-product-card__content">
+
+                        <span class="brewcraft-product-card__sku">
+                            <?= $block->escapeHtml(
+                                (string)$product->getSku()
+                            ) ?>
+                        </span>
+
+                        <h3 class="brewcraft-product-card__name">
+                            <a href="<?= $block->escapeUrl(
+                                            $product->getProductUrl()
+                                        ) ?>">
+                                <?= $block->escapeHtml(
+                                    (string)$product->getName()
+                                ) ?>
+                            </a>
+                        </h3>
+
+
+                        <div class="brewcraft-product-card__price">
+
+                            <?php if ($block->hasSpecialPrice($product)): ?>
+
+                                <span class="brewcraft-product-card__price-current">
+                                    <?= $block->escapeHtml(
+                                        $block->formatPrice(
+                                            $block->getFinalPrice($product)
+                                        )
+                                    ) ?>
+                                </span>
+
+                                <span class="brewcraft-product-card__price-old">
+                                    <?= $block->escapeHtml(
+                                        $block->formatPrice(
+                                            $block->getRegularPrice($product)
+                                        )
+                                    ) ?>
+                                </span>
+
+                            <?php else: ?>
+
+                                <span class="brewcraft-product-card__price-current">
+                                    <?= $block->escapeHtml(
+                                        $block->formatPrice(
+                                            $block->getFinalPrice($product)
+                                        )
+                                    ) ?>
+                                </span>
+
+                            <?php endif; ?>
+
+                        </div>
+
+
+                        <?php if ($product->isSaleable()): ?>
+
+                            <form
+                                action="<?= $block->escapeUrl(
+                                            $block->getAddToCartUrl($product)
+                                        ) ?>"
+                                method="post">
+
+                                <input
+                                    type="hidden"
+                                    name="product"
+                                    value="<?= $block->escapeHtmlAttr(
+                                                (string)$product->getId()
+                                            ) ?>" />
+
+                                <input
+                                    type="hidden"
+                                    name="form_key"
+                                    value="<?= $block->escapeHtmlAttr(
+                                                $block->getFormKeyValue()
+                                            ) ?>" />
+
+                                <button
+                                    type="submit"
+                                    class="brewcraft-product-card__cart">
+                                    <?= $block->escapeHtml(__('Add to Cart')) ?>
+                                </button>
+
+                            </form>
+
+                        <?php endif; ?>
+
+                    </div>
+
+                </article>
+
+            <?php endforeach; ?>
+
+        </div>
+
+        <div class="brewcraft-featured__footer">
+
+            <a
+                class="brewcraft-featured__view-all"
+                href="<?= $block->escapeUrl(
+                            $block->getFeaturedCategoryUrl()
+                        ) ?>">
+                <?= $block->escapeHtml(__('View All Products')) ?>
+
+                <span aria-hidden="true">→</span>
+            </a>
+
+        </div>
+
+    </section>
+
+<?php endif; ?>

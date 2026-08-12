@@ -1,0 +1,1352 @@
+.brewcraft-home-hero {
+    max-width: @bc-container-width;
+
+    margin: 0 auto;
+
+    padding: 0 32px 20px;
+
+    background: @brewcraft-white;
+}
+
+.brewcraft-home-hero__inner {
+    display: flex;
+    align-items: stretch;
+
+    min-height: 500px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(90deg,
+            #f3ede4 0%,
+            #f5efe7 42%,
+            #f7f2eb 52%);
+}
+
+.brewcraft-home-hero__content {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: 44%;
+
+    padding: 64px 48px 56px 48px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(90deg,
+            #f3ede4 0%,
+            #f5efe7 78%,
+            rgba(245, 239, 231, .70) 100%);
+}
+
+.brewcraft-home-hero__eyebrow {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    color: #6f7a6f;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.brewcraft-home-hero__title {
+    margin: 0 0 20px;
+
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-heading;
+    font-size: 54px;
+    font-weight: 600;
+
+    line-height: 1.08;
+
+    letter-spacing: -.02em;
+}
+
+.brewcraft-home-hero__description {
+    max-width: 440px;
+    margin: 0 0 32px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #5f5a54;
+}
+
+.brewcraft-home-hero__actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brewcraft-home-hero__actions .action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 165px;
+    height: 46px;
+
+    padding: 0 24px;
+
+    box-sizing: border-box;
+
+    border-radius: @bc-radius-sm;
+
+    font-family: @brewcraft-font-body;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+
+    text-decoration: none;
+
+    box-shadow: none;
+}
+
+
+.brewcraft-home-hero__actions .action.primary,
+.brewcraft-home-hero__button--primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 165px;
+    height: 46px;
+
+    padding: 0 24px !important;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    background: @brewcraft-espresso !important;
+    border: 1px solid @brewcraft-espresso !important;
+    border-radius: @bc-radius-sm;
+
+    color: @brewcraft-white !important;
+
+    font-family: @brewcraft-font-body;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1 !important;
+
+    text-align: center;
+    text-decoration: none;
+
+    box-shadow: none;
+
+    span {
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        line-height: 1;
+    }
+
+    &:visited {
+        color: @brewcraft-white !important;
+    }
+
+    &:hover,
+    &:focus {
+        background: @brewcraft-coffee !important;
+        border-color: @brewcraft-coffee !important;
+
+        color: @brewcraft-white !important;
+
+        text-decoration: none;
+    }
+}
+
+
+// Secondary
+.brewcraft-home-hero__button--secondary {
+    background: transparent !important;
+
+    border: 1px solid @brewcraft-coffee !important;
+
+    color: @brewcraft-espresso !important;
+
+    &:visited {
+        color: @brewcraft-espresso !important;
+    }
+
+    &:hover,
+    &:focus {
+        background: @brewcraft-white !important;
+
+        border-color: @brewcraft-espresso !important;
+
+        color: @brewcraft-espresso !important;
+    }
+}
+
+.brewcraft-home-hero__media {
+    position: relative;
+
+    width: 56%;
+    min-height: 500px;
+
+    overflow: hidden;
+}
+
+.brewcraft-home-hero__media:before {
+    content: '';
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 1;
+
+    width: 110px;
+
+    background:
+        linear-gradient(90deg,
+            #f5efe7 0%,
+            rgba(245, 239, 231, .72) 35%,
+            rgba(245, 239, 231, 0) 100%);
+
+    pointer-events: none;
+}
+
+.brewcraft-home-hero__media img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 500px;
+
+    object-fit: cover;
+}
+
+.brewcraft-home-hero__features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    background: #ffffff;
+    border-top: 1px solid #ebe3d8;
+}
+
+.brewcraft-home-hero__feature {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px;
+    border-right: 1px solid #ebe3d8;
+    min-height: 96px;
+    box-sizing: border-box;
+}
+
+.brewcraft-home-hero__feature:last-child {
+    border-right: none;
+}
+
+.brewcraft-home-hero__feature-icon {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #c8b7a3;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #5c3a21;
+    flex-shrink: 0;
+}
+
+.brewcraft-home-hero__feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.brewcraft-home-hero__feature-text strong {
+    font-size: 15px;
+    line-height: 1.4;
+    color: #2e1e14;
+    font-weight: 600;
+}
+
+.brewcraft-home-hero__feature-text span {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #6a655f;
+}
+
+//
+// ============================================================
+// FINAL DESKTOP HEADER LOCK
+// Prevent other Magento/theme styles from disturbing header.
+// ============================================================
+//
+
+.nav-toggle {
+    display: none !important;
+}
+
+.header.content {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+
+    min-height: 76px !important;
+
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+
+// Logo
+.header.content>.logo {
+    order: 1;
+
+    flex: 0 0 auto !important;
+
+    margin: 0 48px 0 0 !important;
+}
+
+
+// Navigation
+.header.content>.navigation {
+    order: 2;
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+// Search
+.header.content>.block-search {
+    order: 3;
+
+    flex: 0 0 270px !important;
+
+    width: 270px !important;
+
+    margin: 0 20px 0 28px !important;
+
+    align-self: center !important;
+}
+
+
+// Account
+.header.content>.brewcraft-header-account {
+    order: 4;
+
+    flex: 0 0 40px !important;
+
+    margin: 0 6px 0 0 !important;
+
+    align-self: center !important;
+}
+
+
+// Cart
+.header.content>.minicart-wrapper {
+    order: 5;
+
+    flex: 0 0 40px !important;
+
+    margin: 0 !important;
+
+    align-self: center !important;
+}
+
+
+// Prevent search from floating or jumping upward
+.block-search {
+    float: none !important;
+    position: relative !important;
+}
+
+.block-search .control {
+    position: relative !important;
+}
+
+.block-search input {
+    position: static !important;
+}
+
+
+// Keep old navigation wrapper hidden
+.nav-sections {
+    display: none !important;
+}
+
+//
+// ============================================================
+// SHOP BY CATEGORY
+// ============================================================
+//
+.brewcraft-home-categories {
+    width: 100%;
+    max-width: @bc-container-width;
+
+    margin: 0 auto;
+    padding: 2px 32px 80px;
+
+    box-sizing: border-box;
+
+    background: @brewcraft-white;
+}
+
+.brewcraft-home-categories__heading {
+    margin-bottom: 34px;
+}
+
+.brewcraft-home-categories__eyebrow {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: @brewcraft-green;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.brewcraft-home-categories__title {
+    margin: 0;
+
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-heading;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.brewcraft-home-categories__description {
+    margin: 10px 0 0;
+
+    color: @brewcraft-muted;
+
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.brewcraft-home-categories__grid {
+    display: grid !important;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+
+    width: 100%;
+}
+
+.brewcraft-category-card {
+    display: block;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    border: 1px solid @brewcraft-border;
+    border-radius: @bc-radius-md;
+
+    background: @brewcraft-white;
+
+    color: @brewcraft-charcoal;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    &:visited {
+        color: @brewcraft-charcoal;
+    }
+
+    &:hover,
+    &:focus {
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+
+        box-shadow: 0 12px 28px rgba(46, 30, 20, .08);
+    }
+}
+
+.brewcraft-category-card__image {
+    width: 100%;
+    height: 230px;
+
+    overflow: hidden;
+
+    background: @brewcraft-cream;
+}
+
+.brewcraft-category-card__image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.brewcraft-category-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    background: @brewcraft-cream;
+
+    color: @brewcraft-muted;
+}
+
+.brewcraft-category-card__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    background: @brewcraft-white;
+}
+
+.brewcraft-category-card__content h3 {
+    margin: 0;
+
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-heading;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.brewcraft-category-card__link {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: @brewcraft-coffee;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+//
+// ============================================================
+// FEATURED PRODUCTS
+// ============================================================
+//
+
+.brewcraft-featured {
+    width: 100%;
+    max-width: @bc-container-width;
+
+    margin: 0 auto;
+
+    padding: 64px 32px 80px;
+
+    box-sizing: border-box;
+
+    background: @brewcraft-bg-soft;
+}
+
+.brewcraft-featured__heading {
+    margin-bottom: 32px;
+}
+
+.brewcraft-featured__eyebrow {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: @brewcraft-green;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.brewcraft-featured__title {
+    margin: 0;
+
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-heading;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.brewcraft-featured__description {
+    margin: 10px 0 0;
+
+    color: @brewcraft-muted;
+
+    font-size: 14px;
+}
+
+.brewcraft-featured__grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+
+// Product card
+
+.brewcraft-product-card {
+    overflow: hidden;
+
+    border: 1px solid @brewcraft-border;
+    border-radius: @bc-radius-md;
+
+    background: @brewcraft-white;
+}
+
+
+// Image
+
+.brewcraft-product-card__image {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+    height: 260px;
+
+    overflow: hidden;
+
+    background: @brewcraft-cream;
+
+    img {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+}
+
+
+// Sale badge
+
+.brewcraft-product-card__badge {
+    position: absolute;
+
+    top: 14px;
+    left: 14px;
+
+    z-index: 2;
+
+    padding: 5px 10px;
+
+    border-radius: 3px;
+
+    background: @brewcraft-coffee;
+
+    color: @brewcraft-white;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+// Content
+
+.brewcraft-product-card__content {
+    padding: 18px;
+}
+
+.brewcraft-product-card__sku {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: @brewcraft-muted;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    letter-spacing: .7px;
+}
+
+.brewcraft-product-card__name {
+    min-height: 44px;
+
+    margin: 0 0 12px;
+
+    font-size: 15px;
+    line-height: 22px;
+
+    a,
+    a:visited {
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: @brewcraft-coffee;
+    }
+}
+
+
+// Price
+
+.brewcraft-product-card__price {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 16px;
+}
+
+.brewcraft-product-card__price-current {
+    color: @brewcraft-espresso;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.brewcraft-product-card__price-old {
+    color: @brewcraft-muted;
+
+    font-size: 12px;
+
+    text-decoration: line-through;
+}
+
+
+// Add to cart
+
+.brewcraft-product-card__cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 42px;
+
+    padding: 0;
+
+    border: 1px solid @brewcraft-espresso;
+    border-radius: @bc-radius-sm;
+
+    background: @brewcraft-espresso;
+
+    color: @brewcraft-white;
+
+    font-family: @brewcraft-font-body;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        background: @brewcraft-coffee;
+        border-color: @brewcraft-coffee;
+
+        color: @brewcraft-white;
+    }
+}
+
+.brewcraft-featured__footer {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 34px;
+}
+
+.brewcraft-featured__view-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-width: 170px;
+    height: 44px;
+
+    padding: 0 22px;
+
+    border: 1px solid @brewcraft-espresso;
+    border-radius: @bc-radius-sm;
+
+    background: transparent;
+
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-body;
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    &:visited {
+        color: @brewcraft-espresso;
+    }
+
+    &:hover,
+    &:focus {
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        text-decoration: none;
+    }
+
+    span {
+        font-size: 15px;
+    }
+}
+
+//
+// ============================================================
+// BUSINESS / COMMERCIAL SECTION
+// ============================================================
+//
+
+.brewcraft-business {
+    display: grid;
+
+    grid-template-columns: 52% 48%;
+
+    width: 100%;
+    max-width: @bc-container-width;
+
+    min-height: 470px;
+
+    margin: 0 auto 72px;
+
+    overflow: hidden;
+
+    background: @brewcraft-bg-dark;
+
+    box-sizing: border-box;
+}
+
+//
+// Image
+//
+
+.brewcraft-business__media {
+    position: relative;
+
+    min-height: 470px;
+
+    overflow: hidden;
+
+    background: @brewcraft-bg-dark;
+
+    display: flex;
+    align-items: stretch;
+}
+
+.brewcraft-business__media img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 470px;
+
+    object-fit: cover;
+    object-position: 60% center;
+}
+
+//
+// Content
+//
+
+.brewcraft-business__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 58px 64px 58px 48px;
+
+    box-sizing: border-box;
+}
+
+
+.brewcraft-business__eyebrow {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: @brewcraft-gold;
+
+    font-family: @brewcraft-font-body;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+}
+
+
+.brewcraft-business__title {
+    max-width: 500px;
+
+    margin: 0 0 18px;
+
+    color: @brewcraft-white;
+
+    font-family: @brewcraft-font-heading;
+
+    font-size: 36px;
+    font-weight: 600;
+
+    line-height: 1.2;
+}
+
+
+.brewcraft-business__description {
+    max-width: 520px;
+
+    margin: 0 0 28px;
+
+    color: #c7c0ba;
+
+    font-family: @brewcraft-font-body;
+
+    font-size: 14px;
+
+    line-height: 23px;
+}
+
+
+//
+// Benefit list
+//
+
+.brewcraft-business__benefits {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 14px 26px;
+
+    margin-bottom: 34px;
+}
+
+
+.brewcraft-business__benefit {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #ded8d2;
+
+    font-size: 12px;
+    font-weight: 500;
+
+
+    span {
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        width: 20px;
+        height: 20px;
+
+        border: 1px solid @brewcraft-gold;
+        border-radius: 50%;
+
+        color: @brewcraft-gold;
+
+        font-size: 10px;
+        font-weight: 700;
+    }
+}
+
+
+//
+// Actions
+//
+
+.brewcraft-business__actions {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+.brewcraft-business__button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-width: 175px;
+    height: 44px;
+
+    padding: 0 22px;
+
+    box-sizing: border-box;
+
+    border-radius: @bc-radius-sm;
+
+    font-family: @brewcraft-font-body;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    text-decoration: none;
+
+
+    &:hover,
+    &:focus {
+        text-decoration: none;
+    }
+}
+
+
+//
+// Primary CTA
+//
+
+.brewcraft-business__button--primary {
+    border: 1px solid @brewcraft-gold;
+
+    background: @brewcraft-gold;
+
+    color: @brewcraft-espresso;
+
+
+    &:visited {
+        color: @brewcraft-espresso;
+    }
+
+
+    &:hover,
+    &:focus {
+        border-color: @brewcraft-white;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-espresso;
+    }
+}
+
+
+//
+// Secondary CTA
+//
+
+.brewcraft-business__button--secondary {
+    border: 1px solid rgba(255, 255, 255, .5);
+
+    background: transparent;
+
+    color: @brewcraft-white;
+
+
+    &:visited {
+        color: @brewcraft-white;
+    }
+
+
+    &:hover,
+    &:focus {
+        border-color: @brewcraft-white;
+
+        background: rgba(255, 255, 255, .08);
+
+        color: @brewcraft-white;
+    }
+}
+
+//
+// ============================================================
+// WHY BREWCRAFT / STORY
+// ============================================================
+//
+
+.brewcraft-story {
+    display: grid;
+    grid-template-columns: 48% 52%;
+
+    width: 100%;
+    max-width: @bc-container-width;
+
+    margin: 0 auto;
+
+    background: @brewcraft-cream;
+
+    box-sizing: border-box;
+
+    align-items: stretch;
+}
+
+
+
+//
+// Image
+//
+
+.brewcraft-story__media {
+    height: 100%;
+
+    overflow: hidden;
+
+    background: @brewcraft-stone;
+}
+.brewcraft-story__media img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    min-height: 100%;
+}
+
+//
+// Content
+//
+
+.brewcraft-story__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 42px 64px 46px;
+
+    box-sizing: border-box;
+}
+
+.brewcraft-story__eyebrow {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: @brewcraft-green;
+
+    font-family: @brewcraft-font-body;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+    text-transform: uppercase;
+}
+
+
+.brewcraft-story__title {
+    margin: 0 0 18px;
+
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-heading;
+
+    font-size: 36px;
+    font-weight: 600;
+
+    line-height: 1.2;
+}
+
+
+.brewcraft-story__description {
+    max-width: 590px;
+
+    margin: 0 0 34px;
+
+    color: @brewcraft-muted;
+
+    font-family: @brewcraft-font-body;
+
+    font-size: 14px;
+
+    line-height: 24px;
+}
+
+
+//
+// Points
+//
+
+.brewcraft-story__points {
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+
+.brewcraft-story__point {
+    display: grid;
+
+    grid-template-columns: 42px 1fr;
+
+    gap: 16px;
+
+    align-items: start;
+}
+
+
+.brewcraft-story__point-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid @brewcraft-gold;
+    border-radius: 50%;
+
+    color: @brewcraft-coffee;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.brewcraft-story__point {
+
+    h3 {
+        margin: 0 0 5px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+
+        font-size: 15px;
+        font-weight: 600;
+
+        line-height: 20px;
+    }
+
+
+    p {
+        max-width: 500px;
+
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-size: 12px;
+
+        line-height: 19px;
+    }
+}
+
+//
+// ============================================================
+// HOMEPAGE SECTION RHYTHM / SPACING CLEANUP
+// ============================================================
+//
+
+// Keep homepage sections visually connected.
+
+.brewcraft-home-hero {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.brewcraft-home-categories {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    padding-top: 40px;
+    padding-bottom: 48px;
+}
+
+.brewcraft-featured {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    padding-top: 48px;
+    padding-bottom: 52px;
+}
+
+.brewcraft-business {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.brewcraft-story {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+//
+// Tighten heading-to-content spacing
+//
+
+.brewcraft-home-categories__heading,
+.brewcraft-featured__heading {
+    margin-bottom: 26px;
+}
+
+
+//
+// Remove unexpected Magento content spacing
+//
+
+.cms-home .page-main {
+    padding-bottom: 0;
+}
+
+.cms-home .columns {
+    margin-bottom: 0;
+}
+
+.cms-home .column.main {
+    padding-bottom: 0;
+}
+
+
+//
+// Prevent gaps caused by empty content / blocks
+//
+
+.cms-home .column.main > * {
+    margin-top: 0;
+}
+
+
+//
+// Footer should begin directly after final homepage section
+//
+
+.cms-home .page-footer {
+    margin-top: 0;
+}

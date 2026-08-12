@@ -1,0 +1,14 @@
+{
+    "name": "brewcraft/theme-supply",
+    "description": "BrewCraft Supply Magento 2 storefront theme",
+    "require": {
+        "php": "^8.2 || ^8.3",
+        "magento/framework": "*"
+    },
+    "type": "magento2-theme",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ]
+    }
+}

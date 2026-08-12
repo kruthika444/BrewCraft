@@ -1,0 +1,319 @@
+<?php
+
+/**
+ * BrewCraft Supply Footer
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+
+<div class="brewcraft-benefits">
+    <div class="brewcraft-container brewcraft-benefits__inner">
+
+        <div class="brewcraft-benefit">
+            <div class="brewcraft-benefit__icon">
+                <span aria-hidden="true">✓</span>
+            </div>
+
+            <div class="brewcraft-benefit__content">
+                <strong>Quality Equipment</strong>
+                <span>Professional coffee gear you can trust</span>
+            </div>
+        </div>
+
+        <div class="brewcraft-benefit">
+            <div class="brewcraft-benefit__icon">
+                <span aria-hidden="true">↻</span>
+            </div>
+
+            <div class="brewcraft-benefit__content">
+                <strong>Reliable Supply</strong>
+                <span>Consistent stock for home and business</span>
+            </div>
+        </div>
+
+        <div class="brewcraft-benefit">
+            <div class="brewcraft-benefit__icon">
+                <span aria-hidden="true">★</span>
+            </div>
+
+            <div class="brewcraft-benefit__content">
+                <strong>Expert Support</strong>
+                <span>Guidance from coffee equipment specialists</span>
+            </div>
+        </div>
+
+        <div class="brewcraft-benefit">
+            <div class="brewcraft-benefit__icon">
+                <span aria-hidden="true">B2B</span>
+            </div>
+
+            <div class="brewcraft-benefit__content">
+                <strong>Business Solutions</strong>
+                <span>Wholesale pricing and quote support</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<footer class="brewcraft-footer">
+
+    <div class="brewcraft-container">
+
+        <div class="brewcraft-footer__grid">
+
+            <!-- Brand -->
+            <div class="brewcraft-footer__brand">
+
+                <a
+                    class="brewcraft-footer__logo"
+                    href="<?= $block->escapeUrl($block->getUrl('')) ?>"
+                    aria-label="<?= $block->escapeHtmlAttr(__('BrewCraft Supply Home')) ?>">
+                    <span class="brewcraft-footer__logo-main">
+                        BREWCRAFT
+                    </span>
+
+                    <span class="brewcraft-footer__logo-sub">
+                        SUPPLY
+                    </span>
+                </a>
+
+                <p class="brewcraft-footer__description">
+                    Professional coffee equipment, brewing tools,
+                    accessories and supplies for home baristas,
+                    cafés and businesses.
+                </p>
+
+                <div class="brewcraft-footer__contact">
+
+                    <a href="mailto:support@brewcraft.test">
+                        support@brewcraft.test
+                    </a>
+
+                    <span>
+                        Mon – Sat, 9:00 AM – 6:00 PM
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Shop -->
+            <div class="brewcraft-footer__column">
+
+                <h3 class="brewcraft-footer__title">
+                    Shop
+                </h3>
+
+                <ul>
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('catalogsearch/result', ['q' => 'coffee'])
+                                    ) ?>">
+                            Coffee
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('catalogsearch/result', ['q' => 'machines'])
+                                    ) ?>">
+                            Machines
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('catalogsearch/result', ['q' => 'grinders'])
+                                    ) ?>">
+                            Grinders
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('catalogsearch/result', ['q' => 'brewing'])
+                                    ) ?>">
+                            Brewing
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('catalogsearch/result', ['q' => 'accessories'])
+                                    ) ?>">
+                            Accessories
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('catalogsearch/result', ['q' => 'commercial'])
+                                    ) ?>">
+                            Commercial
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <!-- Account -->
+            <div class="brewcraft-footer__column">
+
+                <h3 class="brewcraft-footer__title">
+                    My Account
+                </h3>
+
+                <ul>
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('customer/account')
+                                    ) ?>">
+                            My Account
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('sales/order/history')
+                                    ) ?>">
+                            My Orders
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('wishlist')
+                                    ) ?>">
+                            Wishlist
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('checkout/cart')
+                                    ) ?>">
+                            Shopping Cart
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('customer/account/login')
+                                    ) ?>">
+                            Sign In
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <!-- Support -->
+            <div class="brewcraft-footer__column">
+
+                <h3 class="brewcraft-footer__title">
+                    Support
+                </h3>
+
+                <ul>
+                    <li>
+                        <a href="<?= $block->escapeUrl(
+                                        $block->getUrl('contact')
+                                    ) ?>">
+                            Contact Us
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Shipping & Delivery
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Returns & Refunds
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Product Support
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            FAQs
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <!-- B2B -->
+            <div class="brewcraft-footer__business">
+
+                <span class="brewcraft-footer__business-label">
+                    FOR BUSINESS
+                </span>
+
+                <h3>
+                    Equip your business with BrewCraft
+                </h3>
+
+                <p>
+                    Access wholesale pricing, commercial equipment
+                    and request custom quotations for your business.
+                </p>
+
+                <a
+                    class="brewcraft-footer__business-action"
+                    href="<?= $block->escapeUrl(
+                                $block->getUrl('customer/account/create')
+                            ) ?>">
+                    Business Account
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="brewcraft-footer__bottom">
+
+            <div class="brewcraft-footer__copyright">
+                &copy; <?= $block->escapeHtml(date('Y')) ?>
+                BrewCraft Supply. All rights reserved.
+            </div>
+
+            <div class="brewcraft-footer__legal">
+
+                <a href="#">
+                    Privacy Policy
+                </a>
+
+                <a href="#">
+                    Terms & Conditions
+                </a>
+
+            </div>
+
+            <div class="brewcraft-footer__payments">
+                <span>Secure Payments</span>
+                <strong>VISA</strong>
+                <strong>Mastercard</strong>
+                <strong>UPI</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>

@@ -1,0 +1,101 @@
+<?php
+
+declare(strict_types=1);
+
+use BrewCraft\ErpIntegration\Block\Home\CategoryGrid;
+
+/** @var CategoryGrid $block */
+
+$categories = $block->getCategories();
+?>
+
+<?php if ($categories): ?>
+
+    <section class="brewcraft-home-categories">
+
+        <div class="brewcraft-home-categories__heading">
+
+            <div>
+                <span class="brewcraft-home-categories__eyebrow">
+                    <?= $block->escapeHtml(__('Explore BrewCraft')) ?>
+                </span>
+
+                <h2 class="brewcraft-home-categories__title">
+                    <?= $block->escapeHtml(__('Shop by Category')) ?>
+                </h2>
+
+                <p class="brewcraft-home-categories__description">
+                    <?= $block->escapeHtml(
+                        __('Everything you need to brew, serve and enjoy better coffee.')
+                    ) ?>
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="brewcraft-home-categories__grid">
+
+            <?php foreach ($categories as $category): ?>
+
+                <?php
+                $erpCode = (string)$category->getData(
+                    'erp_category_code'
+                );
+                ?>
+
+                <a
+                    class="brewcraft-category-card"
+                    href="<?= $block->escapeUrl($category->getUrl()) ?>">
+
+                    <?php $imageUrl = $block->getCategoryImageUrl($category); ?>
+
+                    <div class="brewcraft-category-card__image">
+
+                        <?php if ($imageUrl): ?>
+
+                            <img
+                                src="<?= $block->escapeUrl($imageUrl) ?>"
+                                alt="<?= $block->escapeHtmlAttr(
+                                            (string)$category->getName()
+                                        ) ?>" />
+
+                        <?php else: ?>
+
+                            <div class="brewcraft-category-card__placeholder">
+                                <?= $block->escapeHtml(
+                                    (string)$category->getName()
+                                ) ?>
+                            </div>
+
+                        <?php endif; ?>
+
+                    </div>
+
+                    <div class="brewcraft-category-card__content">
+
+                        <h3>
+                            <?= $block->escapeHtml(
+                                (string)$category->getName()
+                            ) ?>
+                        </h3>
+
+                        <span class="brewcraft-category-card__link">
+                            <?= $block->escapeHtml(__('Shop Now')) ?>
+
+                            <span aria-hidden="true">
+                                →
+                            </span>
+                        </span>
+
+                    </div>
+
+                </a>
+
+            <?php endforeach; ?>
+
+        </div>
+
+    </section>
+
+<?php endif; ?>

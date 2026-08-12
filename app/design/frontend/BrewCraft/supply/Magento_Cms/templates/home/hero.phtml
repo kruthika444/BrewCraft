@@ -1,0 +1,88 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+?>
+
+<section class="brewcraft-home-hero">
+
+    <div class="brewcraft-home-hero__inner">
+
+        <div class="brewcraft-home-hero__content">
+
+            <span class="brewcraft-home-hero__eyebrow">
+                <?= $escaper->escapeHtml(__('Premium Coffee Equipment')) ?>
+            </span>
+
+            <h1 class="brewcraft-home-hero__title">
+                <?= $escaper->escapeHtml(__('Elevate Your Craft.')) ?><br>
+                <?= $escaper->escapeHtml(__('Every Cup.')) ?>
+            </h1>
+
+            <p class="brewcraft-home-hero__description">
+                <?= $escaper->escapeHtml(
+                    __('Premium equipment and accessories for coffee professionals and passionate brewers.')
+                ) ?>
+            </p>
+
+            <div class="brewcraft-home-hero__actions">
+                <a class="action primary brewcraft-home-hero__button brewcraft-home-hero__button--primary"
+                    href="<?= $escaper->escapeUrl('/coffee-machines') ?>">
+                    <span><?= $escaper->escapeHtml(__('Shop Machines')) ?></span>
+                </a>
+
+                <a class="action secondary brewcraft-home-hero__button brewcraft-home-hero__button--secondary"
+                    href="<?= $escaper->escapeUrl('/coffee.html') ?>">
+                    <span><?= $escaper->escapeHtml(__('Shop All Products')) ?></span>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="brewcraft-home-hero__media">
+            <img src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/home/hero-coffee-machine.png')) ?>"
+                alt="<?= $escaper->escapeHtmlAttr(__('BrewCraft Hero Coffee Machine')) ?>" />
+        </div>
+
+    </div>
+
+    <div class="brewcraft-home-hero__features">
+
+        <div class="brewcraft-home-hero__feature">
+            <div class="brewcraft-home-hero__feature-icon">🚚</div>
+            <div class="brewcraft-home-hero__feature-text">
+                <strong><?= $escaper->escapeHtml(__('Free Shipping')) ?></strong>
+                <span><?= $escaper->escapeHtml(__('On orders over ₹999')) ?></span>
+            </div>
+        </div>
+
+        <div class="brewcraft-home-hero__feature">
+            <div class="brewcraft-home-hero__feature-icon">🎓</div>
+            <div class="brewcraft-home-hero__feature-text">
+                <strong><?= $escaper->escapeHtml(__('Expert Support')) ?></strong>
+                <span><?= $escaper->escapeHtml(__('Talk to our coffee pros')) ?></span>
+            </div>
+        </div>
+
+        <div class="brewcraft-home-hero__feature">
+            <div class="brewcraft-home-hero__feature-icon">🔒</div>
+            <div class="brewcraft-home-hero__feature-text">
+                <strong><?= $escaper->escapeHtml(__('Secure Payments')) ?></strong>
+                <span><?= $escaper->escapeHtml(__('100% secure checkout')) ?></span>
+            </div>
+        </div>
+
+        <div class="brewcraft-home-hero__feature">
+            <div class="brewcraft-home-hero__feature-icon">☕</div>
+            <div class="brewcraft-home-hero__feature-text">
+                <strong><?= $escaper->escapeHtml(__('Brew Better')) ?></strong>
+                <span><?= $escaper->escapeHtml(__('Tools for every level')) ?></span>
+            </div>
+        </div>
+
+    </div>
+
+</section>

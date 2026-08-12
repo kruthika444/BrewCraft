@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+
+        <!-- Remove default Magento homepage heading -->
+        <referenceBlock name="page.main.title" remove="true" />
+
+        <referenceContainer name="content">
+
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.home.hero" template="Magento_Cms::home/hero.phtml" before="-" />
+
+            <block class="BrewCraft\ErpIntegration\Block\Home\CategoryGrid" name="brewcraft.home.categories" template="Magento_Cms::home/category-grid.phtml" after="brewcraft.home.hero" />
+
+            <block class="BrewCraft\ErpIntegration\Block\Home\FeaturedProducts" name="brewcraft.home.featured.products" template="Magento_Cms::home/featured-products.phtml" after="brewcraft.home.categories" />
+
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.home.business" template="Magento_Cms::home/business-banner.phtml" after="brewcraft.home.featured.products" />
+
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.home.story" template="Magento_Cms::home/why-brewcraft.phtml" after="brewcraft.home.business" />
+        </referenceContainer>
+
+    </body>
+
+</page>

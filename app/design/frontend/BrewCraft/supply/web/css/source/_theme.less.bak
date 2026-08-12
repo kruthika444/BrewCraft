@@ -1,0 +1,23 @@
+//
+// BrewCraft theme variable overrides
+//
+
+@font-family-name__base: 'Inter';
+@font-family__base: @font-family-name__base;
+
+@text__color: #1f1f1f;
+
+@link__color: #5c3a21;
+@link__hover__color: #2e1e14;
+
+@page__background-color: #ffffff;
+
+@border-color__base: #ded7ce;
+
+@button-primary__background: #2e1e14;
+@button-primary__border: 1px solid #2e1e14;
+@button-primary__color: #ffffff;
+
+@button-primary__hover__background: #5c3a21;
+@button-primary__hover__border: 1px solid #5c3a21;
+@button-primary__hover__color: #ffffff;

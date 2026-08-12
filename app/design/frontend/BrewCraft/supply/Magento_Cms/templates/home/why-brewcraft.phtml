@@ -1,0 +1,124 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * BrewCraft Why BrewCraft Homepage Section
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+
+<section class="brewcraft-story">
+
+    <div class="brewcraft-story__media">
+
+        <img
+            src="<?= $block->escapeUrl(
+                        $block->getViewFileUrl(
+                            'images/home/coffee.png'
+                        )
+                    ) ?>"
+            alt="<?= $block->escapeHtmlAttr(
+                        __('BrewCraft coffee brewing experience')
+                    ) ?>" />
+
+    </div>
+
+
+    <div class="brewcraft-story__content">
+
+        <span class="brewcraft-story__eyebrow">
+            <?= $block->escapeHtml(__('Why BrewCraft')) ?>
+        </span>
+
+
+        <h2 class="brewcraft-story__title">
+            <?= $block->escapeHtml(
+                __('Crafted for Better Coffee')
+            ) ?>
+        </h2>
+
+
+        <p class="brewcraft-story__description">
+            <?= $block->escapeHtml(
+                __('We bring together dependable coffee equipment, carefully selected brewing tools and practical expertise to help home brewers and professionals get more from every cup.')
+            ) ?>
+        </p>
+
+
+        <div class="brewcraft-story__points">
+
+            <div class="brewcraft-story__point">
+
+                <span class="brewcraft-story__point-number">
+                    01
+                </span>
+
+                <div>
+                    <h3>
+                        <?= $block->escapeHtml(
+                            __('Curated Equipment')
+                        ) ?>
+                    </h3>
+
+                    <p>
+                        <?= $block->escapeHtml(
+                            __('Products selected for quality, performance and everyday reliability.')
+                        ) ?>
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="brewcraft-story__point">
+
+                <span class="brewcraft-story__point-number">
+                    02
+                </span>
+
+                <div>
+                    <h3>
+                        <?= $block->escapeHtml(
+                            __('Reliable Supply')
+                        ) ?>
+                    </h3>
+
+                    <p>
+                        <?= $block->escapeHtml(
+                            __('Coffee essentials and commercial equipment supported by dependable inventory.')
+                        ) ?>
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="brewcraft-story__point">
+
+                <span class="brewcraft-story__point-number">
+                    03
+                </span>
+
+                <div>
+                    <h3>
+                        <?= $block->escapeHtml(
+                            __('Expert Support')
+                        ) ?>
+                    </h3>
+
+                    <p>
+                        <?= $block->escapeHtml(
+                            __('Straightforward guidance for choosing and using the right coffee equipment.')
+                        ) ?>
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

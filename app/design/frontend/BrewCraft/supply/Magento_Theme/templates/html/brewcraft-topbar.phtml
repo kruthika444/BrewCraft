@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * BrewCraft desktop top bar
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+
+<div class="brewcraft-topbar">
+
+    <div class="brewcraft-topbar__message">
+        <?= $block->escapeHtml(
+            __('Free shipping on orders over ₹999')
+        ) ?>
+    </div>
+
+    <nav
+        class="brewcraft-topbar__links"
+        aria-label="<?= $block->escapeHtmlAttr(__('Utility navigation')) ?>"
+    >
+        <a href="#">
+            <?= $block->escapeHtml(__('About Us')) ?>
+        </a>
+
+        <a href="#">
+            <?= $block->escapeHtml(__('Wholesale')) ?>
+        </a>
+
+        <a href="#">
+            <?= $block->escapeHtml(__('Blog')) ?>
+        </a>
+
+        <a href="<?= $block->escapeUrl($block->getUrl('contact')) ?>">
+            <?= $block->escapeHtml(__('Contact')) ?>
+        </a>
+    </nav>
+
+</div>

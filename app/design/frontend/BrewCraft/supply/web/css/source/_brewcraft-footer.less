@@ -1,0 +1,378 @@
+
+// ---------------------------------------------
+// Shared container
+// ---------------------------------------------
+
+.brewcraft-container {
+    width: 100%;
+    max-width: @bc-container-width;
+    margin: 0 auto;
+    padding-left: 32px;
+    padding-right: 32px;
+    box-sizing: border-box;
+}
+
+// ---------------------------------------------
+// Benefits strip
+// ---------------------------------------------
+
+.brewcraft-benefits {
+    background: @brewcraft-cream;
+    border-top: 1px solid @brewcraft-border;
+    border-bottom: 1px solid @brewcraft-border;
+}
+
+.brewcraft-benefits__inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+}
+
+.brewcraft-benefit {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 92px;
+    padding: 20px 24px;
+    box-sizing: border-box;
+    border-right: 1px solid @brewcraft-border;
+    &:last-child {
+        border-right: 0;
+    }
+}
+
+.brewcraft-benefit__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid @brewcraft-coffee;
+    border-radius: 50%;
+    color: @brewcraft-coffee;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.brewcraft-benefit__content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    strong {
+        color: @brewcraft-espresso;
+        font-family: @brewcraft-font-heading;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    span {
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        line-height: 18px;
+    }
+}
+
+
+// ---------------------------------------------
+// Main footer
+// ---------------------------------------------
+
+.page-footer {
+    margin-top: 0;
+    padding: 0;
+
+    background: transparent;
+}
+
+.footer.content {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+.brewcraft-footer {
+    background: @brewcraft-bg-dark;
+    color: @brewcraft-white;
+
+    padding: 64px 0 0;
+}
+
+
+// ---------------------------------------------
+// Main grid
+// ---------------------------------------------
+
+.brewcraft-footer__grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(250px, 1.5fr) minmax(130px, .7fr) minmax(130px, .7fr) minmax(150px, .8fr) minmax(250px, 1.3fr);
+
+    gap: 48px;
+}
+
+
+// ---------------------------------------------
+// Brand
+// ---------------------------------------------
+
+.brewcraft-footer__brand {
+    padding-right: 12px;
+}
+
+.brewcraft-footer__logo {
+    display: inline-flex;
+    flex-direction: column;
+
+    margin-bottom: 22px;
+
+    color: @brewcraft-white;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: @brewcraft-white;
+        text-decoration: none;
+    }
+}
+
+.brewcraft-footer__logo-main {
+    font-family: @brewcraft-font-heading;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    line-height: 28px;
+}
+
+.brewcraft-footer__logo-sub {
+    margin-top: 1px;
+
+    color: @brewcraft-gold;
+
+    font-family: @brewcraft-font-body;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+}
+
+.brewcraft-footer__description {
+    max-width: 300px;
+
+    margin: 0 0 22px;
+
+    color: #c8c2bd;
+
+    font-size: 13px;
+    line-height: 22px;
+}
+
+.brewcraft-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    a,
+    span {
+        color: #b9b2ac;
+
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    a {
+        &:hover {
+            color: @brewcraft-white;
+            text-decoration: none;
+        }
+    }
+}
+
+
+// ---------------------------------------------
+// Footer columns
+// ---------------------------------------------
+
+.brewcraft-footer__title {
+    margin: 0 0 22px;
+
+    color: @brewcraft-white;
+
+    font-family: @brewcraft-font-heading;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.brewcraft-footer__column {
+
+    ul {
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    li {
+        margin: 0 0 12px;
+        padding: 0;
+    }
+
+    a {
+        color: #b9b2ac;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        line-height: 19px;
+        text-decoration: none;
+
+        transition: color .2s ease;
+
+        &:hover,
+        &:focus {
+            color: @brewcraft-white;
+            text-decoration: none;
+        }
+    }
+}
+
+
+// ---------------------------------------------
+// Business callout
+// ---------------------------------------------
+
+.brewcraft-footer__business {
+    padding: 26px;
+
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: @bc-radius-md;
+
+    background: rgba(255, 255, 255, .04);
+
+    align-self: start;
+
+    h3 {
+        margin: 8px 0 12px;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 26px;
+    }
+
+    p {
+        margin: 0 0 20px;
+
+        color: #b9b2ac;
+
+        font-size: 12px;
+        line-height: 20px;
+    }
+}
+
+.brewcraft-footer__business-label {
+    color: @brewcraft-gold;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.brewcraft-footer__business-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding: 0 18px;
+
+    border: 1px solid @brewcraft-gold;
+    border-radius: @bc-radius-sm;
+
+    color: @brewcraft-white;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        background: @brewcraft-gold;
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+    }
+}
+
+
+// ---------------------------------------------
+// Bottom footer
+// ---------------------------------------------
+
+.brewcraft-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    margin-top: 56px;
+
+    padding: 24px 0;
+
+    border-top: 1px solid rgba(255, 255, 255, .1);
+
+    color: #928b85;
+
+    font-size: 11px;
+}
+
+.brewcraft-footer__legal {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    a {
+        color: #928b85;
+        text-decoration: none;
+
+        &:hover {
+            color: @brewcraft-white;
+            text-decoration: none;
+        }
+    }
+}
+
+.brewcraft-footer__payments {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    span {
+        margin-right: 4px;
+    }
+
+    strong {
+        display: inline-flex;
+        align-items: center;
+
+        min-height: 26px;
+
+        padding: 0 8px;
+
+        border: 1px solid rgba(255, 255, 255, .15);
+        border-radius: 3px;
+
+        color: #d6d1cd;
+
+        font-size: 9px;
+        font-weight: 600;
+    }
+}
