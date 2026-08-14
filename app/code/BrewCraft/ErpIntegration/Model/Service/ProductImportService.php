@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BrewCraft\ErpIntegration\Model\Service;
 
 use BrewCraft\ErpIntegration\Logger\Logger;
+use BrewCraft\ErpIntegration\Model\Media\ProductImageImporter;
 use BrewCraft\ErpIntegration\Model\Resolver\CategoryResolver;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
@@ -27,8 +28,10 @@ class ProductImportService
         private readonly ProductFactory $productFactory,
         private readonly ProductRepositoryInterface $productRepository,
         private readonly CategoryResolver $categoryResolver,
+        private readonly ProductImageImporter $productImageImporter,
         private readonly Logger $logger
-    ) {}
+    ) {
+    }
 
     public function import(array $products): array
     {
@@ -39,34 +42,80 @@ class ProductImportService
         ];
 
         foreach ($products as $erpProduct) {
-
             try {
-
                 $isNew = false;
 
                 try {
-
-                    $product = $this->productRepository
-                        ->get($erpProduct['sku']);
+                    /*
+                     * Explicitly load Admin/default scope.
+                     *
+                     * This is important for product images because
+                     * we do not want the ERP importer accidentally
+                     * creating storefront-specific image values.
+                     */
+                    $product = $this->productRepository->get(
+                        (string)$erpProduct['sku'],
+                        false,
+                        0,
+                        true
+                    );
                 } catch (NoSuchEntityException) {
+                    $product = $this->productFactory
+                        ->create();
 
-                    $product = $this->productFactory->create();
+                    $product->setStoreId(0);
 
-                    $product->setSku($erpProduct['sku']);
+                    $product->setSku(
+                        (string)$erpProduct['sku']
+                    );
 
-                    $product->setTypeId(self::TYPE_SIMPLE);
+                    $product->setTypeId(
+                        self::TYPE_SIMPLE
+                    );
 
-                    $product->setAttributeSetId(self::ATTRIBUTE_SET_ID);
+                    $product->setAttributeSetId(
+                        self::ATTRIBUTE_SET_ID
+                    );
 
                     $isNew = true;
                 }
+
+                /*
+                 * Always synchronize ERP-owned product data
+                 * at Admin/default scope.
+                 */
+                $product->setStoreId(0);
 
                 $this->mapProduct(
                     $product,
                     $erpProduct
                 );
 
-                $this->productRepository->save($product);
+                /*
+                 * Save core product data first.
+                 *
+                 * New products need a Magento entity ID before
+                 * media-gallery processing.
+                 */
+                $product = $this->productRepository
+                    ->save($product);
+
+                /*
+                 * Product image failure must not fail the
+                 * complete product synchronization.
+                 *
+                 * ProductImageImporter handles/logs media errors.
+                 */
+                $mediaChanged = $this->productImageImporter
+                    ->import(
+                        $product,
+                        $erpProduct
+                    );
+
+                if ($mediaChanged) {
+                    $this->productRepository
+                        ->save($product);
+                }
 
                 if ($isNew) {
                     $result['created']++;
@@ -81,7 +130,6 @@ class ProductImportService
                     )
                 );
             } catch (\Throwable $exception) {
-
                 $result['failed']++;
 
                 $this->logger->error(
@@ -97,40 +145,12 @@ class ProductImportService
         return $result;
     }
 
-    private function getProduct(
-        string $sku
-    ): Product {
-
-        try {
-
-            return $this->productRepository
-                ->get($sku);
-        } catch (NoSuchEntityException) {
-
-            $product = $this->productFactory
-                ->create();
-
-            $product->setSku($sku);
-
-            $product->setTypeId(
-                self::TYPE_SIMPLE
-            );
-
-            $product->setAttributeSetId(
-                self::ATTRIBUTE_SET_ID
-            );
-
-            return $product;
-        }
-    }
-
     private function mapProduct(
         Product $product,
         array $erpProduct
     ): void {
-
         $product->setName(
-            $erpProduct['name']
+            (string)$erpProduct['name']
         );
 
         $product->setPrice(
@@ -146,18 +166,17 @@ class ProductImportService
         );
 
         $product->setStatus(
-            $erpProduct['status'] === 'ACTIVE'
+            ($erpProduct['status'] ?? '') === 'ACTIVE'
                 ? self::STATUS_ENABLED
                 : self::STATUS_DISABLED
         );
 
         $category = $this->categoryResolver
             ->getByErpCode(
-                $erpProduct['category_code']
+                (string)$erpProduct['category_code']
             );
 
         if (!$category) {
-
             throw new \RuntimeException(
                 sprintf(
                     'Category "%s" not found.',

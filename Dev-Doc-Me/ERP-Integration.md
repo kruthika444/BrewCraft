@@ -1,4 +1,4 @@
-## BrewCraft Supply — Development Log
+# 1.BrewCraft Supply — Development Log
 
 ### Day 1: ERP Integration Foundation
 
@@ -270,7 +270,7 @@ Throughout Day 1 we reinforced the following Magento development principles:
 ---
   
   
-### Day 02: ERP Integration Foundation & First Product Synchronization
+# 2: ERP Integration Foundation & First Product Synchronization
 
 **Date:** 15 July 2026
 
@@ -586,7 +586,7 @@ This marks the **first successful end-to-end synchronization** between the mock 
 ---
 ---
    
-## BrewCraft Supply — Development Log
+# 3. BrewCraft Supply — Development Log
 
 ### Day 03: Category Sync, Inventory Sync & Inventory Cron
 
@@ -1104,7 +1104,7 @@ php bin/magento brewcraft:erp:price:test
 Newly placed orders will be published to a queue and asynchronously sent to the ERP system.
 
 
-## BrewCraft ERP Integration — Development Log
+# 4. BrewCraft ERP Integration — Development Log
 
 ### Day 04: Order Synchronization via Magento Message Queue Framework
 
@@ -1600,7 +1600,7 @@ TestConsumer::process()
 - Importance of cache clearing after XML and DI configuration changes
 
 
-## BrewCraft ERP Integration — Development Log
+# 5. BrewCraft ERP Integration — Development Log
 
 ### Feature: Category Hierarchy Synchronization & Product Category Assignment
 
@@ -2062,7 +2062,7 @@ None of the following have been built yet:
 
 
 
-## Development Log — ERP Retry Mechanism and Admin Configuration
+# 6. Development Log — ERP Retry Mechanism and Admin Configuration
 **Date:** 20 July 2026
 
 **Project:** BrewCraft Magento 2 ERP Integration
@@ -3158,7 +3158,7 @@ The main remaining ERP work is code cleanup and final module documentation.
 
 
 
-# Development Log 1: Category Import Enhancement
+# 7. Development Log 1: Category Import Enhancement
 **DATE:** 11th AUG 
 ### Objective
 
@@ -3795,3 +3795,867 @@ The category importer is now more production-like because it supports:
 ✔ Better validation
 ✔ Better logging
 ```
+
+
+# 8. BrewCraft ERP Media & Category Content Sync
+
+#### Development Log
+
+### 1. Objective
+
+After completing the PLP, we moved the next catalog requirement into ERP integration.
+
+Previously the ERP handled core catalog data such as:
+
+```text
+Products
+Categories
+Prices
+Inventory
+```
+
+The new goal was to enrich Magento with:
+
+```text
+Product images
+Category images
+Category descriptions
+Subcategory images
+Subcategory descriptions
+```
+
+without manually uploading every image or description through Magento Admin.
+
+The resulting ownership is:
+
+```text
+ERP
+│
+├── Product/catalog data
+├── Inventory
+├── Pricing
+├── Product images
+├── Category hierarchy
+├── Category images
+└── Basic category descriptions
+        ↓
+      Magento
+
+Magento
+├── Storefront presentation
+├── CMS/marketing content
+├── SEO
+├── Merchandising
+└── Product relations
+```
+
+---
+
+## 2. ERP Media Architecture
+
+We decided that the storefront should **not load product/category images directly from ERP URLs**.
+
+Instead:
+
+```text
+ERP
+↓
+Magento sync
+↓
+Download image
+↓
+Store image in Magento media
+↓
+PLP / PDP / Category hero
+```
+
+This is preferable to:
+
+```text
+Browser
+↓
+ERP image URL
+```
+
+because Magento's storefront should continue working even when ERP is temporarily unavailable.
+
+---
+
+## 3. Mock ERP Static Media Structure
+
+The JSON Server mock ERP was extended to expose static media.
+
+The recommended structure became:
+
+```text
+mock-erp/
+├── db.json
+└── public/
+    └── media/
+        ├── products/
+        │   ├── BEAN001/
+        │   │   ├── BEAN001-01.jpg
+        │   │   ├── BEAN001-02.jpg
+        │   │   └── BEAN001-03.jpg
+        │   │
+        │   ├── ESP001/
+        │   │   ├── ESP001-01.jpg
+        │   │   ├── ESP001-02.jpg
+        │   │   └── ESP001-03.jpg
+        │   └── ...
+        │
+        └── categories/
+            ├── COFFEE.jpg
+            ├── COFFEE_BEANS.jpg
+            ├── ARABICA.jpg
+            └── ...
+```
+
+JSON Server exposes `public/` as static content.
+
+---
+
+## 5. Multiple Product Images
+
+The ERP product structure was expanded to support an `images` array rather than only one image.
+
+Example:
+
+```json
+"images": [
+    {
+        "url": ".../BEAN001-01.jpg",
+        "roles": [
+            "image",
+            "small_image",
+            "thumbnail"
+        ],
+        "position": 1,
+        "disabled": false
+    },
+    {
+        "url": ".../BEAN001-02.jpg",
+        "roles": [],
+        "position": 2,
+        "disabled": false
+    },
+    {
+        "url": ".../BEAN001-03.jpg",
+        "roles": [],
+        "position": 3,
+        "disabled": false
+    }
+]
+```
+
+This maps naturally to Magento's media gallery.
+
+---
+
+## 6. Magento Product Image Roles
+
+We explicitly handled Magento's three important image roles:
+
+```text
+image
+small_image
+thumbnail
+```
+
+Their practical usage is approximately:
+
+```text
+image
+→ main/base product image
+
+small_image
+→ PLP/catalog image
+
+thumbnail
+→ thumbnail contexts/gallery
+```
+
+Normally only the primary ERP image receives all three roles:
+
+```text
+BEAN001-01
+├── image
+├── small_image
+└── thumbnail
+```
+
+while:
+
+```text
+BEAN001-02
+BEAN001-03
+```
+
+remain additional gallery images.
+
+This directly addresses the PLP problem we previously discovered where a PDP could have an image while the PLP lacked a usable `small_image`.
+
+---
+
+## 7. Magento Container Connectivity Test
+
+The mock ERP was running on:
+
+```text
+localhost:3001
+```
+
+from the host.
+
+We first tested:
+
+```bash
+curl -I http://localhost:3001/media/products/BEAN001/BEAN001-01.jpg
+```
+
+and received:
+
+```text
+HTTP/1.1 200 OK
+Content-Type: image/jpeg
+```
+
+The image could also be downloaded successfully using `curl`.
+
+---
+
+## 8. Docker Networking Consideration
+
+A critical Docker concept surfaced here.
+
+From the Magento PHP container:
+
+```text
+localhost
+```
+
+means:
+
+> the PHP container itself
+
+not the Linux host.
+
+Therefore Magento could not use the host-oriented ERP URL directly.
+
+We tested:
+
+```text
+http://host.docker.internal:3001/
+```
+
+from inside the Magento PHP container.
+
+The test returned:
+
+```text
+HTTP 200
+Content-Type: image/jpeg
+```
+
+confirming:
+
+```text
+Magento PHP container
+        ↓
+host.docker.internal
+        ↓
+Host port 3001
+        ↓
+JSON Server
+        ↓
+Product image
+```
+
+---
+
+## 9. `ImageDownloader`
+
+We introduced a dedicated media service:
+
+```text
+BrewCraft\ErpIntegration\Model\Media\ImageDownloader
+```
+
+Its responsibility is intentionally limited:
+
+```text
+ERP URL
+↓
+HTTP GET
+↓
+Check HTTP status
+↓
+Validate response
+↓
+Ensure actual image
+↓
+Store temporary file
+```
+
+The temporary location is:
+
+```text
+var/import/brewcraft_erp_media/
+```
+
+This separation prevents product/category importer classes from containing raw HTTP-download logic.
+
+---
+
+## 10. Image Validation
+
+The downloader validates that the HTTP response is actually an image.
+
+This prevents situations such as:
+
+```text
+ERP URL returns
+404 HTML page
+```
+
+from accidentally being written into Magento as if it were:
+
+```text
+product.jpg
+```
+
+Invalid media results in logging rather than silently corrupting the media gallery.
+
+---
+
+## 11. Product Media Service
+
+We created:
+
+```text
+ProductImageImporter
+```
+
+whose responsibility is:
+
+```text
+Magento Product
++
+ERP images array
+↓
+Product media gallery
+```
+
+It handles:
+
+```text
+multiple images
+image-role assignment
+duplicate detection
+ERP-controlled images
+error isolation
+```
+
+---
+
+## 12. Product Import Integration
+
+`ProductImportService` was extended so image synchronization happens as part of normal ERP product synchronization.
+
+The resulting sequence is:
+
+```text
+ERP product
+↓
+Load/create Magento product
+↓
+Map core attributes
+↓
+Save product
+↓
+ProductImageImporter
+↓
+Save media changes
+```
+
+A separate manual image-import process is therefore unnecessary.
+
+---
+
+## 13. Product Import Scope
+
+We also explicitly used:
+
+```text
+store_id = 0
+```
+
+for ERP-owned product synchronization.
+
+This was important because we previously found the exact image bug:
+
+```text
+store_id = 0 → valid image
+store_id = 1 → no_selection
+```
+
+and Magento preferred the Store View override.
+
+ERP synchronization should write global catalog values at the intended default/Admin scope unless there is a deliberate store-specific requirement.
+
+---
+
+## 14. First Product Media Error
+
+The initial product-image sync failed even though images successfully downloaded into:
+
+```text
+var/import/brewcraft_erp_media/
+```
+
+The log showed:
+
+```text
+Path "/var/www/html/var/import/..."
+cannot be used with directory
+"/var/www/html/pub/media/"
+```
+
+This was a very useful Magento filesystem issue.
+
+---
+
+## 15. Root Cause of Product Media Error
+
+We were passing the downloaded file directly to:
+
+```php
+$product->addImageToMediaGallery(...)
+```
+
+from:
+
+```text
+var/import/...
+```
+
+But Magento's product gallery processor was working within the:
+
+```text
+pub/media
+```
+
+filesystem context.
+
+Magento's filesystem abstraction correctly prevented using an arbitrary file outside that directory.
+
+---
+
+## 16. Why Category Image Sync Worked
+
+Category media did not suffer from this problem because the category importer already performed:
+
+```text
+ERP
+↓
+download temporary image
+↓
+copy image to pub/media/catalog/category
+↓
+assign category image
+```
+
+So the actual storefront category file already existed inside Magento's media directory.
+
+---
+
+## 17. Product Media Flow Corrected
+
+The product flow was changed to:
+
+```text
+ERP
+↓
+ImageDownloader
+↓
+var/import/brewcraft_erp_media
+↓
+copy
+↓
+pub/media/import/brewcraft_erp_media
+↓
+Magento addImageToMediaGallery()
+↓
+pub/media/catalog/product
+```
+
+This satisfied Magento's media filesystem requirements.
+
+---
+
+## 18. Media Staging Concept
+
+We therefore use two stages:
+
+```text
+var/import
+```
+
+as the **external-download staging area**, and:
+
+```text
+pub/media/import
+```
+
+as the **Magento media-gallery staging area**.
+
+Then Magento owns the final copy inside:
+
+```text
+pub/media/catalog/product
+```
+
+This distinction is particularly useful when debugging.
+
+---
+
+## 19. Product Media Error Isolation
+
+A deliberate design decision was made:
+
+> One bad ERP image should not fail the entire product synchronization.
+
+So:
+
+```text
+32 products
+↓
+1 unavailable JPG
+```
+
+does not mean:
+
+```text
+whole ERP sync fails
+```
+
+Instead:
+
+```text
+product/catalog data continues ✅
+other media continues ✅
+failed image logged ❌
+```
+
+Logs use messages similar to:
+
+```text
+[ERP MEDIA] Failed product image sync
+SKU: ...
+URL: ...
+Error: ...
+```
+
+---
+
+## 20. Category Description Sync
+
+`CategoryImportService` was extended to map:
+
+```text
+description
+```
+
+from ERP to Magento.
+
+Example:
+
+```json
+{
+    "code": "ARABICA",
+    "name": "Arabica Beans",
+    "description": "Discover smooth and aromatic Arabica beans..."
+}
+```
+
+becomes:
+
+```text
+ERP description
+↓
+Magento category description
+↓
+Existing PLP category hero
+```
+
+No additional theme work was required.
+
+---
+
+## 21. Safe Description Updating
+
+We chose not to blindly clear Magento descriptions when older ERP payloads do not contain a description field.
+
+Instead, the importer only updates the description when:
+
+```text
+"description"
+```
+
+is actually present in the ERP response.
+
+This provides safer backward compatibility with existing mock ERP records.
+
+---
+
+## 22. Category Image Sync
+
+We created:
+
+```text
+CategoryImageImporter
+```
+
+for category images.
+
+Its flow is:
+
+```text
+ERP category image URL
+↓
+ImageDownloader
+↓
+temporary image
+↓
+pub/media/catalog/category/erp/
+↓
+Magento category image attribute
+```
+
+The existing category hero then automatically displays it.
+
+---
+
+## 23. Category Media Payload
+
+ERP categories can now contain:
+
+```json
+{
+    "code": "COFFEE_BEANS",
+    "name": "Coffee Beans",
+    "parent_code": "COFFEE",
+    "status": "ACTIVE",
+    "description": "...",
+    "image_url": "..."
+}
+```
+
+This means parent and child categories can both be fully populated from ERP.
+
+---
+
+## 24. Subcategory Problem Solved Architecturally
+
+Before this work, subcategories without manually assigned images appeared as:
+
+```text
+brown hero background
++
+category title
+```
+
+Instead of manually populating every category in Magento Admin, the category importer can now own:
+
+```text
+Category description
+Category image
+```
+
+for the entire imported hierarchy.
+
+---
+
+## 25. Category Hierarchy Remains Unchanged
+
+The media work did not replace or disturb the previously working multi-pass category hierarchy logic.
+
+The importer still resolves:
+
+```text
+Parent
+↓
+Child
+↓
+Grandchild
+```
+
+independently of ERP response order.
+
+Media/content enrichment happens on top of that existing category structure.
+
+---
+
+## 26. Duplicate Protection / Idempotency
+
+A major requirement was:
+
+```text
+ERP sync #1
+→ image added
+
+ERP sync #2
+→ same image
+
+ERP sync #3
+→ same image
+```
+
+must not produce:
+
+```text
+image
+image duplicate
+image duplicate
+```
+
+The importer creates deterministic ERP-managed filenames and checks existing Magento media gallery entries before adding them.
+
+---
+
+## 27. Idempotency Test Result
+
+You reran the ERP product synchronization without changing the media.
+
+Result:
+
+```text
+No duplicate images ✅
+```
+
+This is a very important integration milestone.
+
+It means the import can safely run repeatedly through cron without continuously expanding the Magento media gallery.
+
+---
+
+## 28. Current Media Sync Flow
+
+The resulting overall architecture is now:
+
+```text
+                    ERP
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+       Products              Categories
+          │                     │
+       images[]          description/image_url
+          │                     │
+          ▼                     ▼
+ ProductImportService    CategoryImportService
+          │                     │
+          ▼                     ▼
+ ProductImageImporter    CategoryImageImporter
+          │                     │
+          └──────────┬──────────┘
+                     ▼
+              ImageDownloader
+                     │
+                     ▼
+                 Magento
+                Media Storage
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+          ▼                     ▼
+     catalog/product       catalog/category
+          │                     │
+          ▼                     ▼
+       PLP / PDP          Category Hero
+```
+
+---
+
+
+## 30. Important Integration Concepts Covered
+
+From an interview/project-design perspective, this feature demonstrates:
+
+#### Source of truth
+
+ERP owns the catalog media/content fields that we decided are operational catalog data.
+
+#### Local media copy
+
+Magento does not depend on ERP availability during customer page requests.
+
+#### Idempotency
+
+Repeated jobs do not create duplicate records.
+
+#### Fault tolerance
+
+One broken media asset doesn't stop the catalog import.
+
+#### Separation of concerns
+
+```text
+ImageDownloader
+```
+
+does HTTP/filesystem work.
+
+```text
+ProductImageImporter
+```
+
+does product-gallery work.
+
+```text
+CategoryImageImporter
+```
+
+does category-media work.
+
+```text
+ProductImportService
+CategoryImportService
+```
+
+orchestrate ERP entity synchronization.
+
+---
+
+
+
+```text
+Category description            ✅
+Category image URL              ✅
+Image download                  ✅
+Magento category media          ✅
+Parent categories               ✅
+Subcategories                   ✅
+Existing PLP hero integration   ✅
+```
+
+### ERP Media Sync — Core Feature COMPLETE ✅
+
+There is nothing blocking us from moving on.
+
+Future enhancements can include:
+
+```text
+ERP media version/checksum
+Image replacement when content changes at same URL
+Actual gallery label synchronization
+Explicit gallery position synchronization
+Removal when ERP deletes an image
+Retry queue for temporary media failures
+Image-size/file-size restrictions
+Old staging-file cleanup
+```
+
+I would treat those as a later **hardening/production-readiness phase**, rather than expanding this feature indefinitely right now.
+
+The next project feature can now start from a stable point: **ERP catalog products, categories, inventory, prices, product media, category media, and category descriptions are all integrated.**

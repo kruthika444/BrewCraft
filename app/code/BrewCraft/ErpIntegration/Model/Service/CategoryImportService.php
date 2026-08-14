@@ -10,6 +10,7 @@ use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Model\Category;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
+use BrewCraft\ErpIntegration\Model\Media\CategoryImageImporter;
 
 class CategoryImportService
 {
@@ -25,9 +26,9 @@ class CategoryImportService
         private readonly CategoryResolver $categoryResolver,
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly StoreManagerInterface $storeManager,
+        private readonly CategoryImageImporter $categoryImageImporter,
         private readonly Logger $logger
-    ) {
-    }
+    ) {}
 
     /**
      * Import ERP categories into Magento.
@@ -174,6 +175,17 @@ class CategoryImportService
         $savedCategory = $this->categoryRepository->save(
             $category
         );
+
+        $categoryImageChanged = $this->categoryImageImporter
+            ->import(
+                $savedCategory,
+                $erpCategory
+            );
+
+        if ($categoryImageChanged) {
+            $savedCategory = $this->categoryRepository
+                ->save($savedCategory);
+        }
 
         $categoryId = (int)$savedCategory->getId();
 
@@ -331,8 +343,25 @@ class CategoryImportService
                 )
             )
         );
-    }
 
+        /*
+     * Only overwrite the Magento description when ERP
+     * explicitly sends the field.
+     *
+     * This prevents old ERP payloads without "description"
+     * from accidentally clearing existing Magento content.
+     */
+        if (
+            array_key_exists(
+                'description',
+                $erpCategory
+            )
+        ) {
+            $category->setDescription(
+                (string)$erpCategory['description']
+            );
+        }
+    }
     /**
      * Validate required ERP fields.
      */
