@@ -1852,3 +1852,1689 @@ All major Figma homepage concepts have therefore been implemented.
 
 ---
 
+
+
+# 3. BrewCraft PLP / Category Page — Development Log
+
+### 1. Objective
+
+The goal was to replace Magento/Luma’s default category product listing appearance with the BrewCraft storefront design while preserving Magento’s native catalog functionality.
+
+The PLP needed to support:
+
+```text
+Breadcrumbs
+Category banner
+Category title
+Category description
+
+Shopping Options / Layered Navigation
+Product count
+Grid/List switcher
+Sort By
+
+Product grid
+Product image
+Product name
+Price
+Add to Cart
+
+Pagination
+```
+
+The important architectural decision was:
+
+> **Keep Magento's native catalog collection, layered navigation, toolbar and product actions. Customize the presentation rather than recreating Magento catalog logic.**
+
+---
+
+## 2. PLP-Specific Theme Files
+
+We created:
+
+```text
+app/design/frontend/BrewCraft/supply/
+Magento_Catalog/
+└── layout/
+    └── catalog_category_view.xml
+```
+
+and:
+
+```text
+web/css/source/_plp.less
+```
+
+Then `_plp.less` was included through the theme's:
+
+```text
+_extend.less
+```
+
+This keeps PLP styling isolated from:
+
+```text
+Homepage
+Header
+Footer
+PDP
+Checkout
+```
+
+---
+
+## 3. Magento Two-Column Layout
+
+The category page uses:
+
+```xml
+layout="2columns-left"
+```
+
+because the desired BrewCraft PLP structure is:
+
+```text
+Shopping Options   Product Listing
+```
+
+Magento already provides this architecture natively through:
+
+```text
+.sidebar-main
+.column.main
+```
+
+---
+
+## 4. First Major Layout Mistake
+
+Initially we added our own:
+
+```text
+CSS Grid on .columns
+```
+
+while Magento was already applying its own two-column layout rules.
+
+This caused competing layout systems:
+
+```text
+Magento 2columns-left
+        +
+Our CSS Grid
+```
+
+and resulted in:
+
+* sidebar moving too far inside;
+* toolbar appearing in strange positions;
+* Compare Products and Wishlist interfering;
+* product area collapsing;
+* products becoming barely visible.
+
+#### Lesson learned
+
+Do not unnecessarily replace Magento’s major page-layout containers.
+
+We removed the custom `.columns` grid and allowed Magento to retain control of:
+
+```text
+sidebar-main
+column.main
+```
+
+while styling the components inside them.
+
+---
+
+## 5. Category Hero Requirement
+
+The initial category page displayed:
+
+```text
+Coffee
+
+Category Image
+
+Description
+```
+
+But the intended BrewCraft design required:
+
+```text
+┌─────────────────────────────────────┐
+│ Coffee                              │
+│ Category description                │
+│                       Category Image│
+└─────────────────────────────────────┘
+```
+
+So category title and description needed to become part of the category image/banner.
+
+---
+
+## 6. Reordered Magento Category Blocks
+
+We used:
+
+```text
+catalog_category_view.xml
+```
+
+to move:
+
+```text
+page.main.title
+category.description
+category.image
+```
+
+into the same category-view container.
+
+This allowed us to use Magento’s existing category data instead of creating duplicate title/description values in a custom PHTML template.
+
+---
+
+## 7. Category Hero Design
+
+The category container became a fixed-height banner.
+
+Important characteristics:
+
+```text
+Width: 100% of PLP content area
+Height: fixed
+Image: cover
+Title: overlay
+Description: overlay
+Dark gradient behind text
+```
+
+This solved a major consistency issue.
+
+Previously the banner size changed depending on the image uploaded through Admin.
+
+Now:
+
+```text
+Coffee
+Machines
+Grinders
+Brewing
+Accessories
+Commercial
+```
+
+all use the same visual banner dimensions.
+
+---
+
+## 8. Why `object-fit: cover` Was Used
+
+Category images can have different source dimensions:
+
+```text
+Landscape
+Square
+Large
+Small
+Different aspect ratios
+```
+
+The PLP should not change height based on those images.
+
+Therefore category banners use:
+
+```text
+object-fit: cover
+```
+
+Conceptually:
+
+```text
+Any uploaded image
+        ↓
+Fixed BrewCraft banner
+        ↓
+Image cropped appropriately
+```
+
+This allows category images to continue being managed entirely from Magento Admin.
+
+---
+
+## 9. Category Content Comes From Magento Admin
+
+No category title, description or banner image is hard-coded into the theme.
+
+They continue to come from:
+
+```text
+Admin
+→ Catalog
+→ Categories
+```
+
+The page uses:
+
+```text
+Category Name
+Category Description
+Category Image
+```
+
+directly.
+
+This means changing:
+
+```text
+Coffee description
+```
+
+or:
+
+```text
+Coffee category image
+```
+
+automatically changes the PLP hero.
+
+---
+
+## 10. Category Hero Text Overlay
+
+A dark left-to-right image overlay was added so white title/description text remains readable regardless of the uploaded image.
+
+The result is approximately:
+
+```text
+┌───────────────────────────────────────────────┐
+│                                              │
+│  Coffee                                      │
+│                                              │
+│  Description...                              │
+│                              brighter image  │
+│                                              │
+└───────────────────────────────────────────────┘
+```
+
+The left area is darker while the actual category image remains visible toward the center/right.
+
+---
+
+## 11. Layered Navigation / Shopping Options
+
+Magento's native layered navigation was retained.
+
+This currently displays filters such as:
+
+```text
+Shopping Options
+
+CATEGORY
+PRICE
+```
+
+This is important because layered navigation is functional Magento catalog behavior rather than static frontend markup.
+
+The BrewCraft styling was added around the existing filter blocks.
+
+---
+
+## 12. Removed PLP Sidebar Clutter
+
+Magento/Luma was also displaying:
+
+```text
+Compare Products
+My Wish List
+```
+
+inside the sidebar.
+
+These were not part of the BrewCraft PLP design and visually cluttered the filters.
+
+They were hidden from the category-page presentation.
+
+The actual Magento functionality was not globally removed from the system.
+
+---
+
+## 13. Toolbar
+
+Magento's native toolbar was retained.
+
+Current functionality includes:
+
+```text
+Grid / List mode
+Product count
+Sort By
+Sort direction
+```
+
+Example:
+
+```text
+[Grid] [List]     5 Items               Sort By [Position] ↑
+```
+
+This means we did not recreate sorting or pagination logic.
+
+Magento continues handling:
+
+```text
+collection sorting
+URL parameters
+view mode
+pagination
+```
+
+---
+
+## 14. Product Grid
+
+For the desktop PLP we selected:
+
+```text
+3 products per row
+```
+
+because the page also contains a left filter sidebar.
+
+The layout is therefore:
+
+```text
+┌───────────────┐  ┌──────────┐ ┌──────────┐ ┌──────────┐
+│ Shopping      │  │ Product  │ │ Product  │ │ Product  │
+│ Options       │  │          │ │          │ │          │
+│               │  └──────────┘ └──────────┘ └──────────┘
+└───────────────┘
+```
+
+Four products would make each card too narrow once the layered-navigation column is present.
+
+---
+
+## 15. Product Height Problem
+
+The first product styling used Magento's image wrapper with:
+
+```text
+100% aspect ratio
+```
+
+which effectively created large square product-image areas.
+
+The cards became excessively tall.
+
+We initially reduced the image height too aggressively, which created another problem.
+
+---
+
+## 16. Product Image Height Refinement
+
+A more balanced product image area was introduced.
+
+Instead of forcing a huge square image, the image container now uses a controlled fixed height.
+
+For product imagery we use:
+
+```text
+object-fit: contain
+```
+
+instead of `cover`.
+
+This is important because product photos should not crop important parts of:
+
+```text
+Coffee machines
+Grinders
+Kettles
+Coffee bags
+Brewing equipment
+```
+
+The distinction is:
+
+```text
+Category banner → object-fit: cover
+Product image   → object-fit: contain
+```
+
+---
+
+## 17. Add to Cart Was Getting Cut Off
+
+Once product cards became shorter, Magento's default Luma hover behavior caused another issue.
+
+Luma normally places part of the product actions inside a floating:
+
+```text
+.product-item-inner
+```
+
+container.
+
+Conceptually:
+
+```text
+Normal card
+        ↓ hover
+Expanded/floating actions
+        ↓
+Add to Cart
+Wishlist
+Compare
+```
+
+But our BrewCraft card used:
+
+```text
+overflow: hidden
+```
+
+so Magento's floating action area was clipped.
+
+Result:
+
+```text
+Add to Cart only partially visible
+```
+
+---
+
+## 18. Removed Luma Floating Product-Action Behavior
+
+Instead of trying to make the default floating hover box work, we changed the PLP cards so:
+
+```text
+.product-item-inner
+```
+
+participates in the normal card layout.
+
+Now:
+
+```text
+Product image
+Product name
+Price
+Add to Cart
+```
+
+are all part of one stable card.
+
+This is much closer to the Featured Products design already used on the homepage.
+
+---
+
+## 19. Product Card Direction
+
+The current card architecture is approximately:
+
+```text
+┌─────────────────────┐
+│                     │
+│    Product Image    │
+│                     │
+├─────────────────────┤
+│ Product Name        │
+│                     │
+│ Price               │
+│                     │
+│ [   Add to Cart   ] │
+└─────────────────────┘
+```
+
+rather than Luma's expandable hover card.
+
+---
+
+## 20. Duplicate Navigation Underline
+
+When viewing the currently selected category, for example Coffee, two underlines appeared beneath the navigation item.
+
+One came from:
+
+```text
+Magento/Luma active-navigation styling
+```
+
+and the second from:
+
+```text
+BrewCraft custom active-navigation styling
+```
+
+We disabled the inherited active border while keeping BrewCraft's own underline.
+
+The desired result is only one active indicator.
+
+---
+
+## 21. PLP Alignment Problem
+
+One of the major visual issues throughout the PLP work was inconsistent outer margins.
+
+Different elements initially appeared to start at different horizontal points:
+
+```text
+Breadcrumb
+Category hero
+Shopping Options
+Product listing
+Header
+```
+
+We standardized the PLP outer container using the shared BrewCraft container width and horizontal padding.
+
+---
+
+## 22. Common Global Container
+
+We ultimately established the principle:
+
+```text
+@bc-container-width
++
+32px horizontal page padding
+```
+
+as the global desktop content alignment.
+
+This should be shared by:
+
+```text
+Header
+Homepage
+PLP
+Future PDP
+Cart
+Footer
+```
+
+---
+
+## 23. PLP Became the Alignment Reference
+
+After correcting the category page, the PLP alignment looked correct.
+
+That exposed an existing homepage problem: homepage content was more inset because it effectively had two container layers:
+
+```text
+Magento page-main
+        +
+BrewCraft section container
+```
+
+Instead of moving the PLP inward again, we treated the PLP alignment as the correct reference and brought the homepage outward.
+
+This was the correct architectural decision.
+
+---
+
+## 24. Homepage Container Correction Triggered by PLP Work
+
+Although this came from PLP testing, it resulted in an important global theme improvement.
+
+Homepage sections:
+
+```text
+Hero
+Shop by Category
+Featured Products
+B2B
+Why BrewCraft
+```
+
+were normalized so they no longer add another complete outer container inside Magento's `.page-main`.
+
+The intended architecture now becomes:
+
+```text
+One outer page container
+        ↓
+Page-specific sections
+```
+
+rather than:
+
+```text
+Outer Magento container
+        ↓
+Another BrewCraft container
+        ↓
+Content
+```
+
+---
+
+
+## 28. Important Lessons From Today
+
+The most useful lesson was:
+
+> **Do not immediately replace Magento's structural containers just because the default appearance is wrong.**
+
+For example, replacing:
+
+```text
+.columns
+```
+
+with our own Grid looked simple but broke Magento's:
+
+```text
+sidebar
+main content
+toolbar
+product listing
+```
+
+behavior.
+
+A better approach was:
+
+```text
+Keep Magento structure
+        +
+Understand the existing markup
+        +
+Override the visual behavior selectively
+```
+
+The same applied to product cards. Instead of rebuilding product listing logic, we changed how Magento's existing product-action container participates in the card.
+
+---
+
+
+# 4. BrewCraft PLP — Development Log
+
+### 1. Goal of Today's Work
+
+We continued the BrewCraft Product Listing Page from the structural implementation completed previously.
+
+Today's work focused on finishing the actual storefront experience:
+
+```text
+Product images
+Sale badge
+Product-card sizing
+Product information
+Toolbar
+Layered navigation
+Pagination
+Final PLP verification
+```
+
+The principle remained:
+
+> Keep Magento's native catalog functionality and customize its appearance instead of rebuilding catalog behavior.
+
+---
+
+## 3. Investigated Magento Image Roles
+
+Magento commonly uses different image attributes depending on context:
+
+```text
+image
+small_image
+thumbnail
+```
+
+For PLP, `small_image` is particularly important.
+
+We checked the product EAV values directly using SQL for:
+
+```text
+BEAN001
+```
+
+and found:
+
+```text
+store_id = 0
+
+image        = /actual/image.jpg
+small_image  = /actual/image.jpg
+thumbnail    = /actual/image.jpg
+```
+
+which was correct.
+
+But we also found:
+
+```text
+store_id = 1
+
+image        = no_selection
+small_image  = no_selection
+thumbnail    = no_selection
+```
+
+---
+
+## 4. Root Cause — Magento Store Scope
+
+This exposed an important Magento EAV concept.
+
+Magento resolves store-scoped attributes approximately like this:
+
+```text
+Requested Store View
+        ↓
+Does store-specific value exist?
+        ↓
+YES
+        ↓
+Use store-specific value
+```
+
+The value:
+
+```text
+no_selection
+```
+
+is still a real stored value.
+
+Therefore Magento did **not** fall back to:
+
+```text
+store_id = 0
+```
+
+even though the global value contained the correct image.
+
+Instead:
+
+```text
+Store 1
+small_image = no_selection
+
+        ↓
+
+PLP requests small_image
+
+        ↓
+
+Magento placeholder
+```
+
+---
+
+## 5. Confirmed the Image Fix With One Product
+
+Before modifying every product, we tested only:
+
+```text
+BEAN001
+```
+
+We deleted its erroneous Store View `no_selection` override for:
+
+```text
+image
+small_image
+thumbnail
+```
+
+This did **not** remove the actual image.
+
+It simply allowed Magento to fall back to:
+
+```text
+store_id = 0
+```
+
+Immediately after doing this:
+
+```text
+BEAN001 PLP image appeared ✅
+```
+
+This confirmed the root cause.
+
+---
+
+## 6. Cleaned Invalid Store-View Image Overrides
+
+Once the test succeeded, the same cleanup could be applied to the affected catalog records.
+
+Conceptually:
+
+```text
+BEFORE
+
+Store 0 → image.jpg
+Store 1 → no_selection ❌
+
+
+AFTER
+
+Store 0 → image.jpg
+Store 1 → no explicit override
+
+               ↓
+
+Store 1 inherits Store 0
+
+               ↓
+
+PLP image ✅
+```
+
+This was an important backend finding rather than a CSS fix.
+
+---
+
+## 7. Future ERP Image Requirement Identified
+
+This image problem also highlighted something we should solve properly in the ERP integration.
+
+Our future ERP product-image importer must ensure:
+
+```text
+Product image downloaded
+        ↓
+Attached to Magento media gallery
+        ↓
+image role assigned
+small_image role assigned
+thumbnail role assigned
+        ↓
+Correct store scope
+```
+
+and should avoid accidentally creating:
+
+```text
+store_id = X → no_selection
+```
+
+overrides.
+
+This is now the **next major feature after PLP**.
+
+---
+
+
+## 10. Product Image Scaling
+
+The PLP image container now uses a controlled fixed area so every product card remains aligned regardless of source image dimensions.
+
+Important concept:
+
+```text
+Different source images
+        ↓
+Same PLP image frame
+        ↓
+Consistent product cards
+```
+
+The product image area also retains overflow handling and consistent positioning.
+
+---
+
+## 11. SALE Badge
+
+We added custom SALE detection to the Magento product listing.
+
+The logic compares:
+
+```text
+Regular Price
+vs
+Final Price
+```
+
+Conceptually:
+
+```text
+finalPrice < regularPrice
+        ↓
+Display SALE
+```
+
+Example:
+
+```text
+Regular: ₹450
+Final:   ₹399
+
+        ↓
+
+SALE badge
+```
+
+---
+
+## 12. SALE Badge Styling Problem
+
+Initially:
+
+```text
+Sale
+```
+
+appeared as plain text.
+
+The PHP logic was therefore working, but the LESS selector/style was not being applied correctly.
+
+We corrected the styling and positioned the badge relative to:
+
+```text
+.product-item-info
+```
+
+The final presentation is:
+
+```text
+┌─────────────────────────┐
+│ [ SALE ]                │
+│                         │
+│      PRODUCT IMAGE      │
+│                         │
+└─────────────────────────┘
+```
+
+with BrewCraft colors and typography.
+
+---
+
+## 13. Duplicate Active Navigation Underline
+
+Another issue returned during PLP testing.
+
+For the active category:
+
+```text
+Coffee
+```
+
+Magento/Luma displayed its active-category border while BrewCraft also displayed our custom underline.
+
+Result:
+
+```text
+Coffee
+────────
+────────
+```
+
+Two active lines appeared.
+
+We added a stronger header override targeting Magento's:
+
+```text
+.level0.active
+.level0.has-active
+```
+
+and removed Luma's inherited border.
+
+The BrewCraft custom underline remains.
+
+Result:
+
+```text
+Coffee
+────────
+```
+
+✅ Single active indicator.
+
+---
+
+## 14. Product Card Add-to-Cart Status
+
+The Add to Cart issue from the earlier PLP work remained fixed.
+
+Magento's floating Luma product action behavior had previously caused the button to be clipped.
+
+The final product-card structure keeps actions in the normal card flow:
+
+```text
+Image
+Name
+Price
+Add to Cart
+```
+
+and the complete button remains visible.
+
+---
+
+## 15. Product Card Content Polish
+
+We cleaned up the information hierarchy inside each product card.
+
+The intended structure became:
+
+```text
+Product Image
+
+Product Name
+
+₹399   ₹450
+
+[ Add to Cart ]
+```
+
+rather than Magento's more verbose default pricing presentation.
+
+---
+
+## 16. Special Price Styling
+
+Magento can display labels similar to:
+
+```text
+Special Price ₹399
+Regular Price ₹450
+```
+
+which looked too default/Luma-like.
+
+The PLP styling was adjusted so the visual presentation focuses on:
+
+```text
+₹399    ₹450
+```
+
+where:
+
+```text
+₹399 → current price
+₹450 → smaller crossed-out old price
+```
+
+The SALE badge already communicates that the product is discounted, so repeating verbose price labels was unnecessary.
+
+---
+
+## 17. SKU Decision
+
+We considered displaying SKU inside product cards.
+
+We decided **not to add SKU at this stage** because it would increase visual clutter.
+
+The PLP should focus primarily on:
+
+```text
+Image
+Product name
+Price
+CTA
+```
+
+SKU can remain more prominent on PDP/B2B areas where it has more value.
+
+---
+
+## 18. Top Toolbar Redesign
+
+Magento's original toolbar layout was approximately:
+
+```text
+[Grid] [List]    5 Items       Sort By [Position] ↑
+```
+
+The desired structure was:
+
+```text
+5 Items             Sort by [ Position ] [Grid] [List]
+```
+
+We therefore reordered the existing Magento components with CSS rather than changing Magento's toolbar functionality.
+
+---
+
+## 19. Toolbar Final Order
+
+The final logical order is:
+
+```text
+.toolbar-amount
+        ↓
+order: 1
+
+.toolbar-sorter
+        ↓
+order: 2
+
+.modes
+        ↓
+order: 3
+```
+
+The sorter is pushed toward the right using automatic margin spacing.
+
+Final layout:
+
+```text
+5 Items                      Sort by [ Position ] [▦] [☷]
+```
+
+This matched the desired BrewCraft arrangement.
+
+---
+
+## 20. Removed Sort Direction Arrow
+
+Magento normally shows a separate ascending/descending action beside the Sort By dropdown:
+
+```text
+Sort By [ Position ] ↑
+```
+
+We did not want this separate arrow in the BrewCraft design.
+
+It was hidden while keeping the actual sort dropdown operational.
+
+Final:
+
+```text
+Sort by [ Position ]
+```
+
+---
+
+## 21. Grid / List Mode Styling
+
+Magento's native:
+
+```text
+Grid
+List
+```
+
+controls were retained.
+
+They now have a cleaner BrewCraft visual treatment with:
+
+```text
+consistent dimensions
+border
+active state
+hover state
+theme colors
+```
+
+No functionality was removed.
+
+---
+
+## 22. Layered Navigation Styling
+
+Next we redesigned:
+
+```text
+Shopping Options
+```
+
+while preserving Magento's native layered-navigation functionality.
+
+The sidebar includes filters such as:
+
+```text
+CATEGORY
+PRICE
+```
+
+and can automatically support more filterable product attributes later.
+
+---
+
+## 23. Filter Card Styling
+
+The filter area was converted into a cleaner BrewCraft card using:
+
+```text
+Cream Shopping Options heading
+Subtle border
+Rounded corners
+Separated filter groups
+BrewCraft typography
+Clean filter counts
+Hover states
+```
+
+This removed much of the default Luma appearance.
+
+---
+
+## 24. Layered Navigation Was Not Reimplemented
+
+This is important architecturally.
+
+We did **not** manually build filtering functionality.
+
+Magento still controls:
+
+```text
+filter URLs
+product collection filtering
+filter counts
+selected values
+price ranges
+attribute filters
+```
+
+Our theme only changes how those controls look.
+
+---
+
+## 25. Pagination Initially Did Not Appear
+
+The category had:
+
+```text
+5 products
+```
+
+while Magento was configured for:
+
+```text
+Show 12 per page
+```
+
+Therefore:
+
+```text
+5 <= 12
+    ↓
+Everything fits on page 1
+    ↓
+No pagination
+```
+
+This was correct Magento behavior.
+
+---
+
+## 26. Created a Pagination Test Scenario
+
+To test our pagination design, we temporarily changed Magento's grid configuration.
+
+For example:
+
+```text
+Allowed Values:
+2,3,5,12
+
+Default:
+2
+```
+
+With:
+
+```text
+5 total products
+2 products/page
+```
+
+Magento created:
+
+```text
+Page 1 → 2
+Page 2 → 2
+Page 3 → 1
+```
+
+so pagination became visible.
+
+---
+
+## 27. Pagination Styling
+
+We styled Magento's native pager to use:
+
+```text
+square page buttons
+subtle borders
+BrewCraft brown current page
+hover states
+styled next/previous actions
+```
+
+The visual direction became:
+
+```text
+[1] [2] [3] [>]
+```
+
+rather than the default Magento pager.
+
+---
+
+## 28. Bottom Toolbar / Limiter Issue
+
+Pagination exposed another Magento CSS behavior.
+
+The bottom toolbar also displayed:
+
+```text
+Show [2] per page
+```
+
+The first attempts to reposition it using:
+
+```text
+.toolbar-bottom
+```
+
+did not affect the element at all.
+
+This led us to inspect Magento's actual compiled CSS.
+
+---
+
+## 29. Important CSS Selector Discovery
+
+Using browser Inspect, we found Magento was positioning the bottom limiter with:
+
+```css
+.products.wrapper ~ .toolbar .limiter
+```
+
+This selector was the important part.
+
+The `~` is the **general sibling combinator**.
+
+It means approximately:
+
+> Find a `.toolbar` that occurs later as a sibling of `.products.wrapper`, then select its `.limiter`.
+
+So Magento was specifically targeting the bottom product-list toolbar.
+
+This explained why several of our earlier generic selectors did not move it as expected.
+
+---
+
+## 30. Pagination Position Found Through DevTools
+
+We also inspected the actual rule controlling:
+
+```text
+.pages
+```
+
+and manually tested margin values directly in the browser.
+
+A working position was found using approximately:
+
+```text
+margin:
+34px 50px 50px
+```
+
+for the pagination block.
+
+For the limiter, testing something similar to:
+
+```text
+margin-left: 100px
+```
+
+proved that we had finally identified the correct selector and positioning context.
+
+Those working values were then transferred from DevTools into `_plp.less`.
+
+---
+
+## 31. Why DevTools Was Useful Here
+
+This was a very good real-world debugging example.
+
+Instead of continuing to guess selectors:
+
+```text
+Write LESS
+↓
+clear static
+↓
+refresh
+↓
+nothing changes
+↓
+guess again
+```
+
+we switched to:
+
+```text
+Inspect element
+↓
+Find exact compiled selector
+↓
+Modify CSS live
+↓
+See immediate result
+↓
+Copy working rule into theme LESS
+```
+
+That is much faster for frontend debugging.
+
+---
+
+## 32. Pagination Completed
+
+After using the actual Magento selectors and tested margins:
+
+```text
+Pagination ✅
+Products-per-page limiter ✅
+Spacing ✅
+```
+
+The pagination area was finally accepted as complete.
+
+---
+
+## 33. Multi-Category PLP Verification
+
+After all the major work was completed, we checked the PLP design generally across the catalog structure.
+
+The important things verified were:
+
+```text
+Hero dimensions
+Title positioning
+Description positioning
+Product card dimensions
+Image area
+Sale badge
+Toolbar
+Layered navigation
+Pagination
+Page alignment
+```
+
+The PLP currently behaves consistently enough to mark the frontend design complete.
+
+---
+
+## 34. Missing Subcategory Content Identified
+
+One final data issue became visible when viewing subcategories.
+
+If a category has:
+
+```text
+no category image
+```
+
+the hero falls back to its brown background.
+
+If it also has limited content, the result looks like:
+
+```text
+┌────────────────────────────┐
+│                            │
+│ Category Title             │
+│                            │
+│       brown background     │
+│                            │
+└────────────────────────────┘
+```
+
+This is technically valid but visually incomplete.
+
+---
+
+## 35. Decision: Do Not Manually Populate Every Subcategory
+
+Instead of manually opening every Magento category and entering:
+
+```text
+description
+image
+```
+
+we decided that these should also become ERP-managed fields.
+
+This makes sense because category hierarchy is already coming from ERP.
+
+---
+
+## 36. New ERP Category Structure
+
+Our category payload can eventually become something like:
+
+```json
+{
+    "code": "COFFEE_BEANS",
+    "name": "Coffee Beans",
+    "parent_code": "COFFEE",
+    "description": "Explore whole coffee beans selected for freshness, balanced flavor and consistent brewing.",
+    "image_url": "..."
+}
+```
+
+Magento category import would then handle:
+
+```text
+ERP code
+ERP parent_code
+ERP name
+ERP description
+ERP image
+         ↓
+Magento Category
+```
+
+---
+
+## 37. Next ERP Media Work
+
+The next development stage is now larger than only product images.
+
+It will cover:
+
+```text
+ERP MEDIA / CONTENT SYNC
+
+1. Product images
+2. Product image roles
+3. Category images
+4. Category descriptions
+5. Subcategory images
+6. Subcategory descriptions
+```
+
+This means Magento Admin should not require manual image assignment for every imported catalog entity.
+
+---
+
+## 38. Final PLP Feature Status
+
+At the end of today's session:
+
+```text
+PLP page structure                 ✅
+Global alignment                   ✅
+
+Breadcrumb                         ✅
+Category hero                      ✅
+Category title overlay             ✅
+Category description overlay       ✅
+Fixed hero dimensions              ✅
+
+Layered navigation                 ✅
+Shopping Options styling           ✅
+Category filter                    ✅
+Price filter                       ✅
+
+Product grid                       ✅
+3 products per row                 ✅
+Product card sizing                ✅
+Larger image area                  ✅
+Real Magento image rendering       ✅
+Image store-scope issue diagnosed  ✅
+Image store-scope issue fixed      ✅
+
+Sale detection                     ✅
+SALE badge                         ✅
+Product name styling               ✅
+Regular price                      ✅
+Special price                      ✅
+Old-price styling                  ✅
+Add to Cart                        ✅
+
+Toolbar                            ✅
+Product count position             ✅
+Sort By styling                    ✅
+Sort direction arrow removed       ✅
+Grid/List styling                  ✅
+
+Pagination functionality           ✅
+Pagination styling                 ✅
+Limiter positioning                ✅
+
+Active-category underline          ✅
+Duplicate underline removed        ✅
+
+Multi-category visual check        ✅
+```
+
+## PLP Status
+
+### ✅ BrewCraft PLP Design — COMPLETE
+
+There is no major PLP design work left at this point.
+
+Any changes from here should be treated as later refinement rather than unfinished PLP implementation.
+
+---
+
+## Next Development Stage
+
+Tomorrow/next session, the priority is:
+
+```text
+PLP COMPLETE
+      ↓
+ERP CATALOG MEDIA & CONTENT SYNC
+      ↓
+Product Images
+      ↓
+Product Image Roles
+      ↓
+Category Images
+      ↓
+Category Descriptions
+      ↓
+Subcategory Images
+      ↓
+Subcategory Descriptions
+```
+
+One especially useful backend requirement for that implementation will be making the sync **idempotent**: repeatedly running the ERP import should update/reuse existing media instead of attaching duplicate images every time.
+
+That gives us a natural transition from the storefront/frontend work back into Magento backend integration.

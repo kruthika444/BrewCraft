@@ -1350,3 +1350,127 @@
 .cms-home .page-footer {
     margin-top: 0;
 }
+
+
+
+//
+// ============================================================
+// FINAL HEADER CONTAINER ALIGNMENT
+// Match homepage / PLP / footer container
+// ============================================================
+//
+
+.page-header {
+
+    .header.content {
+        width: 100% !important;
+        max-width: @bc-container-width !important;
+
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+
+        box-sizing: border-box !important;
+    }
+}
+
+
+// Top utility bar must use the same container too
+.panel.wrapper {
+
+    .header.panel {
+        width: 100% !important;
+        max-width: @bc-container-width !important;
+
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+
+        box-sizing: border-box !important;
+    }
+}
+
+//
+// ============================================================
+// HOMEPAGE GLOBAL CONTAINER ALIGNMENT
+// Match Header / PLP / Footer
+// ============================================================
+//
+
+.cms-home {
+
+    .page-main {
+        width: 100% !important;
+        max-width: @bc-container-width !important;
+
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+
+        box-sizing: border-box;
+    }
+
+    .columns,
+    .column.main {
+        width: 100% !important;
+        max-width: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+.cms-home {
+
+    .brewcraft-home-hero,
+    .brewcraft-home-categories,
+    .brewcraft-featured,
+    .brewcraft-business,
+    .brewcraft-story {
+        width: 100%;
+        max-width: none;
+
+        margin-left: 0;
+        margin-right: 0;
+
+        box-sizing: border-box;
+    }
+}
+
+
+//
+// ============================================================
+// REMOVE LUMA ACTIVE NAV BORDER
+// Keep only BrewCraft custom underline
+// ============================================================
+//
+
+.page-header .navigation .level0.active > .level-top,
+.page-header .navigation .level0.has-active > .level-top,
+.header.content > .navigation .level0.active > .level-top,
+.header.content > .navigation .level0.has-active > .level-top {
+    border: 0 !important;
+    border-bottom: 0 !important;
+    border-color: transparent !important;
+}
+
+.header.content > .navigation .level0.active > .level-top:after,
+.header.content > .navigation .level0.has-active > .level-top:after {
+    content: '';
+
+    position: absolute;
+
+    right: 0;
+    bottom: 16px;
+    left: 0;
+
+    height: 2px;
+
+    background: @brewcraft-coffee;
+}

@@ -1,0 +1,1373 @@
+//
+// ============================================================
+// BREWCRAFT PLP / CATEGORY PAGE
+// ============================================================
+//
+
+
+// ============================================================
+// SHARED PAGE WIDTH
+// ============================================================
+
+.catalog-category-view {
+
+    .breadcrumbs,
+    .page-main {
+        width: 100%;
+        max-width: @bc-container-width;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        padding-left: 32px;
+        padding-right: 32px;
+
+        box-sizing: border-box;
+    }
+}
+
+
+// ============================================================
+// BREADCRUMBS
+// ============================================================
+
+.catalog-category-view {
+
+    .breadcrumbs {
+        margin-top: 22px;
+        margin-bottom: 28px;
+
+        .items {
+            color: @brewcraft-muted;
+            font-size: 11px;
+        }
+
+        a {
+            color: @brewcraft-muted;
+
+            &:hover {
+                color: @brewcraft-coffee;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+
+// ============================================================
+// MAIN PAGE
+// ============================================================
+
+.catalog-category-view {
+
+    .page-main {
+        padding-top: 0;
+        padding-bottom: 72px;
+    }
+}
+
+
+//
+// ============================================================
+// CATEGORY HERO
+// ============================================================
+//
+
+.catalog-category-view {
+
+    .category-view {
+        position: relative;
+
+        width: 100%;
+        height: 260px;
+
+        margin: 0 0 34px;
+
+        overflow: hidden;
+
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-espresso;
+    }
+
+
+    //
+    // Dark overlay so text is readable on every category image
+    //
+
+    .category-view:after {
+        content: '';
+
+        position: absolute;
+
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        z-index: 1;
+
+        background:
+            linear-gradient(90deg,
+                rgba(30, 20, 14, .72) 0%,
+                rgba(30, 20, 14, .42) 42%,
+                rgba(30, 20, 14, .08) 75%,
+                rgba(30, 20, 14, 0) 100%);
+
+        pointer-events: none;
+    }
+
+
+    //
+    // Image
+    //
+
+    .category-image {
+        position: absolute;
+
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        margin: 0;
+    }
+
+
+    .category-image .image {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        max-height: none;
+
+        object-fit: cover;
+        object-position: center;
+
+        border-radius: 0;
+    }
+
+
+    //
+    // Category title
+    //
+
+    .category-view .page-title-wrapper {
+        position: absolute;
+
+        top: 72px;
+        left: 46px;
+
+        z-index: 2;
+
+        max-width: 600px;
+
+        margin: 0;
+    }
+
+
+    .category-view .page-title {
+        margin: 0;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-heading;
+
+        font-size: 38px;
+        font-weight: 600;
+
+        line-height: 1.15;
+    }
+
+
+    //
+    // Description
+    //
+
+    .category-view .category-description {
+        position: absolute;
+
+        top: 128px;
+        left: 46px;
+
+        z-index: 2;
+
+        max-width: 560px;
+
+        margin: 0;
+
+        color: rgba(255, 255, 255, .88);
+
+        font-family: @brewcraft-font-body;
+
+        font-size: 14px;
+        line-height: 22px;
+    }
+}
+
+// ============================================================
+// IMPORTANT:
+// KEEP MAGENTO'S NATIVE TWO COLUMN LAYOUT
+// ============================================================
+//
+// Do not convert .columns to CSS grid.
+// Magento already manages sidebar/main widths for 2columns-left.
+//
+
+.catalog-category-view {
+
+    .columns {
+        display: block;
+
+        margin: 0;
+
+        padding: 0;
+    }
+
+    .column.main {
+        padding-left: 28px;
+        box-sizing: border-box;
+    }
+
+    .sidebar-main {
+        padding-right: 0;
+        box-sizing: border-box;
+    }
+}
+
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+
+.catalog-category-view {
+
+    .sidebar-main {
+        margin-top: 0;
+    }
+
+    .filter {
+        margin: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+    }
+
+    .filter-title {
+        padding: 17px 18px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        strong {
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-heading;
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+
+    .filter-options {
+        margin: 0;
+    }
+
+    .filter-options-item {
+        padding: 0 18px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .filter-options-title {
+        padding: 16px 0;
+
+        color: @brewcraft-charcoal;
+
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .filter-options-content {
+        padding: 0 0 16px;
+
+        a {
+            color: @brewcraft-muted;
+
+            font-size: 12px;
+
+            &:hover {
+                color: @brewcraft-coffee;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+
+// ============================================================
+// REMOVE COMPARE / WISHLIST SIDEBAR BLOCKS
+// ============================================================
+//
+// They are visually cluttering the PLP and are not in the Figma.
+//
+
+.catalog-category-view {
+
+    .block-compare,
+    .block-wishlist {
+        display: none;
+    }
+}
+
+
+// ============================================================
+// TOOLBAR
+// ============================================================
+
+.catalog-category-view {
+
+    .toolbar-products {
+        display: flex;
+
+        align-items: center;
+
+        width: 100%;
+
+        margin: 0 0 24px;
+        padding: 0 0 16px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+    }
+
+    .toolbar-amount {
+        position: static;
+
+        margin: 0 auto 0 0;
+
+        color: @brewcraft-muted;
+
+        font-size: 12px;
+    }
+
+    .toolbar-sorter {
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        margin: 0;
+
+        .sorter-label {
+            color: @brewcraft-muted;
+            font-size: 12px;
+        }
+
+        .sorter-options {
+            height: 38px;
+
+            padding: 0 34px 0 12px;
+
+            border: 1px solid @brewcraft-border;
+            border-radius: @bc-radius-sm;
+
+            background: @brewcraft-white;
+
+            color: @brewcraft-charcoal;
+
+            font-size: 12px;
+        }
+    }
+
+    .modes {
+        margin: 0 16px 0 0;
+    }
+}
+
+
+// ============================================================
+// PRODUCT GRID
+// ============================================================
+
+.catalog-category-view {
+
+    .products {
+        margin: 0;
+    }
+
+    .products-grid .product-items {
+        display: grid;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 22px;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .products-grid .product-item {
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+
+// ============================================================
+// PRODUCT CARD
+// ============================================================
+
+.catalog-category-view {
+
+    .product-item-info {
+        width: 100% !important;
+
+        margin: 0;
+
+        overflow: hidden;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+    }
+
+    .product-item-photo {
+        position: relative;
+
+        display: block;
+
+        width: 100%;
+        height: 280px;
+
+        margin: 0;
+
+        overflow: hidden;
+
+        border-radius: @bc-radius-md @bc-radius-md 0 0;
+
+        background: @brewcraft-cream;
+    }
+
+
+    .product-image-container {
+        display: block;
+
+        width: 100% !important;
+        height: 280px !important;
+
+        margin: 0 !important;
+    }
+
+
+    .product-image-wrapper {
+        position: relative;
+
+        display: block;
+
+        width: 100%;
+        height: 280px;
+
+        padding: 0 !important;
+
+        overflow: hidden;
+
+        background: @brewcraft-cream;
+    }
+
+
+    .product-image-photo {
+        position: absolute !important;
+
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+
+        display: block;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        margin: 0 !important;
+
+        object-fit: cover;
+        object-position: center;
+
+        transition: transform .35s ease;
+    }
+
+
+    //
+    // Small premium hover effect
+    //
+
+    .product-item-info:hover .product-image-photo {
+        transform: scale(1.025);
+    }
+
+    .product-item-details {
+        padding: 14px 16px 16px;
+    }
+}
+
+
+// ============================================================
+// PRODUCT NAME
+// ============================================================
+
+.catalog-category-view {
+
+    .product-item-name {
+        min-height: 38px;
+
+        margin: 0 0 8px;
+
+        line-height: 19px;
+    }
+
+    .product-item-link {
+        font-size: 13px;
+        line-height: 19px;
+
+        &:visited {
+            color: @brewcraft-espresso;
+        }
+
+        &:hover {
+            color: @brewcraft-coffee;
+            text-decoration: none;
+        }
+    }
+}
+
+
+// ============================================================
+// PRICE
+// ============================================================
+
+.catalog-category-view {
+
+    .price-box {
+        margin-bottom: 12px;
+
+        .price {
+            color: @brewcraft-espresso;
+
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .old-price .price {
+            color: @brewcraft-muted;
+
+            font-size: 11px;
+            font-weight: 400;
+
+            text-decoration: line-through;
+        }
+    }
+}
+
+
+// ============================================================
+// PRODUCT ACTIONS
+// ============================================================
+
+.catalog-category-view {
+
+    .product-item-actions {
+        margin: 0 !important;
+    }
+
+
+    .product-item-actions .actions-primary {
+        display: block;
+
+        width: 100%;
+    }
+
+
+    .product-item-actions .action.tocart {
+        display: flex !important;
+
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        height: 40px;
+
+        margin: 0;
+        padding: 0;
+
+        border: 1px solid @brewcraft-espresso;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+
+        line-height: 1;
+
+        box-shadow: none;
+
+        &:hover,
+        &:focus {
+            border-color: @brewcraft-coffee;
+
+            background: @brewcraft-coffee;
+
+            color: @brewcraft-white;
+        }
+    }
+
+
+    .product-item-actions .actions-secondary {
+        display: none !important;
+    }
+}
+
+// ============================================================
+// REMOVE SECONDARY ACTION CLUTTER FOR NOW
+// ============================================================
+
+.catalog-category-view {
+
+    .product-item-actions .actions-secondary {
+        display: none;
+    }
+}
+
+
+// ============================================================
+// PAGINATION
+// ============================================================
+
+.catalog-category-view {
+
+    .toolbar-products:last-child {
+        margin-top: 32px;
+        margin-bottom: 0;
+
+        padding-top: 18px;
+
+        border-top: 1px solid @brewcraft-border;
+        border-bottom: 0;
+    }
+}
+
+//
+// ============================================================
+// PRODUCT CARD - REMOVE LUMA FLOATING HOVER PANEL
+// ============================================================
+//
+
+.catalog-category-view {
+
+    .product-item-info {
+        position: relative;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: hidden;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // Disable Luma's expanding hover card
+    //
+
+    .product-item-info:hover,
+    .product-item-info.active {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+
+        box-shadow: 0 10px 26px rgba(46, 30, 20, .08);
+    }
+
+
+    //
+    // IMPORTANT:
+    // Make the inner actions part of normal card flow.
+    //
+
+    .product-item-inner {
+        position: static !important;
+
+        display: block !important;
+
+        width: auto !important;
+        height: auto !important;
+
+        margin: 0 !important;
+        padding: 0 16px 16px !important;
+
+        border: 0 !important;
+
+        background: transparent !important;
+
+        box-shadow: none !important;
+    }
+}
+
+//
+// ============================================================
+// PLP CONTAINER ALIGNMENT
+// Match BrewCraft header/footer content width exactly
+// ============================================================
+//
+
+.catalog-category-view {
+
+    .breadcrumbs,
+    .page-main {
+        width: 100% !important;
+        max-width: @bc-container-width !important;
+
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+
+        box-sizing: border-box;
+    }
+
+    .category-view,
+    .columns {
+        width: 100%;
+        max-width: none;
+
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+//
+// ============================================================
+// PLP SALE BADGE
+// ============================================================
+//
+
+.catalog-category-view .product-item-info {
+    position: relative !important;
+}
+
+.catalog-category-view .brewcraft-plp-sale-badge {
+    position: absolute !important;
+
+    top: 14px !important;
+    left: 14px !important;
+
+    z-index: 20 !important;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 42px;
+    height: 27px;
+
+    padding: 0 10px !important;
+
+    box-sizing: border-box;
+
+    border: 0 !important;
+    border-radius: 3px;
+
+    background: @brewcraft-coffee !important;
+
+    color: @brewcraft-white !important;
+
+    font-family: @brewcraft-font-body;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+
+    line-height: 27px !important;
+
+    letter-spacing: .4px;
+
+    text-transform: uppercase;
+
+    box-shadow: none;
+}
+
+//
+// ============================================================
+// PLP PRODUCT CARD CONTENT POLISH
+// ============================================================
+//
+
+.catalog-category-view {
+
+    .product-item-details {
+        padding: 16px 18px 18px !important;
+    }
+
+    .product-item-name {
+        min-height: 42px;
+
+        margin: 0 0 10px !important;
+
+        line-height: 20px;
+    }
+
+    .product-item-link {
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 500;
+
+        line-height: 20px;
+
+        text-decoration: none;
+
+        &:hover {
+            color: @brewcraft-coffee !important;
+        }
+    }
+
+    .price-box {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+
+        gap: 6px;
+
+        margin: 0 0 14px !important;
+    }
+
+    .price-box .price {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 18px;
+        font-weight: 700;
+
+        line-height: 1.2;
+    }
+
+    .old-price {
+        margin: 0 !important;
+    }
+
+    .old-price .price {
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px !important;
+        font-weight: 400 !important;
+
+        text-decoration: line-through;
+    }
+
+    .special-price {
+        margin: 0 !important;
+    }
+
+    .special-price .price-label,
+    .old-price .price-label {
+        display: none !important;
+    }
+}
+
+//
+// ============================================================
+// PLP TOOLBAR - FINAL ORDER
+// 5 Items | Sort By | Grid/List
+// ============================================================
+//
+
+.catalog-category-view {
+
+    .toolbar-products {
+        display: flex;
+        align-items: center;
+
+        width: 100%;
+
+        margin: 0 0 22px !important;
+        padding: 0 0 16px !important;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+    //
+    // 1. Product count - far left
+    //
+    .toolbar-products .toolbar-amount {
+        position: static !important;
+
+        order: 1;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    //
+    // 2. Sorter - push to right
+    //
+    .toolbar-products .toolbar-sorter {
+        position: static !important;
+
+        order: 2;
+
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin: 0 0 0 auto !important;
+        padding: 0 !important;
+    }
+
+    .toolbar-products .sorter-label {
+        margin: 0 !important;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .toolbar-products .sorter-options {
+        min-width: 140px;
+        height: 40px;
+
+        padding: 0 14px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        box-shadow: none;
+    }
+
+    //
+    // Remove ascending / descending arrow completely
+    //
+    .toolbar-products .sorter-action {
+        display: none !important;
+    }
+
+    //
+    // 3. Grid / List - far right
+    //
+    .toolbar-products .modes {
+        order: 3;
+
+        display: flex;
+        align-items: center;
+
+        gap: 6px;
+
+        margin: 0 0 0 14px !important;
+    }
+
+    .toolbar-products .modes-mode {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-muted;
+
+        box-shadow: none;
+    }
+
+    .toolbar-products .modes-mode:hover {
+        border-color: @brewcraft-coffee;
+        color: @brewcraft-coffee;
+    }
+
+    .toolbar-products .modes-mode.active {
+        border-color: @brewcraft-coffee;
+
+        background: @brewcraft-cream;
+
+        color: @brewcraft-coffee;
+    }
+}
+
+//
+// ============================================================
+// PLP LAYERED NAVIGATION / SHOPPING OPTIONS
+// ============================================================
+//
+
+.catalog-category-view {
+
+    //
+    // Sidebar container
+    //
+    .sidebar-main {
+        padding-right: 28px;
+        box-sizing: border-box;
+    }
+
+    //
+    // Main filter card
+    //
+    .block.filter {
+        margin: 0;
+
+        padding: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        overflow: hidden;
+    }
+
+    //
+    // "Shopping Options"
+    //
+    .block.filter .block-title {
+        margin: 0 !important;
+        padding: 20px 22px !important;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        background: @brewcraft-cream;
+    }
+
+    .block.filter .block-title strong {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 16px;
+        font-weight: 600;
+
+        line-height: 1.3;
+    }
+
+    //
+    // Filter content
+    //
+    .block.filter .block-content {
+        padding: 0;
+    }
+
+    //
+    // Individual filter section
+    // CATEGORY / PRICE / etc.
+    //
+    .filter-options-item {
+        margin: 0;
+
+        padding: 0;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+    .filter-options-item:last-child {
+        border-bottom: 0;
+    }
+
+    //
+    // Filter heading
+    //
+    .filter-options-title {
+        position: relative;
+
+        margin: 0 !important;
+        padding: 18px 40px 18px 22px !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+
+        line-height: 1.4;
+
+        letter-spacing: .5px;
+
+        text-transform: uppercase;
+
+        cursor: pointer;
+    }
+
+    //
+    // Remove odd Magento heading spacing
+    //
+    .filter-options-title:after {
+        right: 20px !important;
+    }
+
+    //
+    // Filter values
+    //
+    .filter-options-content {
+        margin: 0 !important;
+        padding: 0 22px 18px !important;
+    }
+
+    .filter-options-content ol,
+    .filter-options-content ul {
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .filter-options-content li {
+        margin: 0 0 10px;
+    }
+
+    .filter-options-content li:last-child {
+        margin-bottom: 0;
+    }
+
+    //
+    // Filter links
+    //
+    .filter-options-content a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+
+        line-height: 20px;
+
+        text-decoration: none !important;
+    }
+
+    .filter-options-content a:hover {
+        color: @brewcraft-coffee !important;
+    }
+
+    //
+    // Result counts: (5)
+    //
+    .filter-options-content .count {
+        color: @brewcraft-muted;
+
+        font-size: 11px;
+    }
+
+    .filter-options-content .count .filter-count-label {
+        display: none;
+    }
+}
+
+//
+// ============================================================
+// PLP PAGINATION
+// ============================================================
+//
+
+.catalog-category-view {
+
+    .pages {
+        margin: 34px 0 0 !important;
+
+        text-align: center;
+    }
+
+    .pages .items {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 8px;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .pages .item {
+        margin: 0 !important;
+    }
+
+    .pages .item a,
+    .pages .item strong {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 38px;
+        height: 38px;
+
+        padding: 0 10px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+
+        line-height: 1;
+
+        text-decoration: none;
+
+        box-shadow: none;
+    }
+
+    .pages .item a:hover {
+        border-color: @brewcraft-coffee;
+
+        color: @brewcraft-coffee;
+    }
+
+    //
+    // Current page
+    //
+    .pages .item.current strong {
+        border-color: @brewcraft-espresso;
+
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        font-weight: 600;
+    }
+
+    //
+    // Previous / Next
+    //
+    .pages .action.previous,
+    .pages .action.next {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 38px;
+        height: 38px;
+
+        margin: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        box-shadow: none;
+    }
+
+    .pages .action.previous:hover,
+    .pages .action.next:hover {
+        border-color: @brewcraft-coffee;
+
+        color: @brewcraft-coffee;
+    }
+
+    //
+    // Hide Magento text labels while
+    // keeping native arrow icons
+    //
+    .pages .action .label {
+        display: none;
+    }
+}
+
+//
+// ============================================================
+// PLP BOTTOM TOOLBAR / PAGINATION - CORRECT SELECTOR
+// ============================================================
+//
+
+
+//
+// ============================================================
+// PLP BOTTOM PAGINATION - DESKTOP
+// ============================================================
+//
+
+@media (min-width: 768px) {
+
+    //
+    // Pagination numbers
+    //
+    .catalog-category-view .pages {
+        text-align: center;
+    }
+
+
+    //
+    // Products per page limiter
+    //
+    .catalog-category-view
+    .products.wrapper ~ .toolbar .limiter {
+        display: block;
+
+        float: left;
+
+        margin-left: 700px !important;
+    }
+}
