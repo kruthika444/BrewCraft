@@ -4659,3 +4659,555 @@ Old staging-file cleanup
 I would treat those as a later **hardening/production-readiness phase**, rather than expanding this feature indefinitely right now.
 
 The next project feature can now start from a stable point: **ERP catalog products, categories, inventory, prices, product media, category media, and category descriptions are all integrated.**
+
+
+# 9. ERP Product Attributes + Data Patch + Sync
+**DATE** 14th AUG
+
+### Objective
+
+After completing ERP media synchronization, we needed richer structured product data for the PDP.
+
+The Figma PDP requires sections like:
+
+```text
+Overview
+Specifications
+What's Included
+Shipping & Returns
+Reviews
+```
+
+The existing ERP product payload already handled core fields such as:
+
+```text
+SKU
+Name
+Price
+Weight
+Category
+Manufacturer
+Barcode
+Country of Origin
+Cost Price
+Status
+```
+
+but did not have enough structured technical/product attributes for a proper Specifications section.
+
+So we extended the ERP integration.
+
+---
+
+### Architecture Decision
+
+We decided on this ownership model:
+
+```text
+Data Patch
+→ creates Magento attributes
+
+ERP
+→ provides values for those attributes
+
+ProductImportService
+→ maps ERP values into Magento
+
+PDP
+→ reads Magento attributes and renders them
+```
+
+So:
+
+```text
+Magento schema
+        +
+ERP values
+        =
+structured PDP specifications
+```
+
+This is cleaner than manually creating attributes one by one in Admin.
+
+---
+
+## Why a Data Patch?
+
+Magento product attributes are part of the application/data model.
+
+Instead of manually creating:
+
+```text
+Bean Type
+Roast Level
+Voltage
+Warranty
+...
+```
+
+through Admin, we created them in code with a Data Patch.
+
+Benefits:
+
+```text
+repeatable
+version-controlled
+portable across environments
+easy to deploy
+easy to understand
+```
+
+So if another developer installs the module:
+
+```bash
+bin/magento setup:upgrade
+```
+
+Magento automatically creates the required attributes.
+
+---
+
+## Data Patch Created
+
+File:
+
+```text
+app/code/BrewCraft/ErpIntegration/
+Setup/Patch/Data/CreateProductSpecificationAttributes.php
+```
+
+The patch creates attributes such as:
+
+```text
+Coffee attributes
+
+bean_type
+roast_level
+flavor_profile
+brew_methods
+
+
+Equipment attributes
+
+capacity
+material
+power
+voltage
+warranty
+
+grinder_type
+burr_type
+
+water_tank_capacity
+bean_hopper_capacity
+pump_pressure
+
+dimensions
+
+
+PDP content
+
+included_items
+```
+
+---
+
+## Attribute Group
+
+We grouped these attributes under:
+
+```text
+BrewCraft Specifications
+```
+
+inside the product attribute set.
+
+This keeps Magento Admin organized instead of mixing custom ERP fields randomly with all core Magento attributes.
+
+---
+
+## Attributes Are Optional
+
+A very important requirement was:
+
+> Missing ERP attributes must never break the product import.
+
+So every custom attribute was created with:
+
+```php
+'required' => false
+```
+
+This allows different product types to use different subsets.
+
+For example:
+
+```text
+Coffee Beans
+
+Bean Type         Arabica
+Roast Level       Medium
+Flavor Profile    Smooth...
+Brew Methods      Espresso...
+```
+
+while:
+
+```text
+Espresso Machine
+
+Pump Pressure        15 Bar
+Voltage              230 V
+Water Tank Capacity  2 L
+Warranty             2 Years
+```
+
+There is no requirement that the machine must have:
+
+```text
+bean_type
+roast_level
+```
+
+or that coffee beans must have:
+
+```text
+pump_pressure
+voltage
+```
+
+---
+
+## Why We Did Not Create New Description Attributes
+
+Magento already provides native product attributes:
+
+```text
+short_description
+description
+```
+
+So we reused them instead of creating:
+
+```text
+erp_short_description
+erp_long_description
+```
+
+This keeps us aligned with Magento's native PDP behavior.
+
+---
+
+## Description Ownership Decision
+
+For this learning project, we decided:
+
+```text
+ERP owns
+→ short_description
+→ description
+→ product specifications
+
+Magento owns
+→ homepage CMS
+→ promotional CMS blocks
+→ SEO/editorial merchandising later
+```
+
+The short description is used near the purchasing section.
+
+The long description is used in the PDP Overview tab.
+
+---
+
+## ERP Payload Expanded
+
+Example for a coffee product:
+
+```json
+{
+  "sku": "BEAN001",
+
+  "short_description":
+    "Smooth, aromatic Arabica coffee with balanced sweetness, gentle acidity, and a clean finish.",
+
+  "description":
+    "<p>BrewCraft Signature Arabica Beans...</p>",
+
+  "bean_type": "Arabica",
+
+  "roast_level": "Medium",
+
+  "flavor_profile":
+    "Smooth, balanced, mildly sweet",
+
+  "brew_methods": [
+    "Espresso",
+    "Pour Over",
+    "French Press",
+    "Filter"
+  ]
+}
+```
+
+For machines, ERP can instead send:
+
+```json
+{
+  "pump_pressure": "15 Bar",
+  "water_tank_capacity": "2 L",
+  "bean_hopper_capacity": "250 g",
+  "material": "Stainless Steel",
+  "voltage": "230 V",
+  "power": "1850 W",
+  "warranty": "2 Years"
+}
+```
+
+---
+
+## ProductImportService Extended
+
+The existing:
+
+```text
+ProductImportService
+```
+
+was extended to map the new fields.
+
+We did **not** directly access optional values like:
+
+```php
+$erpProduct['bean_type']
+```
+
+because that could cause problems when ERP doesn't send the field.
+
+Instead we introduced a helper:
+
+```text
+mapOptionalAttribute()
+```
+
+---
+
+## Safe Optional Mapping
+
+The helper follows this logic:
+
+```text
+Field missing?
+→ skip
+
+Field null?
+→ skip
+
+Scalar value?
+→ save
+
+Array?
+→ normalize and save
+
+Unsupported complex value?
+→ log warning and skip
+```
+
+Conceptually:
+
+```php
+if (!array_key_exists($attributeCode, $erpProduct)) {
+    return;
+}
+```
+
+So:
+
+```text
+ERP doesn't send warranty
+↓
+Magento does nothing
+↓
+product import continues
+```
+
+No undefined-index problem.
+
+No broken synchronization.
+
+---
+
+## Preserve Existing Magento Values
+
+Another important decision:
+
+If ERP does not send an optional field, we **do not clear Magento's existing value**.
+
+Example:
+
+```text
+Magento warranty = "2 Years"
+```
+
+ERP next run accidentally omits:
+
+```text
+warranty
+```
+
+Our importer:
+
+```text
+missing field
+→ skip
+→ keep "2 Years"
+```
+
+instead of:
+
+```text
+missing field
+→ save NULL
+→ warranty disappears
+```
+
+This makes the integration safer.
+
+---
+
+## Arrays From ERP
+
+For fields like:
+
+```text
+brew_methods
+included_items
+```
+
+ERP can send arrays:
+
+```json
+"brew_methods": [
+  "Espresso",
+  "Pour Over",
+  "French Press"
+]
+```
+
+Our helper converts them to:
+
+```text
+Espresso, Pour Over, French Press
+```
+
+before storing in Magento.
+
+So JSON remains clean on the ERP side while Magento receives a simple displayable value.
+
+---
+
+## Data Patch Execution
+
+We ran:
+
+```bash
+bin/magento setup:upgrade
+```
+
+which created the attributes.
+
+Then:
+
+```bash
+bin/magento indexer:reindex
+bin/magento cache:flush
+```
+
+---
+
+## ERP Sync Verification
+
+After updating the mock ERP product data, the regular existing ERP product sync was executed.
+
+Result:
+
+```text
+Custom attributes created       ✅
+ERP values received             ✅
+ProductImportService mapping    ✅
+Magento values saved            ✅
+Missing fields safe             ✅
+Arrays normalized               ✅
+Descriptions synced             ✅
+```
+
+You confirmed that all values synchronized successfully.
+
+---
+
+## Final Data Flow
+
+```text
+ERP
+│
+├── short_description
+├── description
+├── bean_type
+├── roast_level
+├── flavor_profile
+├── brew_methods
+├── material
+├── voltage
+├── warranty
+├── pump_pressure
+└── included_items
+        ↓
+ProductImportService
+        ↓
+mapOptionalAttribute()
+        ↓
+Magento EAV product attributes
+        ↓
+PDP
+```
+
+---
+
+## Important Concepts Learned
+
+This feature covered:
+
+```text
+Magento EAV attributes
+Data Patches
+Attribute Sets
+Attribute Groups
+Optional attributes
+ERP-to-Magento mapping
+Defensive integration coding
+array_key_exists()
+Null handling
+Preserving existing values
+Array normalization
+Native Magento description fields
+Separation of schema vs data
+```
+
+---
+
+## ERP Product Attribute Sync Status
+
+```text
+Attribute Data Patch       ✅
+Custom attributes          ✅
+Attribute group            ✅
+Optional fields            ✅
+ERP payload extension      ✅
+Short description          ✅
+Long description           ✅
+Specifications             ✅
+Safe missing-field logic   ✅
+ERP synchronization        ✅
+Magento values verified    ✅
+```
+

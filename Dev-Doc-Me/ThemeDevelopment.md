@@ -2550,9 +2550,9 @@ The same applied to product cards. Instead of rebuilding product listing logic, 
 ---
 
 
-# 4. BrewCraft PLP — Development Log
+# 4. BrewCraft PLP — Development Log 
 
-### 1. Goal of Today's Work
+## 1. Goal of Today's Work
 
 We continued the BrewCraft Product Listing Page from the structural implementation completed previously.
 
@@ -3538,3 +3538,2308 @@ Subcategory Descriptions
 One especially useful backend requirement for that implementation will be making the sync **idempotent**: repeatedly running the ERP import should update/reuse existing media instead of attaching duplicate images every time.
 
 That gives us a natural transition from the storefront/frontend work back into Magento backend integration.
+
+# 5. BrewCraft PDP Development Log
+**DATE** 14 AUG 
+### Objective
+
+The goal is to transform Magento's default Luma PDP into the BrewCraft Figma design while preserving Magento's native product functionality.
+
+We kept Magento functionality for:
+
+```text
+product gallery
+pricing
+reviews
+stock
+quantity
+Add to Cart
+wishlist
+detailed information
+```
+
+and changed presentation/layout around it.
+
+---
+
+## Initial PDP State
+
+The initial Magento PDP was mostly default Luma:
+
+```text
+large horizontal gallery
+thumbnails under image
+very large thin product title
+default price styling
+SKU visible
+stock far to the right
+default Qty field
+blue Add to Cart
+Wishlist + Compare links
+default Details / Reviews tabs
+huge default review form
+```
+
+---
+
+## ERP Media Already Working
+
+Before PDP styling started, ERP media sync had already populated multiple product images.
+
+Magento could display:
+
+```text
+main image
+secondary image
+third image
+fourth image
+```
+
+This gave us real gallery content to work with.
+
+---
+
+## PDP Container Alignment
+
+We aligned the PDP with the same BrewCraft global page width used elsewhere.
+
+The PDP uses:
+
+```text
+max-width: 1440px
+```
+
+with consistent horizontal padding.
+
+This keeps:
+
+```text
+header
+PLP
+PDP
+footer
+```
+
+visually aligned.
+
+---
+
+## Main PDP Two-Column Layout
+
+The product area was adjusted roughly to:
+
+```text
+52% → product gallery
+48% → product information
+```
+
+This created a better balance between image and product information.
+
+---
+
+## Product Gallery Styling
+
+Magento's native Fotorama gallery was retained.
+
+We customized:
+
+```text
+main gallery size
+background
+thumbnail styling
+active thumbnail
+image fit
+```
+
+The main gallery uses:
+
+```text
+object-fit: contain
+```
+
+so the full product remains visible.
+
+---
+
+## Vertical Figma-Style Thumbnail Gallery
+
+The Figma uses:
+
+```text
+thumbnail
+thumbnail
+thumbnail     main image
+thumbnail
+```
+
+instead of thumbnails below the image.
+
+We configured Magento's gallery through:
+
+```text
+etc/view.xml
+```
+
+using:
+
+```text
+nav = thumbs
+navdir = vertical
+```
+
+This made thumbnails appear vertically on the left.
+
+---
+
+## Thumbnail Active Border Problem
+
+After switching to vertical thumbnails, clicking different images caused Fotorama's native moving active rectangle to appear in the wrong place.
+
+The issue came from:
+
+```text
+.fotorama__thumb-border
+```
+
+because Fotorama calculates that element's position based on its own thumbnail dimensions.
+
+Our custom dimensions caused the calculated border to become visually displaced.
+
+We hid Fotorama's moving border and styled the active thumbnail directly.
+
+Conceptually:
+
+```text
+native moving border ❌
+
+actual active thumbnail border ✅
+```
+
+---
+
+## Product Title Styling
+
+The default Luma title was too light and oversized.
+
+It was changed to BrewCraft styling:
+
+```text
+Poppins
+espresso color
+stronger weight
+controlled line height
+```
+
+---
+
+## Reviews + Stock Row
+
+Originally Magento displayed:
+
+```text
+review link
+```
+
+near the title while:
+
+```text
+IN STOCK
+SKU
+```
+
+appeared separately.
+
+The target was:
+
+```text
+Reviews     IN STOCK
+```
+
+directly below the product name.
+
+We created:
+
+```text
+brewcraft.product.meta
+```
+
+inside `product.info.main`.
+
+Then moved:
+
+```text
+product.info.review
+product.info.stock.sku
+```
+
+into that container.
+
+The SKU block was removed.
+
+Current result:
+
+```text
+Product Name
+
+Be the first to review this product     IN STOCK
+```
+
+---
+
+## SKU Removed
+
+The BrewCraft design did not need SKU prominently displayed.
+
+So:
+
+```text
+product.info.sku
+```
+
+was removed from PDP presentation.
+
+---
+
+## Price Styling
+
+Magento initially displayed:
+
+```text
+₹399
+Regular Price ₹950
+```
+
+We wanted:
+
+```text
+₹399    ₹950
+```
+
+where:
+
+```text
+₹399 → main price
+₹950 → smaller strikethrough price
+```
+
+The Magento:
+
+```text
+Regular Price
+Special Price
+```
+
+labels were hidden.
+
+---
+
+## Short Description
+
+We added sample short-description content for `BEAN001`:
+
+```text
+Smooth, aromatic Arabica coffee with balanced sweetness,
+gentle acidity, and a clean finish...
+```
+
+Initially Magento rendered the overview below Wishlist.
+
+The reason was that the wrong layout sibling was used as the move target.
+
+We corrected:
+
+```xml
+product.info.overview
+```
+
+to move before:
+
+```text
+product.info
+```
+
+because those two are siblings within:
+
+```text
+product.info.main
+```
+
+Final intended hierarchy:
+
+```text
+Title
+
+Reviews + Stock
+
+Price
+
+Short Description
+
+Qty
+
+Add to Cart
+
+Wishlist
+```
+
+---
+
+## Quantity Stepper
+
+Magento normally provides only:
+
+```text
+Qty [1]
+```
+
+The Figma uses:
+
+```text
+[-] [1] [+]
+```
+
+So we overrode:
+
+```text
+Magento_Catalog/templates/product/view/addtocart.phtml
+```
+
+and added:
+
+```text
+minus button
+qty input
+plus button
+```
+
+---
+
+## Qty JavaScript Problem
+
+Initially we created:
+
+```text
+Magento_Catalog/js/brewcraft-qty
+```
+
+as a separate RequireJS component.
+
+But the browser produced:
+
+```text
+Script error for "Magento_Catalog/js/brewcraft-qty"
+```
+
+and the quantity did not change.
+
+We simplified it.
+
+Instead of a custom external RequireJS module, the qty logic now uses Magento's already-loaded jQuery directly inside `addtocart.phtml`.
+
+Final behavior:
+
+```text
++ → increase quantity
+- → decrease quantity
+minimum → 1
+```
+
+You confirmed Qty now works correctly.
+
+---
+
+## Add to Cart Problem
+
+At one point Add to Cart also stopped working.
+
+Root cause:
+
+The `<script type="text/x-magento-init">` block contained **two separate JSON objects**, making the initializer invalid.
+
+Example of the broken pattern:
+
+```text
+{ validation config }
+
+{ qty config }
+```
+
+Magento could not parse it.
+
+Therefore:
+
+```text
+validate-product.js
+```
+
+never initialized and the button remained disabled.
+
+We corrected the initializer.
+
+Final result:
+
+```text
+Add to Cart ✅
+```
+
+You confirmed products can successfully be added to cart.
+
+---
+
+## Add to Cart Styling
+
+The default Magento blue button was replaced with the BrewCraft style:
+
+```text
+full-width
+espresso background
+white text
+theme hover state
+```
+
+---
+
+## Wishlist
+
+The Figma shows Wishlist as a full secondary button under Add to Cart.
+
+Magento's normal Wishlist link was styled as:
+
+```text
+[ ♥ Add to Wish List ]
+```
+
+with:
+
+```text
+white background
+espresso border
+full width
+```
+
+---
+
+## Compare Removed
+
+Magento's:
+
+```text
+Add to Compare
+```
+
+was removed from the PDP.
+
+---
+
+## Full Description
+
+We added a real long description for testing.
+
+It includes:
+
+```text
+product introduction
+second paragraph
+Highlights
+bullet list
+```
+
+This content uses Magento's native:
+
+```text
+description
+```
+
+attribute.
+
+---
+
+## New Structured PDP Tabs Requirement
+
+The Figma lower PDP uses:
+
+```text
+Overview
+Specifications
+What's Included
+Shipping & Returns
+Reviews
+```
+
+Magento originally had only:
+
+```text
+Details
+More Information
+Reviews
+```
+
+So we began restructuring the detailed-info area.
+
+---
+
+## Overview
+
+The Magento native description block was retained and renamed conceptually to:
+
+```text
+Overview
+```
+
+It renders the full product description.
+
+---
+
+## Specifications Tab
+
+A custom template was created:
+
+```text
+Magento_Catalog/templates/product/view/specifications.phtml
+```
+
+It reads the ERP-backed custom attributes.
+
+Example output for BEAN001:
+
+```text
+Bean Type       Espresso/Arabica
+Roast Level     Medium
+Flavor Profile  Smooth, balanced, mildly sweet
+Brew Methods    Espresso, Pour Over, French Press, Filter
+```
+
+The template only renders attributes with values.
+
+So irrelevant blank fields are automatically omitted.
+
+---
+
+## What's Included Tab
+
+A custom template was created:
+
+```text
+included.phtml
+```
+
+It reads:
+
+```text
+included_items
+```
+
+from the ERP-backed Magento product attribute.
+
+It supports comma-separated values generated from ERP arrays.
+
+If no items exist, it currently displays a fallback message.
+
+---
+
+## Shipping & Returns Tab
+
+A custom template was created:
+
+```text
+shipping-returns.phtml
+```
+
+This is intentionally not ERP product data.
+
+It contains store-level policy content such as:
+
+```text
+Shipping
+Returns
+```
+
+The long-term recommendation is to move this into a Magento CMS block so merchants can edit it without deployment.
+
+---
+
+## Reviews Tab
+
+Magento's native Reviews functionality is retained.
+
+That means Magento still handles:
+
+```text
+Nickname
+Summary
+Review
+Submit Review
+```
+
+and later existing customer reviews.
+
+We are only changing presentation.
+
+---
+
+## Tab JavaScript Issue
+
+We temporarily introduced an additional custom tab initializer:
+
+```text
+pdp-tabs.js
+tabs-init.phtml
+```
+
+on top of Magento's native detailed-info tabs.
+
+This created competing tab behavior.
+
+The custom tab initializer was then removed so Magento's native tab mechanism could remain the source of truth.
+
+---
+
+## Major Tab CSS Problem
+
+During tab refinement, several different CSS strategies were added one after another:
+
+```text
+display: block
+display: flex
+display: grid
+inline-block titles
+flex titles
+grid titles
+```
+
+all targeting the same:
+
+```text
+.product.data.items
+.item.title
+.item.content
+```
+
+This caused:
+
+```text
+tabs overlapping
+titles collapsing left
+different active-tab widths
+review form appearing on right
+empty content appearing offset
+```
+
+We identified that the core issue was **competing CSS blocks**, not missing data.
+
+---
+
+## Tab CSS Cleanup
+
+The duplicated tab CSS was removed and replaced with one consistent layout approach.
+
+The current goal is:
+
+```text
+5 equal-width tabs
+↓
+one full-width content area
+```
+
+Conceptually:
+
+```text
+┌──────────┬──────────┬──────────┬──────────┬──────────┐
+│ Overview │ Specs    │ Included │ Shipping │ Reviews  │
+├──────────┴──────────┴──────────┴──────────┴──────────┤
+│                                                       │
+│                  ACTIVE CONTENT                       │
+│                                                       │
+└───────────────────────────────────────────────────────┘
+```
+
+---
+
+## Current Remaining Tab Problem
+
+This is where we stopped today.
+
+Although the tabs now appear and switch correctly, their internal content is **still visually inconsistent**.
+
+Examples:
+
+#### Specifications
+
+fills most of the content area.
+
+#### What's Included
+
+when empty, its message may appear too far right/small.
+
+#### Reviews
+
+Magento's native review form has its own width/float behavior, so it can appear aligned differently.
+
+The next fix is to normalize all active tab content so every tab uses:
+
+```text
+same width
+same padding
+same minimum height
+same left alignment
+```
+
+This is **not complete yet**.
+
+We agreed to continue this tomorrow morning.
+
+---
+
+
+
+# 6. BrewCraft PDP Development Log
+**DATE** 15 AUG
+## Phase: Tabs, Specifications, Benefits, Related Products, Reviews, Image Roles
+
+### 1. Starting point
+
+The top half of the PDP was already mostly complete:
+
+* product gallery on the left
+* vertical thumbnails
+* product name
+* review link + stock status
+* current/old price styling
+* short description
+* quantity stepper
+* Add to Cart
+* Wishlist
+* Compare removed
+
+The remaining Figma-driven sections were mainly:
+
+```text
+Benefits strip
+
+Overview
+Specifications
+What's Included
+Shipping & Returns
+Reviews
+
+You May Also Like
+```
+
+The goal was to build these sections while keeping Magento’s native product functionality working.
+
+---
+
+## 2. PDP detailed-information section
+
+Magento already has a native detailed-information area on the PDP.
+
+By default it contains blocks such as:
+
+```text
+Details
+More Information
+Reviews
+```
+
+Internally, Magento groups these blocks under:
+
+```text
+product.info.details
+```
+
+and blocks that belong to:
+
+```text
+group="detailed_info"
+```
+
+are rendered as tabs/collapsible sections.
+
+Instead of building a completely separate tabs framework, we decided to **reuse Magento’s native detailed-info mechanism**.
+
+This was important because Magento already handles:
+
+* active tab
+* accessibility attributes
+* show/hide state
+* native reviews
+* native description block
+
+So our job was mainly:
+
+```text
+reorder blocks
+add custom blocks
+style them
+```
+
+rather than rebuild tab JavaScript from scratch.
+
+---
+
+## 3. `catalog_product_view.xml`
+
+The main layout file used for PDP customization was:
+
+```text
+app/design/frontend/BrewCraft/supply/
+Magento_Catalog/layout/catalog_product_view.xml
+```
+
+### What is a Magento layout XML file?
+
+Magento pages are assembled from:
+
+```text
+Containers
+Blocks
+Templates
+```
+
+Layout XML tells Magento:
+
+* which blocks exist
+* where blocks should render
+* which blocks should move
+* which blocks should be removed
+* what templates blocks use
+* what arguments/configuration blocks receive
+
+It does **not** normally contain the final HTML itself.
+
+Think of it like:
+
+```text
+Layout XML
+    ↓
+decides page structure
+
+PHTML
+    ↓
+renders HTML
+
+LESS/CSS
+    ↓
+controls appearance
+
+JS
+    ↓
+controls interaction
+```
+
+For PDP pages, Magento loads layout handles including:
+
+```text
+catalog_product_view
+```
+
+so overriding:
+
+```text
+Magento_Catalog/layout/catalog_product_view.xml
+```
+
+inside the child theme lets us modify PDP structure without touching Magento vendor files.
+
+---
+
+## 4. Moving existing Magento PDP blocks
+
+We reused several native blocks.
+
+For example:
+
+```text
+product.info.review
+product.info.stock.sku
+product.info.overview
+```
+
+Instead of copying their HTML, we moved them using:
+
+```xml
+<move ... />
+```
+
+This is preferable because Magento keeps ownership of the functionality.
+
+Example concept:
+
+```xml
+<move
+    element="product.info.overview"
+    destination="product.info.main"
+    before="product.info"
+/>
+```
+
+This moved the short description above:
+
+```text
+Qty
+Add to Cart
+Wishlist
+```
+
+without rewriting Magento's short-description template.
+
+---
+
+## 5. Creating custom PDP tabs
+
+The Figma required:
+
+```text
+Overview
+Specifications
+What's Included
+Shipping & Returns
+Reviews
+```
+
+Magento did not provide all of these natively.
+
+So custom blocks were added beneath:
+
+```text
+product.info.details
+```
+
+with:
+
+```text
+group="detailed_info"
+```
+
+Example concept:
+
+```xml
+<block
+    class="Magento\Catalog\Block\Product\View"
+    name="brewcraft.product.specifications"
+    template="Magento_Catalog::product/view/specifications.phtml"
+    group="detailed_info">
+```
+
+The key part is:
+
+```xml
+group="detailed_info"
+```
+
+because Magento's detailed-info renderer looks for child blocks belonging to that group and renders them as individual tabs.
+
+---
+
+## 6. Overview tab
+
+Magento already provides the product long description through:
+
+```text
+product.info.description
+```
+
+and the native product attribute:
+
+```text
+description
+```
+
+So we did not create another description system.
+
+We simply reused Magento’s description block and treated it as:
+
+```text
+Overview
+```
+
+This kept ERP-synced long description content compatible with Magento’s native PDP architecture.
+
+---
+
+## 7. Specifications tab
+
+A custom template was created:
+
+```text
+Magento_Catalog/templates/product/view/specifications.phtml
+```
+
+The template reads the new ERP-backed Magento attributes, such as:
+
+```text
+bean_type
+roast_level
+flavor_profile
+brew_methods
+
+material
+power
+voltage
+warranty
+water_tank_capacity
+bean_hopper_capacity
+pump_pressure
+dimensions
+```
+
+The important behavior was:
+
+```text
+attribute has value
+→ show specification row
+
+attribute empty
+→ skip it
+```
+
+So different product types can display completely different specifications.
+
+Example coffee:
+
+```text
+Bean Type        Arabica
+Roast Level      Medium
+Flavor Profile   Smooth, balanced...
+Brew Methods     Espresso, Pour Over...
+```
+
+Example machine:
+
+```text
+Material              Stainless Steel
+Power                 1850 W
+Voltage               230 V
+Warranty              2 Years
+Water Tank Capacity   2 L
+Bean Hopper Capacity  250 g
+```
+
+This works because the attributes were previously created using a Data Patch and populated through ERP sync.
+
+---
+
+## 8. Why specifications were dynamically filtered
+
+We specifically did **not** want empty rows like:
+
+```text
+Voltage:
+Warranty:
+Pump Pressure:
+```
+
+for a coffee product.
+
+The template therefore checked the actual Magento product value before rendering each row.
+
+This gave us one reusable Specifications template for many product types.
+
+---
+
+## 9. What's Included tab
+
+A custom product attribute:
+
+```text
+included_items
+```
+
+was introduced earlier.
+
+ERP can send:
+
+```json
+"included_items": [
+    "Portafilter",
+    "Milk Jug",
+    "Filter Baskets"
+]
+```
+
+The importer converts it into a Magento-storable string.
+
+The PDP template then converts that string back into a list for display.
+
+We initially showed an empty message when no values existed:
+
+```text
+No additional items are listed for this product.
+```
+
+Later we decided this was not useful.
+
+The correct behavior became:
+
+```text
+included_items empty
+→ render nothing
+→ What's Included tab should not appear
+```
+
+This is a useful Magento pattern:
+
+> Optional frontend sections should disappear completely when the product does not have relevant data.
+
+---
+
+## 10. Shipping & Returns
+
+Shipping & Returns was intentionally **not stored in ERP product data**.
+
+Reason:
+
+Shipping policy is usually store/business-level content, not product-master data.
+
+So the ownership model became:
+
+```text
+ERP
+→ product-specific data
+
+Magento
+→ store policy / CMS content
+```
+
+Initially we rendered a simple theme template with:
+
+```text
+Shipping
+Returns
+```
+
+content.
+
+Long-term, a Magento CMS block would be even better because a merchant could edit policy text without code deployment.
+
+---
+
+## 11. Reviews tab
+
+Magento’s native review system was retained.
+
+We did not build our own review database or form.
+
+Magento already provides:
+
+```text
+review submission
+rating
+nickname
+summary
+review body
+moderation
+approved review display
+```
+
+This is important because review functionality has real Magento business logic behind it.
+
+---
+
+## 12. How Magento product reviews work
+
+The flow we verified was:
+
+```text
+Customer submits review
+        ↓
+Magento stores review as Pending
+        ↓
+Admin approves review
+        ↓
+Approved review becomes visible on storefront
+```
+
+Admin areas include review management under Magento's user-content/review sections.
+
+We verified that approved reviews appear on the PDP.
+
+---
+
+## 13. Rating / stars
+
+Magento uses its native rating system.
+
+The review form can show:
+
+```text
+★★★★★
+```
+
+using Magento's rating control.
+
+The native widget uses overlapping labels/radio controls rather than five ordinary image icons.
+
+Because of that, styling the star input is more sensitive than normal form elements.
+
+We encountered an issue where the stars became positioned near the next field / appeared visually detached.
+
+This came from Magento’s positioned rating-widget CSS interacting with our custom review-form styling.
+
+We added a positioning container to keep the native rating control anchored correctly.
+
+The main lesson:
+
+> Do not treat Magento’s review rating widget as five ordinary stars. It has its own structural CSS and positioning logic.
+
+---
+
+## 14. Review list template override discovery
+
+When we tried changing the review display order, we first targeted the wrong module path.
+
+The actual Magento source template is:
+
+```text
+vendor/magento/module-review/
+view/frontend/templates/product/view/list.phtml
+```
+
+Therefore the correct theme override path is:
+
+```text
+app/design/frontend/BrewCraft/supply/
+Magento_Review/templates/product/view/list.phtml
+```
+
+### Important Magento theme override rule
+
+To override a module template in a theme:
+
+```text
+vendor/magento/module-xxx/view/frontend/templates/path/file.phtml
+```
+
+becomes:
+
+```text
+app/design/frontend/Vendor/theme/
+Magento_Xxx/templates/path/file.phtml
+```
+
+So:
+
+```text
+module-review
+```
+
+maps to:
+
+```text
+Magento_Review
+```
+
+This same rule is useful across Magento modules.
+
+---
+
+## 15. Why copying vendor files should be done carefully
+
+The safest way to override a native Magento template is:
+
+```text
+1. locate actual vendor template
+2. copy it into theme override path
+3. verify override is loaded
+4. change only necessary markup
+```
+
+rather than writing a replacement from memory.
+
+We used a temporary HTML comment idea such as:
+
+```html
+<!-- BREWCRAFT REVIEW TEMPLATE -->
+```
+
+to verify Magento was actually loading the theme override.
+
+This is a very useful debugging technique.
+
+---
+
+## 16. Review redesign was intentionally dropped
+
+We considered redesigning the Reviews tab into:
+
+```text
+Reviews list       | Write a Review form
+```
+
+but the Magento review markup and the existing tab styling made this more invasive than worthwhile.
+
+Since the native review functionality already works, we decided:
+
+```text
+functionality > unnecessary visual complexity
+```
+
+and stopped the redesign.
+
+This is an important development decision:
+
+> Not every Figma variation is worth overriding heavily if Magento's native behavior is already functional and the customization increases maintenance risk.
+
+The PDP review section is therefore considered acceptable for this phase.
+
+---
+
+## 17. Tab CSS problems encountered
+
+The tab section was the most troublesome part of the PDP.
+
+At different points we tried:
+
+```text
+display: block
+display: flex
+display: grid
+inline-block tab titles
+custom tab JS
+native Magento tab JS
+```
+
+Multiple CSS blocks ended up targeting the same selectors:
+
+```text
+.product.data.items
+.item.title
+.item.content
+```
+
+This caused:
+
+* overlapping tab titles
+* tabs moving position
+* review form aligned differently
+* varying content widths
+* content appearing in unexpected places
+
+The root cause was not Magento data.
+
+It was **multiple competing frontend layout rules**.
+
+The fix was to remove duplicate tab CSS and keep a single layout strategy.
+
+---
+
+## 18. Custom tabs JavaScript experiment
+
+We temporarily created a custom:
+
+```text
+pdp-tabs.js
+```
+
+to initialize Magento tabs manually.
+
+However Magento's product detailed-info section was already initialized natively.
+
+So we effectively had:
+
+```text
+Magento native tab JS
++
+our custom tab JS
+```
+
+operating on the same DOM.
+
+That created inconsistent active states.
+
+We removed the custom initializer and returned to Magento's native tab functionality.
+
+Lesson:
+
+> Before initializing a Magento widget manually, check whether the core component already initializes that DOM element.
+
+---
+
+## 19. PDP benefits strip
+
+The Figma also contained a service-benefits strip.
+
+We created a custom template with four benefits:
+
+```text
+Free Shipping
+Reliable Supply
+Expert Support
+Business Solutions
+```
+
+This was inserted between the product purchase section and the detailed tabs.
+
+The strip uses a simple standalone PHTML template because these values are mostly store-level marketing/service content.
+
+---
+
+## 20. Benefits strip styling
+
+Initially the strip had a cream/beige background and visually touched the product image area.
+
+We changed it to:
+
+```text
+white background
+light border
+very subtle shadow
+space above
+space below
+```
+
+This made it feel like an independent section instead of being attached to the gallery.
+
+---
+
+## 21. Related Products
+
+Magento's native Related Products functionality was used for:
+
+```text
+You May Also Like
+```
+
+instead of building a completely separate recommendation system.
+
+Products were assigned in Magento Admin using native product relationships.
+
+This allows merchandising relationships to remain Magento-owned.
+
+---
+
+## 22. Related Products vs ERP
+
+We deliberately did not add related-product SKUs to ERP yet.
+
+Ownership decision:
+
+```text
+ERP
+→ product master data
+
+Magento
+→ merchandising relationships
+```
+
+Why?
+
+Because a merchandising/admin team may want to change:
+
+```text
+related products
+upsells
+cross-sells
+```
+
+without changing ERP.
+
+ERP relation syncing could be added later as a separate learning feature.
+
+---
+
+## 23. Related Products layout
+
+The native related-products block initially rendered:
+
+* helper text
+* selection checkboxes
+* wishlist icon
+* compare icon
+* many products in a loose row
+
+We simplified it into:
+
+```text
+5 cards
+single desktop row
+compact image
+product name
+price
+old price
+```
+
+The sixth and later items were hidden for the current storefront design.
+
+---
+
+## 24. Why we did not keep Add to Cart on hover
+
+We considered showing Add to Cart on card hover.
+
+However the native related-products template did not output the Add to Cart button markup we needed.
+
+CSS can only style an existing element.
+
+CSS cannot create:
+
+```html
+<button>Add to Cart</button>
+```
+
+So instead of overriding the related-products template just for hover cart behavior, we decided to keep the section simpler.
+
+This reduced unnecessary customization.
+
+---
+
+## 25. Magento product image problem
+
+The most useful technical discovery today involved Magento image processing.
+
+Uploaded product images looked correct originally.
+
+But in storefront cached URLs, they sometimes contained large white borders.
+
+Example:
+
+```text
+original image
+→ no white border
+
+Magento cached image
+→ white space around image
+```
+
+At first this looked like a CSS issue.
+
+It was not.
+
+Magento was generating resized cached images according to theme image configuration.
+
+---
+
+## 26. What is `etc/view.xml`?
+
+The theme file:
+
+```text
+app/design/frontend/BrewCraft/supply/etc/view.xml
+```
+
+is a frontend configuration file.
+
+It controls several view-related settings, especially product images and gallery configuration.
+
+It can define:
+
+```text
+product image roles
+image width/height
+image framing behavior
+aspect ratio
+transparency
+gallery thumbnail settings
+gallery direction
+```
+
+So it is not ordinary page layout XML.
+
+It configures how Magento should render/generate frontend assets for the theme.
+
+---
+
+## 27. Magento image roles
+
+Magento does not necessarily serve the original uploaded product image directly everywhere.
+
+Different frontend locations use different image roles.
+
+Examples include:
+
+```text
+product_page_image_medium
+product_page_image_large
+related_products_list
+```
+
+Each role can have its own:
+
+```text
+width
+height
+frame
+aspect ratio
+constrain
+transparency
+```
+
+Magento then generates cached versions under:
+
+```text
+pub/media/catalog/product/cache/
+```
+
+---
+
+## 28. Why Magento added white space
+
+Magento's image-generation settings can preserve the entire image inside a requested canvas.
+
+That can result in:
+
+```text
+requested canvas
+┌──────────────────────┐
+│      white space     │
+│   original image     │
+│      white space     │
+└──────────────────────┘
+```
+
+This behavior is useful in some catalog designs because every card gets a consistent image canvas.
+
+But it did not match BrewCraft's design.
+
+---
+
+## 29. `frame=false`
+
+The important `view.xml` configuration was:
+
+```xml
+<frame>false</frame>
+```
+
+This told Magento not to create the unwanted surrounding frame for that image role.
+
+We first fixed:
+
+```text
+related_products_list
+```
+
+and confirmed the related products looked much better.
+
+Then we applied the same concept to PDP image roles such as:
+
+```text
+product_page_image_medium
+product_page_image_large
+```
+
+---
+
+## 30. `view.xml` gallery configuration
+
+Earlier in PDP work, `view.xml` was also used for Fotorama gallery configuration.
+
+For example:
+
+```text
+nav = thumbs
+navdir = vertical
+```
+
+This changed the product gallery from:
+
+```text
+main image
+thumbnails horizontally underneath
+```
+
+to:
+
+```text
+thumbnail
+thumbnail    main image
+thumbnail
+thumbnail
+```
+
+matching the Figma direction.
+
+So `view.xml` served two purposes in this project:
+
+```text
+gallery configuration
++
+catalog image role configuration
+```
+
+---
+
+## 31. Cached product images
+
+Changing `view.xml` does not automatically alter an already-generated cached JPG.
+
+Magento stores generated versions inside:
+
+```text
+pub/media/catalog/product/cache/
+```
+
+So after image-role changes we had to clear the product image cache:
+
+```bash
+rm -rf pub/media/catalog/product/cache/*
+```
+
+and regenerate images:
+
+```bash
+bin/magento catalog:images:resize
+```
+
+This is an important Magento workflow.
+
+---
+
+## 32. `catalog:images:resize`
+
+This command generates resized product images according to the theme's configured image roles:
+
+```bash
+bin/magento catalog:images:resize
+```
+
+It is especially useful after:
+
+* changing image dimensions
+* changing framing
+* changing image-role configuration
+* changing themes
+
+---
+
+## 33. CSS `object-fit`
+
+After Magento stopped adding the white frame, CSS still needed to decide how the real image fits the HTML image area.
+
+We used:
+
+```css
+object-fit: cover;
+```
+
+for areas where the image should completely fill the frame.
+
+Difference:
+
+```text
+contain
+→ shows full image
+→ may leave empty area
+
+cover
+→ fills entire area
+→ may crop image edges
+```
+
+For the BrewCraft PDP and related cards, `cover` produced the stronger visual result.
+
+---
+
+## 34. Why CSS alone could not initially fix the white border
+
+This is an important concept.
+
+If Magento generated this JPG:
+
+```text
+[ white border + actual photo + white border ]
+```
+
+then CSS sees all of that as **one image**.
+
+`object-fit` cannot distinguish:
+
+```text
+real photo pixels
+vs
+Magento-generated white pixels
+```
+
+Therefore the proper fix was:
+
+```text
+view.xml image generation
+first
+
+CSS object-fit
+second
+```
+
+not CSS alone.
+
+---
+
+## 35. `i18n/en_US.csv`
+
+We also needed to rename:
+
+```text
+Related Products
+```
+
+to:
+
+```text
+You May Also Like
+```
+
+An XML title argument did not work because the Magento template itself used a translated string for the heading.
+
+Instead of overriding a large template just to change two words, we used theme translation.
+
+File:
+
+```text
+app/design/frontend/BrewCraft/supply/
+i18n/en_US.csv
+```
+
+Example:
+
+```csv
+"Related Products","You May Also Like"
+```
+
+---
+
+## 36. What is the `i18n` folder?
+
+`i18n` means:
+
+```text
+internationalization
+```
+
+Magento uses translation dictionaries to translate frontend strings.
+
+A theme can contain:
+
+```text
+i18n/en_US.csv
+i18n/fr_FR.csv
+i18n/de_DE.csv
+```
+
+etc.
+
+The CSV format is conceptually:
+
+```text
+"Original text","Replacement/translation"
+```
+
+So:
+
+```csv
+"Related Products","You May Also Like"
+```
+
+means whenever that translatable string is rendered within the theme scope, Magento can display:
+
+```text
+You May Also Like
+```
+
+instead.
+
+---
+
+## 37. Why use `i18n` instead of overriding PHTML?
+
+Suppose a Magento template contains hundreds of lines but the only thing we want to change is:
+
+```text
+Related Products
+```
+
+Overriding the entire PHTML would mean:
+
+```text
+copy 200+ lines
+maintain them forever
+risk missing future Magento fixes
+```
+
+Translation override means:
+
+```text
+1 CSV line
+```
+
+This is much safer.
+
+Use theme `i18n` when:
+
+```text
+only the displayed translatable text needs to change
+```
+
+Use a template override when:
+
+```text
+HTML structure / logic needs to change
+```
+
+---
+
+## 38. LESS variable compile error
+
+During review styling we used:
+
+```less
+@brewcraft-text-muted
+```
+
+but this variable did not exist in the theme.
+
+Magento LESS compilation therefore failed with:
+
+```text
+variable @brewcraft-text-muted is undefined
+```
+
+The existing valid variable was:
+
+```less
+@brewcraft-muted
+```
+
+This reinforced an earlier theme lesson:
+
+> Always reuse defined BrewCraft variables instead of inventing similarly named variables while writing new LESS.
+
+---
+
+## 39. Magento static/theme cleanup commands
+
+Throughout PDP development we repeatedly used:
+
+```bash
+rm -rf var/view_preprocessed/*
+rm -rf pub/static/frontend/BrewCraft/*
+bin/magento cache:flush
+```
+
+Why?
+
+#### `var/view_preprocessed`
+
+Magento creates preprocessed LESS/theme files here.
+
+If stale files remain, updated LESS may not be reflected.
+
+#### `pub/static/frontend/BrewCraft`
+
+Contains generated frontend theme assets.
+
+Deleting this forces Magento developer-mode asset generation to use the newest source.
+
+#### `cache:flush`
+
+Clears Magento caches that may preserve stale layout/template/configuration output.
+
+---
+
+## 40. Final PDP structure achieved
+
+The current PDP now effectively contains:
+
+```text
+Breadcrumbs
+
+Main product area
+├── vertical image thumbnails
+├── main product image
+├── product name
+├── review / stock
+├── current / old price
+├── short description
+├── Qty - / +
+├── Add to Cart
+└── Wishlist
+
+Benefits strip
+
+Detailed information
+├── Overview
+├── Specifications
+├── What's Included (only when applicable)
+├── Shipping & Returns
+└── Reviews
+
+You May Also Like
+└── native Magento Related Products
+
+Footer
+```
+
+---
+
+## 41. Important files involved
+
+#### PDP page structure
+
+```text
+Magento_Catalog/layout/catalog_product_view.xml
+```
+
+Purpose:
+
+```text
+move blocks
+remove blocks
+create custom PDP sections
+add detailed-info tabs
+```
+
+---
+
+#### Product gallery/image configuration
+
+```text
+etc/view.xml
+```
+
+Purpose:
+
+```text
+PDP image size
+related-product image size
+frame handling
+gallery navigation
+vertical thumbnails
+```
+
+---
+
+#### Product tabs templates
+
+```text
+Magento_Catalog/templates/product/view/
+specifications.phtml
+
+Magento_Catalog/templates/product/view/
+included.phtml
+
+Magento_Catalog/templates/product/view/
+shipping-returns.phtml
+
+Magento_Catalog/templates/product/view/
+benefits.phtml
+```
+
+---
+
+#### Quantity / cart template
+
+```text
+Magento_Catalog/templates/product/view/addtocart.phtml
+```
+
+Purpose:
+
+```text
+custom +/- quantity UI
+native Magento Add to Cart
+```
+
+---
+
+#### Review-list override
+
+```text
+Magento_Review/templates/product/view/list.phtml
+```
+
+Purpose:
+
+```text
+customize existing review list markup
+```
+
+Though the final deeper review redesign was abandoned.
+
+---
+
+#### Theme translations
+
+```text
+i18n/en_US.csv
+```
+
+Purpose:
+
+```text
+change frontend translatable labels without copying templates
+```
+
+Example:
+
+```text
+Related Products
+→ You May Also Like
+```
+
+---
+
+#### PDP LESS
+
+```text
+web/css/source/_pdp.less
+```
+
+Purpose:
+
+```text
+gallery
+product details
+prices
+quantity
+buttons
+benefits
+tabs
+specifications
+reviews
+related products
+```
+
+---
+
+## 42. Major debugging lessons from this PDP
+
+This phase gave us several very useful Magento lessons:
+
+#### 1. Structure problem ≠ CSS problem
+
+If a block appears in the wrong place:
+
+```text
+check layout XML first
+```
+
+not CSS.
+
+---
+
+#### 2. Image white border ≠ CSS padding
+
+If the actual cached JPG contains white pixels:
+
+```text
+check view.xml
+```
+
+not only `.product-image-photo`.
+
+---
+
+#### 3. Text-only change ≠ template override
+
+If all you need is:
+
+```text
+Related Products → You May Also Like
+```
+
+use:
+
+```text
+i18n CSV
+```
+
+instead of copying a large template.
+
+---
+
+#### 4. Native Magento JS should be reused
+
+Avoid initializing the same native widget twice.
+
+We learned this during tab customization.
+
+---
+
+#### 5. Optional product content should disappear
+
+For fields like:
+
+```text
+included_items
+```
+
+empty value should mean:
+
+```text
+no tab
+```
+
+not:
+
+```text
+empty tab with placeholder message
+```
+
+---
+
+#### 6. Always locate the real vendor template
+
+Before overriding:
+
+```bash
+find vendor/magento -path '*review*list.phtml'
+```
+
+or inspect the actual module path.
+
+Then mirror that path under the Magento module namespace in the theme.
+
+---
+
+## 43. PDP Completion Status
+
+### Complete
+
+```text
+PDP page container/alignment          ✅
+Two-column product layout             ✅
+Vertical gallery                      ✅
+Multiple ERP images                   ✅
+Main PDP image framing                ✅
+Product title                         ✅
+Review + stock placement              ✅
+SKU removed                           ✅
+Price design                          ✅
+Short description                     ✅
+Quantity - / +                        ✅
+Add to Cart                           ✅
+Wishlist                              ✅
+Compare removed                       ✅
+
+Benefits strip                        ✅
+
+Overview data                         ✅
+Specifications                        ✅
+ERP specification rendering           ✅
+Optional What's Included              ✅
+Shipping & Returns                    ✅
+Reviews functionality                 ✅
+
+Related Products                      ✅
+5 products single row                 ✅
+Related image sizing/frame            ✅
+You May Also Like translation         ✅
+```
+
+### Intentionally not pursued further
+
+```text
+Major review-form redesign
+Reviews-left / form-right layout
+Heavy custom tab redesign
+Hover Add to Cart on related cards
+```
+
+These were stopped because native functionality was working and the additional overrides were adding complexity without enough benefit.
+
+## Final Status
+
+### ✅ BREWCRAFT PDP DESIGN — CLOSED FOR THIS PHASE
+
+The page is now functionally complete and substantially customized from Luma, while still retaining Magento's native product, gallery, cart, review, relationship and EAV behavior.
+
+Any remaining differences from the Figma should be treated as part of a later **final storefront visual-polish pass**, not as unfinished PDP functionality.

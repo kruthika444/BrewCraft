@@ -1,0 +1,162 @@
+<?php
+
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var \Magento\Catalog\Block\Product\View $block */
+
+declare(strict_types=1);
+
+$_product = $block->getProduct();
+$buttonTitle = __('Add to Cart');
+?>
+
+<?php if ($_product->isSaleable()): ?>
+
+    <div class="box-tocart">
+
+        <div class="fieldset">
+
+            <?php if ($block->shouldRenderQuantity()): ?>
+
+                <div class="field qty">
+
+                    <label
+                        class="label"
+                        for="qty"
+                    >
+                        <span>
+                            <?= $escaper->escapeHtml(__('Qty')) ?>
+                        </span>
+                    </label>
+
+                    <div class="control">
+
+                        <div class="brewcraft-qty">
+
+                            <button
+                                type="button"
+                                class="brewcraft-qty__button"
+                                data-role="qty-minus"
+                                aria-label="<?= $escaper->escapeHtmlAttr(
+                                    __('Decrease quantity')
+                                ) ?>"
+                            >
+                                &minus;
+                            </button>
+
+                            <input
+                                type="number"
+                                name="qty"
+                                id="qty"
+                                min="1"
+                                step="1"
+                                value="<?= $escaper->escapeHtmlAttr(
+                                    $block->getProductDefaultQty() * 1
+                                ) ?>"
+                                title="<?= $escaper->escapeHtmlAttr(__('Qty')) ?>"
+                                class="input-text qty"
+                                data-validate="<?= $escaper->escapeHtmlAttr(
+                                    json_encode(
+                                        $block->getQuantityValidators()
+                                    )
+                                ) ?>"
+                            />
+
+                            <button
+                                type="button"
+                                class="brewcraft-qty__button"
+                                data-role="qty-plus"
+                                aria-label="<?= $escaper->escapeHtmlAttr(
+                                    __('Increase quantity')
+                                ) ?>"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <?php endif; ?>
+
+
+            <div class="actions">
+
+                <button
+                    type="submit"
+                    title="<?= $escaper->escapeHtmlAttr($buttonTitle) ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button"
+                    disabled
+                >
+                    <span>
+                        <?= $escaper->escapeHtml($buttonTitle) ?>
+                    </span>
+                </button>
+
+                <?= $block->getChildHtml('', true) ?>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<?php endif; ?>
+
+
+<script type="text/x-magento-init">
+{
+    "#product_addtocart_form": {
+        "Magento_Catalog/js/validate-product": {}
+    }
+}
+</script>
+
+
+<script>
+require([
+    'jquery'
+], function ($) {
+    'use strict';
+
+    $(document)
+        .off('click.brewcraftQty')
+        .on(
+            'click.brewcraftQty',
+            '.brewcraft-qty__button',
+            function (event) {
+
+                event.preventDefault();
+
+                var $button = $(this);
+                var $wrapper = $button.closest('.brewcraft-qty');
+                var $input = $wrapper.find('input.qty');
+
+                var currentValue = parseInt($input.val(), 10) || 1;
+                var min = parseInt($input.attr('min'), 10) || 1;
+                var step = parseInt($input.attr('step'), 10) || 1;
+
+                if ($button.attr('data-role') === 'qty-plus') {
+                    currentValue += step;
+                } else {
+                    currentValue -= step;
+
+                    if (currentValue < min) {
+                        currentValue = min;
+                    }
+                }
+
+                $input
+                    .val(currentValue)
+                    .trigger('input')
+                    .trigger('change');
+            }
+        );
+});
+</script>

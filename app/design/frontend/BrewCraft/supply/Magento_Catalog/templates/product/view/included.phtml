@@ -1,0 +1,77 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \Magento\Catalog\Block\Product\View $block */
+
+$product = $block->getProduct();
+
+$value = $product->getData('included_items');
+
+$items = [];
+
+if (is_array($value)) {
+    $items = $value;
+} elseif (
+    is_string($value)
+    && trim($value) !== ''
+) {
+    $items = explode(',', $value);
+}
+
+$items = array_values(
+    array_filter(
+        array_map(
+            static fn ($item): string =>
+                trim((string)$item),
+            $items
+        ),
+        static fn (string $item): bool =>
+            $item !== ''
+    )
+);
+
+/*
+ * IMPORTANT:
+ *
+ * Render absolutely nothing when no items exist.
+ *
+ * Magento's detailed-info template ignores children
+ * whose HTML output is empty.
+ *
+ * Therefore:
+ *
+ * no included_items
+ *      ↓
+ * no HTML
+ *      ↓
+ * no "What's Included" tab
+ */
+if (empty($items)) {
+    return;
+}
+?>
+
+<div class="brewcraft-included">
+
+    <ul class="brewcraft-included__list">
+
+        <?php foreach ($items as $item): ?>
+
+            <li class="brewcraft-included__item">
+
+                <span class="brewcraft-included__check">
+                    ✓
+                </span>
+
+                <span>
+                    <?= $escaper->escapeHtml($item) ?>
+                </span>
+
+            </li>
+
+        <?php endforeach; ?>
+
+    </ul>
+
+</div>

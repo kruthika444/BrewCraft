@@ -1,0 +1,113 @@
+<?php
+
+/**
+ * BrewCraft PDP Specifications
+ *
+ * Shows only attributes that actually have values.
+ *
+ * @var \Magento\Catalog\Block\Product\View $block
+ */
+
+declare(strict_types=1);
+
+$product = $block->getProduct();
+
+$specifications = [
+    'bean_type' => __('Bean Type'),
+    'roast_level' => __('Roast Level'),
+    'flavor_profile' => __('Flavor Profile'),
+    'brew_methods' => __('Brew Methods'),
+
+    'capacity' => __('Capacity'),
+    'material' => __('Material'),
+    'power' => __('Power'),
+    'voltage' => __('Voltage'),
+    'warranty' => __('Warranty'),
+
+    'grinder_type' => __('Grinder Type'),
+    'burr_type' => __('Burr Type'),
+
+    'water_tank_capacity' => __('Water Tank Capacity'),
+    'bean_hopper_capacity' => __('Bean Hopper Capacity'),
+    'pump_pressure' => __('Pump Pressure'),
+
+    'dimensions' => __('Dimensions'),
+
+    'manufacturer' => __('Manufacturer'),
+    'country_of_origin' => __('Country of Origin'),
+];
+
+$rows = [];
+
+foreach ($specifications as $attributeCode => $label) {
+
+    $value = $product->getData($attributeCode);
+
+    /*
+     * Attribute not relevant to this product.
+     */
+    if (
+        $value === null
+        || $value === ''
+        || $value === false
+    ) {
+        continue;
+    }
+
+    /*
+     * Defensive handling in case a future integration
+     * supplies an array.
+     */
+    if (is_array($value)) {
+        $value = implode(', ', $value);
+    }
+
+    $value = trim((string)$value);
+
+    if ($value === '') {
+        continue;
+    }
+
+    $rows[] = [
+        'label' => $label,
+        'value' => $value
+    ];
+}
+
+?>
+
+<?php if (!empty($rows)): ?>
+
+    <div class="brewcraft-specifications">
+
+        <div class="brewcraft-specifications__grid">
+
+            <?php foreach ($rows as $row): ?>
+
+                <div class="brewcraft-specifications__row">
+
+                    <div class="brewcraft-specifications__label">
+                        <?= $escaper->escapeHtml($row['label']) ?>
+                    </div>
+
+                    <div class="brewcraft-specifications__value">
+                        <?= $escaper->escapeHtml($row['value']) ?>
+                    </div>
+
+                </div>
+
+            <?php endforeach; ?>
+
+        </div>
+
+    </div>
+
+<?php else: ?>
+
+    <div class="brewcraft-empty-detail">
+        <?= $escaper->escapeHtml(
+            __('No additional specifications are available for this product.')
+        ) ?>
+    </div>
+
+<?php endif; ?>

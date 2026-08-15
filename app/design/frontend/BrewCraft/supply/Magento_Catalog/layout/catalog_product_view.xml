@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+
+        <!-- ===================================================
+             TOP PDP
+             =================================================== -->
+
+        <referenceContainer name="product.info.main">
+
+            <container name="brewcraft.product.meta" htmlTag="div" htmlClass="brewcraft-product-meta" before="product.info.price" />
+
+        </referenceContainer>
+
+        <move element="product.info.review" destination="brewcraft.product.meta" before="-" />
+
+        <move element="product.info.stock.sku" destination="brewcraft.product.meta" after="product.info.review" />
+
+        <referenceBlock name="product.info.sku" remove="true" />
+
+        <move element="product.info.overview" destination="product.info.main" before="product.info" />
+
+        <referenceBlock name="view.addto.compare" remove="true" />
+
+
+        <!-- ===================================================
+             LOWER PDP TABS
+             =================================================== -->
+
+        <!-- Rename native Description tab -->
+        <referenceBlock name="product.info.description">
+
+            <arguments>
+
+                <argument name="title" xsi:type="string" translate="true">
+                    Overview
+                </argument>
+
+            </arguments>
+
+        </referenceBlock>
+
+
+        <!-- Remove Magento default More Information -->
+        <referenceBlock name="product.attributes" remove="true" />
+
+
+        <!-- Add BrewCraft custom tabs -->
+        <referenceBlock name="product.info.details">
+
+            <!-- Specifications -->
+            <block class="Magento\Catalog\Block\Product\View" name="brewcraft.product.specifications" as="brewcraft_specifications" template="Magento_Catalog::product/view/specifications.phtml" group="detailed_info">
+
+                <arguments>
+
+                    <argument name="title" xsi:type="string" translate="true">
+                        Specifications
+                    </argument>
+
+                </arguments>
+
+            </block>
+
+
+            <!-- What's Included -->
+            <block class="Magento\Catalog\Block\Product\View" name="brewcraft.product.included" as="brewcraft_included" template="Magento_Catalog::product/view/included.phtml" group="detailed_info">
+
+                <arguments>
+
+                    <argument name="title" xsi:type="string" translate="true">
+                        What's Included
+                    </argument>
+
+                </arguments>
+
+            </block>
+
+
+            <!-- Shipping & Returns -->
+            <block class="Magento\Catalog\Block\Product\View" name="brewcraft.product.shipping.returns" as="brewcraft_shipping_returns" template="Magento_Catalog::product/view/shipping-returns.phtml" group="detailed_info">
+
+                <arguments>
+
+                    <argument name="title" xsi:type="string" translate="true">
+                        Shipping &amp; Returns
+                    </argument>
+
+                </arguments>
+
+            </block>
+
+        </referenceBlock>
+
+
+        <!-- ===================================================
+             TAB ORDER
+             =================================================== -->
+
+        <!-- Overview first -->
+        <move element="product.info.description" destination="product.info.details" before="brewcraft.product.specifications" />
+
+        <!-- Specifications second -->
+        <move element="brewcraft.product.specifications" destination="product.info.details" after="product.info.description" />
+
+        <!-- What's Included third -->
+        <move element="brewcraft.product.included" destination="product.info.details" after="brewcraft.product.specifications" />
+
+        <!-- Shipping fourth -->
+        <move element="brewcraft.product.shipping.returns" destination="product.info.details" after="brewcraft.product.included" />
+
+        <!-- Native Reviews will remain last -->
+
+        <referenceContainer name="product.info.main">
+        </referenceContainer>
+
+        <referenceContainer name="content">
+
+            <block class="Magento\Framework\View\Element\Template" name="brewcraft.product.benefits" template="Magento_Catalog::product/view/benefits.phtml" before="product.info.details" />
+
+        </referenceContainer>
+
+        <!-- ===================================================
+     RELATED PRODUCTS
+     =================================================== -->
+
+        <referenceBlock name="catalog.product.related">
+
+            <arguments>
+
+                <argument name="title" xsi:type="string" translate="true">
+            You May Also Like
+                </argument>
+
+            </arguments>
+
+        </referenceBlock>
+    </body>
+
+</page>

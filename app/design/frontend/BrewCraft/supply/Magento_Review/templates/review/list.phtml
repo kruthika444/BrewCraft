@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * Custom Product Review List
+ *
+ * @var \Magento\Review\Block\Product\View\ListView $block
+ */
+?>
+<?php $reviews = $block->getReviewsCollection()->getItems(); ?>
+
+<div class="brewcraft-reviews-list">
+
+    <h3 class="brewcraft-reviews-list__title">
+        <?= $escaper->escapeHtml(__('Customer Reviews')) ?>
+    </h3>
+
+    <?php if (count($reviews)) : ?>
+        <div class="brewcraft-review-items">
+
+            <?php foreach ($reviews as $_review) : ?>
+                <?php
+                $ratingPercent = 0;
+                $ratingVotes = $_review->getRatingVotes();
+
+                if ($ratingVotes && count($ratingVotes)) {
+                    $totalPercent = 0;
+                    $voteCount = 0;
+
+                    foreach ($ratingVotes as $vote) {
+                        $totalPercent += (int)$vote->getPercent();
+                        $voteCount++;
+                    }
+
+                    $ratingPercent = $voteCount ? (int)round($totalPercent / $voteCount) : 0;
+                }
+
+                $formattedDate = date('F j, Y', strtotime((string)$_review->getCreatedAt()));
+                ?>
+
+                <div class="brewcraft-review-card">
+
+                    <div class="brewcraft-review-card__top">
+                        <div class="brewcraft-review-stars"
+                            aria-label="<?= $escaper->escapeHtmlAttr(__('Rating: %1 out of 5', round($ratingPercent / 20))) ?>">
+                            <span class="brewcraft-review-stars__base">★★★★★</span>
+                            <span class="brewcraft-review-stars__fill" style="width: <?= (int)$ratingPercent ?>%;">★★★★★</span>
+                        </div>
+
+                        <h4 class="brewcraft-review-card__summary">
+                            <?= $escaper->escapeHtml($_review->getTitle()) ?>
+                        </h4>
+                    </div>
+
+                    <div class="brewcraft-review-card__detail">
+                        <?= nl2br($escaper->escapeHtml($_review->getDetail())) ?>
+                    </div>
+
+                    <div class="brewcraft-review-card__meta">
+                        <span class="brewcraft-review-card__author">
+                            <?= $escaper->escapeHtml($_review->getNickname()) ?>
+                        </span>
+                        <span class="brewcraft-review-card__dot">•</span>
+                        <span class="brewcraft-review-card__date">
+                            <?= $escaper->escapeHtml($formattedDate) ?>
+                        </span>
+                    </div>
+
+                </div>
+            <?php endforeach; ?>
+
+        </div>
+    <?php else : ?>
+        <div class="message info empty">
+            <span><?= $escaper->escapeHtml(__('No reviews yet. Be the first to review this product.')) ?></span>
+        </div>
+    <?php endif; ?>
+
+</div>

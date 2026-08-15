@@ -30,8 +30,7 @@ class ProductImportService
         private readonly CategoryResolver $categoryResolver,
         private readonly ProductImageImporter $productImageImporter,
         private readonly Logger $logger
-    ) {
-    }
+    ) {}
 
     public function import(array $products): array
     {
@@ -149,6 +148,13 @@ class ProductImportService
         Product $product,
         array $erpProduct
     ): void {
+
+        /*
+     * ========================================================
+     * REQUIRED ERP DATA
+     * ========================================================
+     */
+
         $product->setName(
             (string)$erpProduct['name']
         );
@@ -171,6 +177,13 @@ class ProductImportService
                 : self::STATUS_DISABLED
         );
 
+
+        /*
+     * ========================================================
+     * CATEGORY
+     * ========================================================
+     */
+
         $category = $this->categoryResolver
             ->getByErpCode(
                 (string)$erpProduct['category_code']
@@ -185,34 +198,293 @@ class ProductImportService
             );
         }
 
-        $product->setCategoryIds(
-            [
-                (int)$category->getId()
-            ]
-        );
+        $product->setCategoryIds([
+            (int)$category->getId()
+        ]);
+
 
         /*
-         * Optional ERP Attributes
+     * ========================================================
+     * ERP PRODUCT CONTENT
+     *
+     * These attributes already exist natively in Magento.
+     *
+     * IMPORTANT:
+     *
+     * Only update when ERP actually sends the field.
+     *
+     * Missing ERP field:
+     * → Magento value remains untouched.
+     * ========================================================
+     */
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'short_description'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'description'
+        );
+
+
+        /*
+     * ========================================================
+     * EXISTING ERP ATTRIBUTES
+     * ========================================================
+     */
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'manufacturer'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'barcode'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'country_of_origin'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'cost_price'
+        );
+
+
+        /*
+     * ========================================================
+     * COFFEE SPECIFICATIONS
+     * ========================================================
+     */
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'bean_type'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'roast_level'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'flavor_profile'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'brew_methods'
+        );
+
+
+        /*
+     * ========================================================
+     * EQUIPMENT SPECIFICATIONS
+     * ========================================================
+     */
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'capacity'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'material'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'power'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'voltage'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'warranty'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'grinder_type'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'burr_type'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'water_tank_capacity'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'bean_hopper_capacity'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'pump_pressure'
+        );
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'dimensions'
+        );
+
+
+        /*
+     * ========================================================
+     * WHAT'S INCLUDED
+     * ========================================================
+     */
+
+        $this->mapOptionalAttribute(
+            $product,
+            $erpProduct,
+            'included_items'
+        );
+    }
+
+    /**
+     * Safely map an optional ERP field.
+     *
+     * Rules:
+     *
+     * 1. Field missing completely
+     *    → do nothing
+     *
+     * 2. Field exists but value is null
+     *    → do nothing
+     *
+     * 3. ERP sends a scalar value
+     *    → save it
+     *
+     * 4. ERP sends an array
+     *    → convert it into a readable comma-separated value
+     *
+     * This prevents optional ERP data from breaking
+     * product synchronization.
+     */
+    private function mapOptionalAttribute(
+        Product $product,
+        array $erpProduct,
+        string $attributeCode
+    ): void {
+
+        /*
+     * ERP did not send this attribute.
+     *
+     * Preserve whatever Magento currently has.
+     */
+        if (!array_key_exists(
+            $attributeCode,
+            $erpProduct
+        )) {
+            return;
+        }
+
+        $value = $erpProduct[$attributeCode];
+
+        /*
+     * Null means ERP did not provide a usable value.
+     */
+        if ($value === null) {
+            return;
+        }
+
+
+        /*
+     * Arrays are useful in ERP JSON for fields such as:
+     *
+     * brew_methods
+     * included_items
+     *
+     * Convert them into a Magento-friendly string.
+     */
+        if (is_array($value)) {
+
+            $value = array_filter(
+                array_map(
+                    static fn($item): string =>
+                    trim((string)$item),
+                    $value
+                ),
+                static fn(string $item): bool =>
+                $item !== ''
+            );
+
+            /*
+         * ERP array was empty.
          */
+            if (empty($value)) {
+                return;
+            }
+
+            $value = implode(
+                ', ',
+                $value
+            );
+        }
+
+
+        /*
+     * Protect against unsupported complex values.
+     */
+        if (
+            !is_string($value)
+            && !is_int($value)
+            && !is_float($value)
+            && !is_bool($value)
+        ) {
+            $this->logger->warning(
+                sprintf(
+                    'ERP attribute "%s" for product "%s" contains an unsupported value and was skipped.',
+                    $attributeCode,
+                    $product->getSku()
+                )
+            );
+
+            return;
+        }
+
 
         $product->setData(
-            'manufacturer',
-            $erpProduct['manufacturer'] ?? null
-        );
-
-        $product->setData(
-            'barcode',
-            $erpProduct['barcode'] ?? null
-        );
-
-        $product->setData(
-            'country_of_origin',
-            $erpProduct['country_of_origin'] ?? null
-        );
-
-        $product->setData(
-            'cost_price',
-            $erpProduct['cost_price'] ?? null
+            $attributeCode,
+            $value
         );
     }
 }

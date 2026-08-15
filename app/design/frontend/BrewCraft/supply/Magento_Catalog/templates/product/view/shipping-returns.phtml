@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * BrewCraft PDP Shipping & Returns
+ *
+ * Store-level policy content.
+ *
+ * This is intentionally NOT ERP product data.
+ */
+
+declare(strict_types=1);
+
+?>
+
+<div class="brewcraft-shipping-returns">
+
+    <div class="brewcraft-shipping-returns__column">
+
+        <h3>
+            <?= $escaper->escapeHtml(__('Shipping')) ?>
+        </h3>
+
+        <ul>
+
+            <li>
+                <?= $escaper->escapeHtml(
+                    __('Free shipping on qualifying orders.')
+                ) ?>
+            </li>
+
+            <li>
+                <?= $escaper->escapeHtml(
+                    __('Standard delivery typically takes 3–5 business days.')
+                ) ?>
+            </li>
+
+            <li>
+                <?= $escaper->escapeHtml(
+                    __('Expedited delivery options may be available at checkout.')
+                ) ?>
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="brewcraft-shipping-returns__column">
+
+        <h3>
+            <?= $escaper->escapeHtml(__('Returns')) ?>
+        </h3>
+
+        <ul>
+
+            <li>
+                <?= $escaper->escapeHtml(
+                    __('Returns are accepted within 30 days, subject to the return policy.')
+                ) ?>
+            </li>
+
+            <li>
+                <?= $escaper->escapeHtml(
+                    __('Items must be unused and returned in their original packaging.')
+                ) ?>
+            </li>
+
+            <li>
+                <?= $escaper->escapeHtml(
+                    __('Contact BrewCraft support before returning damaged or incorrect items.')
+                ) ?>
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>

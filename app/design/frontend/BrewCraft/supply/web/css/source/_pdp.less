@@ -1,0 +1,2273 @@
+//
+// ============================================================
+// BREWCRAFT PDP - DESKTOP
+// ============================================================
+//
+
+.catalog-product-view {
+
+    //
+    // ========================================================
+    // GLOBAL PDP CONTAINER
+    // ========================================================
+    //
+
+    .page-main {
+        width: 100%;
+        max-width: @bc-container-width !important;
+
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // MAIN PRODUCT COLUMNS
+    // ========================================================
+    //
+
+    .product.media {
+        width: 52% !important;
+
+        margin: 36px 0 !important;
+
+        box-sizing: border-box;
+    }
+
+    .product-info-main {
+        width: 48% !important;
+
+        padding-left: 52px;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // PRODUCT GALLERY
+    // ========================================================
+    //
+
+    .product.media .gallery-placeholder {
+        width: 100%;
+    }
+
+    .fotorama__wrap {
+        width: 100% !important;
+    }
+
+
+    //
+    // Vertical thumbnail rail
+    //
+
+    .fotorama__nav-wrap--vertical {
+        width: 84px !important;
+
+        padding-right: 12px;
+
+        box-sizing: border-box;
+    }
+
+    .fotorama__nav--thumbs {
+        width: 72px !important;
+    }
+
+    .fotorama__nav__shaft {
+        width: 72px !important;
+    }
+
+    .fotorama__nav__frame--thumb {
+        width: 68px !important;
+        height: 78px !important;
+
+        margin: 0 0 10px !important;
+        padding: 0 !important;
+    }
+
+    .fotorama__thumb {
+        width: 100%;
+        height: 100%;
+
+        overflow: hidden;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 4px;
+
+        background: @brewcraft-cream;
+    }
+
+    .fotorama__thumb img {
+        width: 100% !important;
+        height: 100% !important;
+
+        object-fit: cover;
+    }
+
+
+    //
+    // Disable Fotorama floating active rectangle.
+    //
+
+    .fotorama__thumb-border {
+        display: none !important;
+    }
+
+
+    //
+    // Our own active thumbnail indicator.
+    //
+
+    .fotorama__nav__frame--thumb.fotorama__active .fotorama__thumb {
+        border: 2px solid @brewcraft-coffee !important;
+
+        box-shadow:
+            0 0 0 1px rgba(92, 58, 33, .08);
+    }
+
+
+    //
+    // Main image
+    //
+
+    .fotorama__stage {
+        height: 520px !important;
+
+        overflow: hidden;
+
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-cream;
+    }
+
+    .fotorama__stage__shaft,
+    .fotorama__stage__frame {
+        height: 520px !important;
+    }
+
+    .fotorama__stage__frame .fotorama__img {
+        width: 100% !important;
+        height: 100% !important;
+
+        max-width: 100% !important;
+        max-height: 100% !important;
+
+        margin: 0 !important;
+
+        object-fit: cover;
+    }
+
+
+    //
+    // ========================================================
+    // PRODUCT TITLE
+    // ========================================================
+    //
+
+    .product-info-main .page-title-wrapper {
+        margin: 0 0 12px;
+    }
+
+    .product-info-main .page-title {
+        margin: 0;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 34px;
+        font-weight: 600;
+
+        line-height: 1.18;
+
+        letter-spacing: -.3px;
+    }
+
+
+    //
+    // ========================================================
+    // REVIEWS + STOCK
+    // ========================================================
+    //
+
+    .brewcraft-product-meta {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+
+        gap: 18px;
+
+        width: 100%;
+
+        margin: 10px 0 16px !important;
+        padding: 0 !important;
+    }
+
+    .brewcraft-product-meta .product-reviews-summary {
+        display: flex !important;
+        align-items: center;
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .brewcraft-product-meta .product-info-stock-sku {
+        position: static !important;
+
+        display: flex !important;
+        align-items: center;
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        text-align: left !important;
+    }
+
+    .brewcraft-product-meta .stock {
+        position: static !important;
+
+        display: inline-flex;
+        align-items: center;
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: @brewcraft-green;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+
+        line-height: 20px;
+
+        text-transform: uppercase;
+    }
+
+
+    //
+    // SKU completely hidden.
+    //
+
+    .product-info-main .product.attribute.sku {
+        display: none !important;
+    }
+
+
+    //
+    // ========================================================
+    // PRICE
+    // ========================================================
+    //
+
+    .product-info-main .product-info-price {
+        margin: 0 !important;
+
+        border: 0 !important;
+    }
+
+    .product-info-main .price-box {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+
+        gap: 12px;
+
+        margin: 10px 0 20px !important;
+        padding-bottom: 18px;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+
+    //
+    // Hide Magento price labels.
+    //
+
+    .product-info-main .price-label,
+    .product-info-main .old-price .price-label,
+    .product-info-main .special-price .price-label {
+        display: none !important;
+    }
+
+    .product-info-main .special-price,
+    .product-info-main .old-price {
+        display: inline-flex;
+
+        margin: 0 !important;
+    }
+
+
+    //
+    // Current price.
+    //
+
+    .product-info-main .special-price .price,
+    .product-info-main .price-final_price>.price-container .price {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 32px;
+        font-weight: 700;
+
+        line-height: 1;
+    }
+
+
+    //
+    // Original price.
+    //
+
+    .product-info-main .old-price .price {
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 16px !important;
+        font-weight: 400 !important;
+
+        text-decoration: line-through;
+    }
+
+
+    //
+    // ========================================================
+    // SHORT DESCRIPTION
+    // ========================================================
+    //
+
+    .product-info-main .product.attribute.overview {
+        width: 100%;
+
+        margin: 0 0 22px !important;
+        padding: 0 !important;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        line-height: 22px;
+    }
+
+    .product-info-main .product.attribute.overview .type {
+        display: none !important;
+    }
+
+    .product-info-main .product.attribute.overview .value {
+        margin: 0;
+        padding: 0;
+    }
+
+    .product-info-main .product.attribute.overview p {
+        margin: 0;
+    }
+
+
+    //
+    // ========================================================
+    // PRODUCT FORM
+    // ========================================================
+    //
+
+    .product-info-main .product-add-form {
+        margin-top: 0 !important;
+    }
+
+    .product-info-main .product-options-bottom {
+        margin-top: 0 !important;
+    }
+
+
+    //
+    // ========================================================
+    // QUANTITY
+    // ========================================================
+    //
+
+    .box-tocart {
+        margin: 0 !important;
+    }
+
+    .box-tocart .fieldset {
+        margin: 0 !important;
+    }
+
+    .box-tocart .field.qty {
+        margin: 0 0 18px !important;
+    }
+
+    .box-tocart .field.qty>.label {
+        display: block;
+
+        margin: 0 0 8px !important;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .brewcraft-qty {
+        display: inline-flex;
+        align-items: center;
+
+        height: 44px;
+
+        overflow: hidden;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+    }
+
+    .brewcraft-qty__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-size: 19px;
+        font-weight: 400;
+
+        line-height: 1;
+
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            background: @brewcraft-cream;
+
+            color: @brewcraft-coffee;
+        }
+    }
+
+    .brewcraft-qty .input-text.qty {
+        width: 48px;
+        height: 42px;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        border-left: 1px solid @brewcraft-border;
+        border-right: 1px solid @brewcraft-border;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        text-align: center;
+
+        box-shadow: none;
+
+        -moz-appearance: textfield;
+    }
+
+    .brewcraft-qty .input-text.qty::-webkit-inner-spin-button,
+    .brewcraft-qty .input-text.qty::-webkit-outer-spin-button {
+        margin: 0;
+
+        -webkit-appearance: none;
+    }
+
+
+    //
+    // ========================================================
+    // ADD TO CART
+    // ========================================================
+    //
+
+    .box-tocart .actions {
+        width: 100%;
+    }
+
+    .box-tocart .action.tocart {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        max-width: none;
+
+        height: 50px;
+
+        margin: 0 !important;
+        padding: 0 24px;
+
+        border: 1px solid @brewcraft-espresso;
+        border-radius: 3px;
+
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        line-height: 1;
+
+        box-shadow: none;
+
+        &:hover,
+        &:focus {
+            border-color: @brewcraft-coffee;
+
+            background: @brewcraft-coffee;
+
+            color: @brewcraft-white;
+        }
+    }
+
+
+    //
+    // ========================================================
+    // WISHLIST
+    // ========================================================
+    //
+
+    .product-social-links {
+        width: 100%;
+
+        margin: 12px 0 0 !important;
+
+        text-align: left;
+    }
+
+    .product-addto-links {
+        display: block;
+
+        width: 100%;
+    }
+
+    .product-addto-links .action.tocompare {
+        display: none !important;
+    }
+
+    .product-addto-links .action.towishlist {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        height: 48px;
+
+        margin: 0 !important;
+        padding: 0 24px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-espresso;
+        border-radius: 3px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        line-height: 1;
+
+        text-transform: none;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            background: @brewcraft-cream;
+
+            color: @brewcraft-coffee;
+
+            text-decoration: none;
+        }
+    }
+}
+
+//
+// ============================================================
+// PDP DETAIL TABS - FINAL
+// ============================================================
+//
+
+.catalog-product-view {
+
+    //
+    // Main detailed section
+    //
+    .product.info.detailed {
+        clear: both;
+
+        width: 100%;
+
+        margin: 0 0 64px !important;
+
+        padding-top: 52px !important;
+
+        box-sizing: border-box;
+    }
+
+    //
+    // Whole tab component
+    //
+    .product.data.items {
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+
+        overflow: hidden;
+    }
+
+
+    //
+    // ========================================================
+    // TAB HEADER ROW
+    // ========================================================
+    //
+
+    .product.data.items {
+        display: flex !important;
+        flex-wrap: wrap;
+    }
+
+
+    .product.data.items>.item.title {
+        position: static !important;
+
+        display: block !important;
+
+        flex: 1 1 20%;
+
+        float: none !important;
+
+        width: 20% !important;
+        min-width: 0 !important;
+
+        margin: 0 !important;
+        margin-left: 0 !important;
+
+        padding: 0 !important;
+
+        box-sizing: border-box;
+    }
+
+
+    .product.data.items>.item.title>.switch {
+        position: relative;
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 58px;
+
+        margin: 0 !important;
+        padding: 0 14px !important;
+
+        box-sizing: border-box;
+
+        border: 0 !important;
+        border-right: 1px solid @brewcraft-border !important;
+        border-bottom: 1px solid @brewcraft-border !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+
+        line-height: 1.3;
+
+        text-align: center;
+        text-decoration: none !important;
+    }
+
+
+    .product.data.items>.item.title:last-of-type>.switch {
+        border-right: 0 !important;
+    }
+
+
+    .product.data.items>.item.title>.switch:hover {
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // Active tab
+    //
+    .product.data.items>.item.title.active>.switch {
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-weight: 600;
+    }
+
+
+    .product.data.items>.item.title.active>.switch:after {
+        content: '';
+
+        position: absolute;
+
+        right: 24px;
+        bottom: 0;
+        left: 24px;
+
+        height: 3px;
+
+        background: @brewcraft-coffee;
+    }
+
+
+    //
+    // ========================================================
+    // CONTENT AREA
+    // ========================================================
+    //
+
+    .product.data.items>.item.content {
+        position: static !important;
+
+        order: 10;
+
+        flex: 0 0 100%;
+
+        float: none !important;
+
+        width: 100% !important;
+
+        height: 390px !important;
+        min-height: 390px !important;
+        max-height: 390px !important;
+
+        margin: 0 !important;
+        margin-left: 0 !important;
+
+        padding: 34px 38px 40px !important;
+
+        box-sizing: border-box;
+
+        border: 0 !important;
+
+        background: @brewcraft-white;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    //
+    // Every direct child inside every tab
+    // gets the same available width.
+    //
+    .product.data.items>.item.content>* {
+        float: none !important;
+
+        width: 100% !important;
+        max-width: none !important;
+
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // OVERVIEW
+    // ========================================================
+    //
+
+    .product.attribute.description {
+        max-width: 1150px !important;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        line-height: 24px;
+    }
+
+
+    .product.attribute.description p {
+        margin: 0 0 16px;
+    }
+
+
+    .product.attribute.description h3 {
+        margin: 24px 0 12px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+
+    .product.attribute.description ul {
+        margin: 10px 0 0 20px;
+        padding: 0;
+    }
+
+
+    .product.attribute.description li {
+        margin: 0 0 8px;
+    }
+
+
+    //
+    // ========================================================
+    // SPECIFICATIONS
+    // ========================================================
+    //
+
+    .brewcraft-specifications {
+        width: 100%;
+    }
+
+
+    .brewcraft-specifications__grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        width: 100%;
+
+        border-top: 1px solid @brewcraft-border;
+        border-left: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+    }
+
+
+    .brewcraft-specifications__row {
+        display: grid;
+
+        grid-template-columns:
+            minmax(150px, .8fr) minmax(0, 1.2fr);
+
+        min-height: 54px;
+
+        border-right: 1px solid @brewcraft-border;
+        border-bottom: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+    }
+
+
+    .brewcraft-specifications__label,
+    .brewcraft-specifications__value {
+        display: flex;
+        align-items: center;
+
+        padding: 13px 16px;
+
+        box-sizing: border-box;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        line-height: 19px;
+    }
+
+
+    .brewcraft-specifications__label {
+        background: @brewcraft-cream;
+
+        color: @brewcraft-espresso;
+
+        font-weight: 600;
+    }
+
+
+    .brewcraft-specifications__value {
+        background: @brewcraft-white;
+
+        color: @brewcraft-muted;
+    }
+
+
+    //
+    // ========================================================
+    // WHAT'S INCLUDED
+    // ========================================================
+    //
+
+    .brewcraft-included {
+        width: 100%;
+    }
+
+
+    .brewcraft-included__list {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+
+        width: 100%;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+
+    .brewcraft-included__item {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        min-height: 48px;
+
+        padding: 11px 14px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 5px;
+
+        background: @brewcraft-cream;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+    }
+
+
+    .brewcraft-included__check {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 28px;
+
+        width: 28px;
+        height: 28px;
+
+        border: 1px solid @brewcraft-coffee;
+        border-radius: 50%;
+
+        color: @brewcraft-green;
+
+        font-weight: 700;
+    }
+
+
+    //
+    // ========================================================
+    // SHIPPING & RETURNS
+    // ========================================================
+    //
+
+    .brewcraft-shipping-returns {
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 36px;
+
+        width: 100% !important;
+
+        padding: 26px;
+
+        box-sizing: border-box;
+
+        border-radius: 6px;
+
+        background: @brewcraft-cream;
+    }
+
+
+    .brewcraft-shipping-returns__column h3 {
+        margin: 0 0 14px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+
+    .brewcraft-shipping-returns__column ul {
+        margin: 0;
+        padding-left: 18px;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        line-height: 21px;
+    }
+
+
+    .brewcraft-shipping-returns__column li {
+        margin-bottom: 7px;
+    }
+
+
+    //
+    // ========================================================
+    // REVIEWS
+    // ========================================================
+    //
+
+    .review-add {
+        float: none !important;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+    }
+
+
+    .review-form {
+        float: none !important;
+
+        width: 100% !important;
+        max-width: 720px !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    .review-form .fieldset {
+        width: 100%;
+
+        margin: 0 !important;
+    }
+
+
+    .review-form .field {
+        width: 100%;
+
+        margin-bottom: 18px;
+    }
+
+
+    .review-form input[type='text'],
+    .review-form textarea {
+        width: 100% !important;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+
+        box-shadow: none;
+    }
+
+
+    .review-form input[type='text'] {
+        height: 44px;
+    }
+
+
+    .review-form textarea {
+        min-height: 120px;
+    }
+
+
+    .review-form .action.submit.primary {
+        height: 44px;
+
+        padding: 0 24px;
+
+        border: 1px solid @brewcraft-espresso;
+
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        box-shadow: none;
+    }
+
+
+    //
+    // ========================================================
+    // EMPTY OPTIONAL SECTION
+    // ========================================================
+    //
+
+    .brewcraft-empty-detail {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 22px 24px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 5px;
+
+        background: @brewcraft-cream;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        line-height: 20px;
+
+        text-align: left;
+    }
+}
+
+.product.data.items>.item.title>.switch {
+    height: 58px !important;
+    min-height: 58px !important;
+    max-height: 58px !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 14px !important;
+
+    line-height: 1.3 !important;
+}
+
+.product.data.items>.item.title {
+    position: static !important;
+
+    display: block !important;
+
+    flex: 1 1 0;
+
+    float: none !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    margin-left: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box;
+}
+
+//
+// ============================================================
+// PDP BENEFITS STRIP
+// ============================================================
+//
+
+.catalog-product-view {
+
+    .brewcraft-pdp-benefits {
+        clear: both;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        width: 100%;
+
+        background: #ffffff;
+        border: 1px solid #ece7df;
+        border-radius: 10px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .brewcraft-pdp-benefits__item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        min-height: 96px;
+        padding: 22px 24px;
+
+        background: #ffffff;
+        border-right: 1px solid #f1ece5;
+        box-sizing: border-box;
+    }
+
+    .brewcraft-pdp-benefits__item:last-child {
+        border-right: 0;
+    }
+
+    .brewcraft-pdp-benefits__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 56px;
+        width: 56px;
+        height: 56px;
+
+        border: 1px solid #b79a7d;
+        border-radius: 50%;
+        background: #ffffff;
+        color: #5b371f;
+
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .brewcraft-pdp-benefits__icon--text {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .brewcraft-pdp-benefits__title {
+        margin: 0 0 4px;
+        color: #2f1d12;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .brewcraft-pdp-benefits__text {
+        margin: 0;
+        color: #7b746d;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+}
+
+//
+// ============================================================
+// PDP - RELATED PRODUCTS / YOU MAY ALSO LIKE
+// ============================================================
+//
+
+.catalog-product-view {
+
+    .block.related {
+        clear: both;
+
+        width: 100%;
+
+        margin: 48px 0 64px;
+
+        padding: 0;
+
+        box-sizing: border-box;
+    }
+
+    //
+    // Heading
+    //
+    .block.related > .block-title {
+        margin: 0 0 20px;
+
+        padding: 0;
+
+        border: 0;
+    }
+
+    .block.related > .block-title > strong {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+
+        line-height: 1.3;
+    }
+
+    //
+    // Remove Magento's related helper text
+    //
+    .block.related .block-actions {
+        display: none !important;
+    }
+
+    //
+    // ========================================================
+    // FIVE CARDS - ONE ROW
+    // ========================================================
+    //
+
+    .block.related .product-items {
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 16px;
+
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        list-style: none;
+    }
+
+    //
+    // Only show first 5 products
+    //
+    .block.related .product-item:nth-child(n+6) {
+        display: none !important;
+    }
+
+    .block.related .product-item {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box;
+    }
+
+    //
+    // ========================================================
+    // PRODUCT CARD
+    // ========================================================
+    //
+
+    .block.related .product-item-info {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+
+        width: 100% !important;
+        height: 100%;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: hidden;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 8px;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, .03);
+
+        transition:
+            transform .22s ease,
+            box-shadow .22s ease,
+            border-color .22s ease;
+    }
+
+    .block.related .product-item-info:hover,
+    .block.related .product-item-info.active {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        transform: translateY(-3px);
+
+        border-color: rgba(92, 58, 33, .24);
+
+        box-shadow:
+            0 8px 20px rgba(0, 0, 0, .075);
+    }
+
+    //
+    // ========================================================
+    // SMALLER PRODUCT IMAGE AREA
+    // ========================================================
+    //
+
+    .block.related .product-item-photo {
+        display: block;
+
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 12px;
+
+        overflow: hidden;
+
+        box-sizing: border-box;
+
+        background: @brewcraft-cream;
+    }
+
+    .block.related .product-image-container {
+        display: block;
+
+        width: 100% !important;
+    }
+
+    .block.related .product-image-wrapper {
+        display: block;
+
+        width: 100%;
+        padding: 0 !important;
+
+        background: @brewcraft-cream;
+    }
+
+    .block.related .product-image-photo {
+        position: static !important;
+
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        max-width: none;
+        max-height: none;
+
+        margin: 0 auto;
+
+        object-fit: cover;
+
+        transition:
+            transform .22s ease;
+    }
+
+    .block.related
+    .product-item-info:hover
+    .product-image-photo {
+        transform: scale(1.04);
+    }
+
+    //
+    // ========================================================
+    // PRODUCT DETAILS
+    // ========================================================
+    //
+
+    .block.related .product-item-details {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+
+        padding: 14px 14px 15px;
+
+        box-sizing: border-box;
+    }
+
+    .block.related .product-item-name {
+        min-height: 40px;
+
+        margin: 0 0 9px;
+    }
+
+    .block.related .product-item-link {
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+
+        line-height: 19px;
+
+        text-decoration: none;
+    }
+
+    .block.related .product-item-link:hover {
+        color: @brewcraft-coffee;
+
+        text-decoration: none;
+    }
+
+    //
+    // ========================================================
+    // PRICE
+    // ========================================================
+    //
+
+    .block.related .price-box {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+
+        gap: 6px;
+
+        margin: auto 0 0 !important;
+    }
+
+    .block.related .price-label {
+        display: none !important;
+    }
+
+    .block.related .price {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .block.related .old-price {
+        margin: 0 !important;
+    }
+
+    .block.related .old-price .price {
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 11px !important;
+        font-weight: 400 !important;
+
+        text-decoration: line-through;
+    }
+
+    //
+    // ========================================================
+    // HIDE DEFAULT RELATED PRODUCT CONTROLS
+    // ========================================================
+    //
+
+    .block.related .choice.related {
+        display: none !important;
+    }
+
+    .block.related .actions-secondary {
+        display: none !important;
+    }
+
+    //
+    // ========================================================
+    // ADD TO CART - HIDDEN UNTIL HOVER
+    // ========================================================
+    //
+
+    .block.related .product-item-actions {
+        display: block !important;
+
+        width: 100%;
+
+        margin: 12px 0 0 !important;
+
+        opacity: 0;
+
+        transform: translateY(8px);
+
+        pointer-events: none;
+
+        transition:
+            opacity .22s ease,
+            transform .22s ease;
+    }
+
+    .block.related
+    .product-item-info:hover
+    .product-item-actions {
+        opacity: 1;
+
+        transform: translateY(0);
+
+        pointer-events: auto;
+    }
+
+    //
+    // Hide any non-cart action inside actions
+    //
+    .block.related
+    .product-item-actions
+    .actions-secondary {
+        display: none !important;
+    }
+
+    //
+    // Add To Cart button
+    //
+    .block.related
+    .product-item-actions
+    .action.tocart {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        height: 40px;
+
+        margin: 0 !important;
+        padding: 0 14px;
+
+        border: 1px solid @brewcraft-espresso;
+        border-radius: 4px;
+
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+
+        line-height: 1;
+
+        text-align: center;
+
+        box-shadow: none;
+
+        &:hover,
+        &:focus {
+            border-color: @brewcraft-coffee;
+
+            background: @brewcraft-coffee;
+
+            color: @brewcraft-white;
+        }
+    }
+}
+
+
+.catalog-product-view .block.related {
+
+    .product-item-photo {
+        width: 100% !important;
+        height: 250px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: hidden;
+    }
+
+    .product-image-container,
+    .product-image-wrapper {
+        width: 100% !important;
+        height: 250px !important;
+
+        padding: 0 !important;
+
+        overflow: hidden;
+    }
+
+    .product-image-photo {
+        position: static !important;
+
+        display: block !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        margin: 0 !important;
+
+        object-fit: cover !important;
+        object-position: center !important;
+    }
+}
+
+//
+// ============================================================
+// PDP REVIEWS - BREWCRAFT
+// ============================================================
+//
+
+.catalog-product-view {
+
+    //
+    // Review content wrapper
+    //
+    .review-add {
+        float: none !important;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // Review form
+    //
+    .review-form {
+        float: none !important;
+
+        width: 100% !important;
+        max-width: 760px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+
+    //
+    // "You're reviewing"
+    //
+    .review-form .review-legend {
+        margin: 0 0 26px;
+
+        padding: 0 0 18px;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+
+    .review-form .review-legend span {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+
+    .review-form .review-legend strong {
+        display: block;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 18px;
+        font-weight: 600;
+
+        line-height: 1.4;
+    }
+
+
+    //
+    // Fieldset
+    //
+    .review-form .fieldset {
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+
+    //
+    // Fields
+    //
+    .review-form .field {
+        width: 100%;
+
+        margin: 0 0 20px;
+    }
+
+
+    .review-form .field > .label {
+        display: block;
+
+        margin: 0 0 8px;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    //
+    // Required marker
+    //
+    .review-form .field.required > .label:after {
+        color: #a94442;
+    }
+
+
+    //
+    // Inputs
+    //
+    .review-form input[type='text'],
+    .review-form textarea {
+        width: 100% !important;
+
+        margin: 0;
+
+        padding: 10px 12px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        box-shadow: none !important;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+
+    .review-form input[type='text'] {
+        height: 44px;
+    }
+
+
+    .review-form textarea {
+        min-height: 130px;
+
+        resize: vertical;
+    }
+
+
+    .review-form input[type='text']:focus,
+    .review-form textarea:focus {
+        border-color: @brewcraft-coffee;
+
+        box-shadow:
+            0 0 0 2px rgba(92, 58, 33, .08) !important;
+
+        outline: 0;
+    }
+
+
+    //
+    // Submit section
+    //
+    .review-form .actions-toolbar {
+        margin: 8px 0 0 !important;
+    }
+
+
+    .review-form .actions-toolbar .primary {
+        float: none !important;
+    }
+
+
+    .review-form .action.submit.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 160px;
+        height: 44px;
+
+        margin: 0;
+
+        padding: 0 24px;
+
+        border: 1px solid @brewcraft-espresso;
+        border-radius: 4px;
+
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        box-shadow: none;
+
+        &:hover,
+        &:focus {
+            border-color: @brewcraft-coffee;
+
+            background: @brewcraft-coffee;
+
+            color: @brewcraft-white;
+        }
+    }
+
+
+    //
+    // ========================================================
+    // EXISTING CUSTOMER REVIEWS
+    // ========================================================
+    //
+
+    .review-list {
+        width: 100%;
+
+        margin: 0 0 36px;
+        padding: 0;
+    }
+
+
+    .review-list .block-title {
+        margin: 0 0 20px;
+    }
+
+
+    .review-list .block-title strong {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+
+    .review-item {
+        margin: 0 !important;
+        padding: 22px 0 !important;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+
+    .review-item:first-child {
+        padding-top: 0 !important;
+    }
+
+
+    .review-title {
+        margin: 0 0 8px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+
+    .review-content {
+        margin: 8px 0 12px;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        line-height: 21px;
+    }
+
+
+    .review-details {
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+    }
+}
+
+//
+// ============================================================
+// PDP REVIEW RATING / STAR FIX
+// Keep this AFTER all other review styles
+// ============================================================
+//
+
+.catalog-product-view {
+
+    //
+    // Entire rating field
+    //
+    .review-field-ratings {
+        position: static !important;
+
+        display: block !important;
+
+        width: 100% !important;
+
+        margin: 0 0 24px !important;
+        padding: 0 !important;
+
+        clear: both;
+    }
+
+
+    //
+    // "Your Rating"
+    //
+    .review-field-ratings > .label {
+        display: block !important;
+
+        margin: 0 0 12px !important;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    //
+    // Individual Rating field
+    //
+    .review-field-rating {
+        position: static !important;
+
+        display: block !important;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        clear: both;
+    }
+
+
+    //
+    // Hide duplicate "Rating" label if desired.
+    //
+    .review-field-rating > .label {
+        display: none !important;
+    }
+
+
+    //
+    // IMPORTANT:
+    // Stable container for Magento's absolutely-positioned
+    // star labels.
+    //
+    .review-field-rating .control {
+        position: relative !important;
+
+        display: block !important;
+
+        width: 170px !important;
+        height: 34px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: visible !important;
+
+        clear: both;
+    }
+
+
+    //
+    // Magento star widget
+    //
+    .review-control-vote {
+        position: relative !important;
+
+        display: inline-block !important;
+
+        width: 170px !important;
+        height: 34px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        vertical-align: top;
+
+        overflow: visible !important;
+    }
+
+
+    //
+    // Base empty stars
+    //
+    .review-control-vote:before {
+        position: absolute !important;
+
+        top: 0 !important;
+        left: 0 !important;
+
+        margin: 0 !important;
+
+        font-size: 32px !important;
+        line-height: 34px !important;
+    }
+
+
+    //
+    // Star labels
+    //
+    .review-control-vote label {
+        position: absolute !important;
+
+        top: 0 !important;
+        left: 0 !important;
+
+        height: 34px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        line-height: 34px !important;
+
+        cursor: pointer;
+    }
+
+
+    //
+    // Filled stars on hover/selection
+    //
+    .review-control-vote label:before {
+        position: static !important;
+
+        margin: 0 !important;
+
+        font-size: 32px !important;
+        line-height: 34px !important;
+    }
+
+
+    //
+    // Keep following fields below stars
+    //
+    .review-field-nickname {
+        clear: both !important;
+
+        margin-top: 0 !important;
+    }
+}
+
+//
+// ============================================================
+// PDP - CUSTOMER REVIEW LIST STYLING
+// ============================================================
+//
+
+.catalog-product-view {
+
+    .brewcraft-reviews-list {
+        margin-top: 0;
+    }
+
+    .brewcraft-reviews-list__title {
+        margin: 0 0 28px;
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-heading;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .brewcraft-review-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .brewcraft-review-card {
+        padding: 0 0 28px;
+        margin: 0 0 28px;
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+    .brewcraft-review-card:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .brewcraft-review-card__top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .brewcraft-review-stars {
+        position: relative;
+        display: inline-block;
+        line-height: 1;
+        font-size: 26px;
+        letter-spacing: 2px;
+    }
+
+    .brewcraft-review-stars__base {
+        color: #d2d2d2;
+        display: block;
+    }
+
+    .brewcraft-review-stars__fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        color: #ff6a00;
+    }
+
+    .brewcraft-review-card__summary {
+        margin: 0;
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-heading;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .brewcraft-review-card__detail {
+        margin: 0 0 14px;
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.75;
+    }
+
+    .brewcraft-review-card__meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .brewcraft-review-card__author,
+    .brewcraft-review-card__date {
+        color: @brewcraft-muted;
+    }
+
+    .brewcraft-review-card__dot {
+        color: @brewcraft-muted;
+    }
+}
+
