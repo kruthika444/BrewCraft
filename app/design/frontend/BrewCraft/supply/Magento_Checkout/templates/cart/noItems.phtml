@@ -1,0 +1,33 @@
+<?php
+/**
+ * BrewCraft Empty Cart
+ *
+ * @var \Magento\Checkout\Block\Cart $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+
+<div class="brewcraft-empty-cart">
+
+    <div class="brewcraft-empty-cart__icon" aria-hidden="true">
+        <span class="brewcraft-empty-cart__bag"></span>
+    </div>
+
+    <h2 class="brewcraft-empty-cart__title">
+        <?= $escaper->escapeHtml(__('Your cart is empty')) ?>
+    </h2>
+
+    <p class="brewcraft-empty-cart__text">
+        <?= $escaper->escapeHtml(
+            __('Looks like you haven’t added anything yet. Explore our coffee, machines and brewing essentials.')
+        ) ?>
+    </p>
+
+    <a
+        class="action primary brewcraft-empty-cart__button"
+        href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>"
+    >
+        <?= $escaper->escapeHtml(__('Continue Shopping')) ?>
+    </a>
+
+</div>

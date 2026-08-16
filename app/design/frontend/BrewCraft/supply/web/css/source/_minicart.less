@@ -1,0 +1,817 @@
+//
+// ============================================================
+// MINI CART PRODUCT - FINAL LAYOUT
+// ============================================================
+//
+
+.minicart-wrapper {
+
+    .minicart-items .product-item {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 18px 0 !important;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+    }
+
+    .minicart-items .product-item:last-child {
+        border-bottom: 0;
+    }
+
+
+    //
+    // Force image + details into ONE ROW
+    //
+    .minicart-items .product-item > .product {
+        position: relative;
+
+        display: flex !important;
+        align-items: flex-start;
+
+        gap: 14px;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+
+    //
+    // IMAGE
+    //
+    .minicart-items .product-item-photo {
+        position: static !important;
+
+        display: block !important;
+
+        flex: 0 0 82px;
+
+        width: 82px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        float: none !important;
+    }
+
+    .minicart-items .product-image-container {
+        display: block !important;
+
+        width: 82px !important;
+        // height: 98px !important;
+
+        max-width: 82px !important;
+
+        margin: 0 !important;
+    }
+
+    .minicart-items .product-image-wrapper {
+        position: relative !important;
+
+        display: block !important;
+
+        width: 82px !important;
+        // height: 98px !important;
+
+        padding: 0 !important;
+
+        border-radius: 6px;
+
+        background: @brewcraft-cream;
+
+        overflow: hidden;
+    }
+
+    .minicart-items .product-image-photo {
+        position: static !important;
+
+        display: block !important;
+
+        width: 82px !important;
+        // height: 98px !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        margin: 0 !important;
+
+        object-fit: cover !important;
+        object-position: center !important;
+    }
+
+
+    //
+    // DETAILS
+    //
+    .minicart-items .product-item-details {
+        position: relative !important;
+
+        display: block;
+
+        flex: 1 1 auto;
+
+        min-width: 0;
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        float: none !important;
+    }
+
+
+    //
+    // NAME
+    //
+    .minicart-items .product-item-name {
+        max-width: 210px;
+
+        margin: 0 0 6px !important;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 14px;
+        font-weight: 500;
+
+        line-height: 19px;
+    }
+
+    .minicart-items .product-item-name a {
+        color: @brewcraft-charcoal !important;
+
+        text-decoration: none;
+    }
+
+    .minicart-items .product-item-name a:hover {
+        color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // PRICE
+    //
+    .minicart-items .product-item-pricing {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .minicart-items .price-container {
+        display: block;
+
+        margin: 0 0 10px !important;
+    }
+
+    .minicart-items .price {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+
+    //
+    // QTY
+    //
+    .minicart-items .details-qty {
+        display: flex !important;
+        align-items: center;
+
+        gap: 6px;
+
+        margin: 0 !important;
+    }
+
+    .minicart-items .details-qty .label {
+        margin: 0 !important;
+
+        color: @brewcraft-muted;
+
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .minicart-items .details-qty .item-qty {
+        width: 42px !important;
+        height: 32px !important;
+
+        margin: 0 !important;
+        padding: 0 5px !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        text-align: center;
+
+        box-shadow: none;
+    }
+
+
+    //
+    // EDIT + DELETE
+    //
+    .minicart-items .product.actions {
+        position: absolute !important;
+
+        right: 0;
+        bottom: 0;
+
+        display: flex !important;
+        align-items: center;
+
+        gap: 7px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .minicart-items .product.actions .action.edit,
+    .minicart-items .product.actions .action.delete {
+        position: static !important;
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 30px !important;
+        height: 30px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 50%;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+    }
+
+    .minicart-items .product.actions .action.edit {
+        color: @brewcraft-coffee;
+    }
+
+    .minicart-items .product.actions .action.delete {
+        color: #b84a4a;
+    }
+
+    .minicart-items .product.actions .action:before {
+        margin: 0 !important;
+
+        line-height: 1 !important;
+    }
+}
+
+//
+// ============================================================
+// MINI CART - FINAL VISUAL POLISH
+// ============================================================
+//
+
+.minicart-wrapper {
+
+    //
+    // --------------------------------------------------------
+    // SMALLER PRODUCT IMAGE
+    // --------------------------------------------------------
+    //
+
+    .minicart-items .product-item-photo {
+        flex: 0 0 66px !important;
+
+        width: 66px !important;
+
+        margin: 0 !important;
+    }
+
+    .minicart-items .product-image-container {
+        width: 66px !important;
+        height: 82px !important;
+
+        max-width: 66px !important;
+    }
+
+    .minicart-items .product-image-wrapper {
+        width: 66px !important;
+        height: 82px !important;
+
+        padding: 0 !important;
+
+        border-radius: 6px;
+    }
+
+    .minicart-items .product-image-photo {
+        width: 66px !important;
+        height: 82px !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        object-fit: cover !important;
+        object-position: center !important;
+    }
+
+
+    //
+    // Give details more space after shrinking image
+    //
+    .minicart-items .product-item > .product {
+        gap: 14px;
+    }
+
+    .minicart-items .product-item-name {
+        max-width: 225px;
+
+        margin-bottom: 5px !important;
+
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .minicart-items .price {
+        font-size: 14px;
+    }
+
+
+    //
+    // --------------------------------------------------------
+    // PROCEED TO CHECKOUT
+    // --------------------------------------------------------
+    //
+
+    .block-minicart .actions .primary {
+        width: 100%;
+
+        margin: 0 0 10px !important;
+    }
+
+    .block-minicart .actions .primary .action.checkout,
+    .block-minicart .action.primary.checkout {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 46px;
+
+        margin: 0 !important;
+        padding: 0 20px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        line-height: 46px;
+
+        text-align: center;
+
+        box-shadow: none !important;
+    }
+
+    .block-minicart .actions .primary .action.checkout:hover,
+    .block-minicart .action.primary.checkout:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+
+        color: @brewcraft-white !important;
+    }
+
+
+    //
+    // --------------------------------------------------------
+    // VIEW AND EDIT CART
+    // --------------------------------------------------------
+    //
+
+    .block-minicart .actions .secondary {
+        width: 100%;
+
+        margin: 0 !important;
+
+        text-align: center;
+    }
+
+    .block-minicart .actions .secondary .action.viewcart,
+    .block-minicart .action.viewcart {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 44px;
+
+        margin: 0 !important;
+        padding: 0 18px !important;
+
+        border: 1px solid @brewcraft-coffee !important;
+        border-radius: 5px;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-coffee !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        line-height: 44px;
+
+        text-decoration: none !important;
+
+        box-sizing: border-box;
+
+        box-shadow: none !important;
+    }
+
+    .block-minicart .actions .secondary .action.viewcart:hover,
+    .block-minicart .action.viewcart:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-espresso !important;
+
+        text-decoration: none !important;
+    }
+
+
+    //
+    // --------------------------------------------------------
+    // BUTTON AREA
+    // --------------------------------------------------------
+    //
+
+    .block-minicart .block-content > .actions {
+        margin: 0 !important;
+    }
+}
+
+.minicart-wrapper {
+
+    .brewcraft-minicart-qty {
+        display: inline-flex;
+        align-items: stretch;
+
+        height: 34px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 5px;
+
+        background: @brewcraft-white;
+
+        overflow: hidden;
+    }
+
+    .brewcraft-minicart-qty__button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-espresso;
+
+        font-size: 16px;
+
+        cursor: pointer;
+
+        box-shadow: none;
+    }
+
+    .brewcraft-minicart-qty__button:hover {
+        background: @brewcraft-cream;
+    }
+
+    .brewcraft-minicart-qty .item-qty {
+        width: 38px !important;
+        height: 32px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-left: 1px solid @brewcraft-border !important;
+        border-right: 1px solid @brewcraft-border !important;
+
+        border-radius: 0 !important;
+
+        text-align: center;
+
+        box-shadow: none !important;
+    }
+
+    .brewcraft-minicart-qty .item-qty::-webkit-inner-spin-button,
+    .brewcraft-minicart-qty .item-qty::-webkit-outer-spin-button {
+        margin: 0;
+
+        -webkit-appearance: none;
+    }
+}
+
+.minicart-wrapper {
+
+    .minicart-items .product.actions {
+        position: absolute !important;
+
+        right: 0;
+        bottom: 0;
+
+        margin: 0 !important;
+    }
+
+    .minicart-items .product.actions .primary {
+        display: none !important;
+    }
+
+    .minicart-items .product.actions .secondary {
+        margin: 0 !important;
+    }
+
+    .minicart-items .product.actions .action.delete {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 30px !important;
+        height: 30px !important;
+
+        margin: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 50%;
+
+        background: @brewcraft-white;
+
+        color: #b84a4a;
+    }
+
+    .minicart-items .product.actions .action.delete:hover {
+        border-color: #b84a4a;
+
+        background: #fff4f4;
+    }
+}
+
+//
+// ============================================================
+// HIDE NATIVE MINICART UPDATE BUTTON
+// ============================================================
+//
+
+.minicart-wrapper {
+
+    .minicart-items .update-cart-item,
+    .minicart-items button.update-cart-item,
+    .minicart-items .action.update {
+        display: none !important;
+
+        visibility: hidden !important;
+
+        position: absolute !important;
+
+        width: 0 !important;
+        height: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        overflow: hidden !important;
+    }
+}
+
+//
+// ============================================================
+// MINICART ICON / COUNTER - KEEP POSITION STABLE
+// ============================================================
+//
+
+.minicart-wrapper {
+
+    .action.showcart {
+        position: relative !important;
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        vertical-align: middle;
+    }
+
+    .action.showcart:before {
+        margin: 0 !important;
+    }
+
+    //
+    // Keep same placement even when minicart is open
+    //
+    .action.showcart.active,
+    .action.showcart._active {
+        position: relative !important;
+
+        width: 42px;
+        height: 42px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    //
+    // Counter
+    //
+    .action.showcart .counter.qty {
+        position: absolute !important;
+
+        top: -2px !important;
+        right: -2px !important;
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border-radius: 50%;
+
+        background: @brewcraft-coffee !important;
+
+        color: @brewcraft-white !important;
+
+        line-height: 20px !important;
+
+        box-sizing: border-box;
+    }
+
+    .action.showcart .counter-number {
+        display: block !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: @brewcraft-white !important;
+
+        font-size: 11px;
+        font-weight: 600;
+
+        line-height: 20px !important;
+
+        text-align: center;
+    }
+
+    //
+    // Prevent Magento open-state spacing changes
+    //
+    .action.showcart.active .counter.qty,
+    .action.showcart._active .counter.qty {
+        top: -2px !important;
+        right: -2px !important;
+
+        margin: 0 !important;
+    }
+}
+//
+// ============================================================
+// REQUEST A QUOTE - MINICART COLOR ONLY
+// ============================================================
+//
+
+.minicart-wrapper {
+
+    .action.request-quote,
+    .action.quote,
+    .action.primary.request-quote {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 46px;
+
+        margin: 0 !important;
+        padding: 0 20px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px !important;
+        font-weight: 600;
+
+        line-height: 46px !important;
+
+        text-align: center;
+
+        box-shadow: none !important;
+
+    }
+
+    .action.request-quote:hover,
+    .action.quote:hover,
+    .action.primary.request-quote:hover {
+         border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+
+        color: @brewcraft-white !important;
+    }
+}
+
+//
+// ============================================================
+// MOVE TO WISHLIST - ICON ONLY
+// ============================================================
+//
+
+.checkout-cart-index {
+
+    .cart.table-wrapper .action-towishlist {
+        position: relative;
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 36px !important;
+        height: 36px !important;
+
+        margin: 0 8px 0 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 50%;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-coffee !important;
+
+        font-size: 0 !important;
+
+        text-decoration: none !important;
+
+        box-sizing: border-box;
+    }
+
+    .cart.table-wrapper .action-towishlist:before {
+        content: '\2661';
+
+        display: block;
+
+        color: @brewcraft-coffee;
+
+        font-size: 22px;
+        font-weight: 400;
+
+        line-height: 1;
+    }
+
+    .cart.table-wrapper .action-towishlist:hover {
+        border-color: @brewcraft-coffee;
+
+        background: @brewcraft-cream;
+    }
+
+    .cart.table-wrapper .action-towishlist:hover:before {
+        color: @brewcraft-espresso;
+    }
+
+    .cart.table-wrapper .action-towishlist span {
+        display: none !important;
+    }
+}

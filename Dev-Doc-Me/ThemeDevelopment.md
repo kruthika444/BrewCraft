@@ -5843,3 +5843,1703 @@ These were stopped because native functionality was working and the additional o
 The page is now functionally complete and substantially customized from Luma, while still retaining Magento's native product, gallery, cart, review, relationship and EAV behavior.
 
 Any remaining differences from the Figma should be treated as part of a later **final storefront visual-polish pass**, not as unfinished PDP functionality.
+
+# 7. BrewCraft – Cart & Mini Cart Development Log
+
+### 1. Development Scope
+
+The objective was to replace the largely default Magento/Luma shopping cart experience with a BrewCraft storefront implementation matching the established storefront design system.
+
+The work covered:
+
+* Shopping Cart page layout
+* Product rows
+* Product images
+* Product information
+* Stock indicator
+* Price and subtotal presentation
+* Quantity controls
+* Edit/Delete/Wishlist actions
+* Update Shopping Cart
+* Coupon handling decision
+* Order Summary
+* Shipping estimator
+* Checkout CTA
+* Empty cart state
+* Mini Cart
+* Mini Cart automatic quantity updates
+* Mini Cart checkout/view-cart buttons
+* Business-only Request a Quote integration
+* Interaction between Request Quote and Shipping estimator
+
+The implementation retained Magento's native quote/cart functionality as much as possible and changed presentation/interaction through theme overrides and targeted frontend logic.
+
+---
+
+## 2. Main Files Involved
+
+### Theme
+
+```text
+app/design/frontend/BrewCraft/supply/
+```
+
+Primary cart LESS:
+
+```text
+web/css/source/_cart.less
+```
+
+Mini Cart LESS:
+
+```text
+web/css/source/_minicart.less
+```
+
+Theme import:
+
+```text
+web/css/source/_extend.less
+```
+
+with:
+
+```less
+@import '_cart.less';
+@import '_minicart.less';
+```
+
+---
+
+### Full Cart item template
+
+```text
+Magento_Checkout/templates/cart/item/default.phtml
+```
+
+Used for:
+
+* stock indicator
+* custom quantity control
+* native cart item data
+* retaining Magento update behavior
+
+---
+
+### Empty Cart
+
+```text
+Magento_Checkout/templates/cart/noItems.phtml
+```
+
+Used for the custom empty-cart experience.
+
+---
+
+### Cart quantity JS
+
+```text
+web/js/brewcraft-cart-qty.js
+```
+
+Responsible for:
+
+```text
+[-] [quantity] [+]
+```
+
+on the full Shopping Cart page.
+
+---
+
+### Mini Cart Knockout override
+
+```text
+Magento_Checkout/web/template/minicart/item/default.html
+```
+
+Used for:
+
+* compact minicart product rows
+* custom `− / +` controls
+* native Magento asynchronous quantity update
+* removing unnecessary Edit action
+
+---
+
+### Request Quote module
+
+Existing custom module:
+
+```text
+app/code/BrewCraft/RequestQuote/
+```
+
+Important files:
+
+```text
+view/frontend/templates/cart/request-quote.phtml
+```
+
+and:
+
+```text
+view/frontend/layout/checkout_cart_index.xml
+```
+
+The Request Quote block is rendered conditionally through:
+
+```php
+$block->canRequestQuote()
+```
+
+so the quote functionality remains business-customer-specific.
+
+---
+
+## 3. Shopping Cart Main Layout
+
+The original Magento cart appeared with:
+
+* oversized product rows
+* default Magento visual styling
+* large unused areas
+* default blue CTA
+* summary placement that did not match BrewCraft
+* inconsistent actions
+* large shipping estimator
+* coupon block visually disconnected from the page
+
+The design was changed into a desktop two-column layout:
+
+```text
+----------------------------------------------------------
+| CART PRODUCTS                         | ORDER SUMMARY |
+|                                       |               |
+| Product 1                             | Subtotal      |
+| Product 2                             | Shipping      |
+|                                       | Total         |
+|                     Update Cart       | Checkout      |
+|                                       | Shipping      |
+| Request Quote                         | Estimator     |
+----------------------------------------------------------
+```
+
+Main target width:
+
+```less
+max-width: 1440px;
+```
+
+with desktop page padding around:
+
+```less
+padding-left: 32px;
+padding-right: 32px;
+```
+
+The summary was given a fixed-width right-side card around:
+
+```text
+360px
+```
+
+while the product area takes the remaining available space.
+
+---
+
+## 4. Cart Product Table
+
+The default Magento table was restyled into a cleaner BrewCraft card.
+
+Columns retained:
+
+```text
+Item | Price | Qty | Subtotal
+```
+
+Product rows include:
+
+```text
+Product image
+Product name
+In Stock
+Unit price
+Quantity
+Subtotal
+Wishlist
+Edit
+Delete
+```
+
+The table received:
+
+* BrewCraft border color
+* rounded corners
+* white background
+* consistent vertical spacing
+* centered price/quantity/subtotal columns
+* reduced Luma visual noise
+
+---
+
+## 5. Product Image Handling
+
+Magento's original cart images were not proportioned correctly for the design.
+
+The cart image container was normalized to approximately:
+
+```text
+96px × 120px
+```
+
+using:
+
+```less
+object-fit: cover;
+object-position: center;
+```
+
+This ensured ERP-synchronized product media could display consistently without stretching the row.
+
+---
+
+## 6. Product Name Styling
+
+Product names were changed from default Magento link styling to BrewCraft typography.
+
+Approximate styling:
+
+```text
+17–18px
+medium weight
+charcoal text
+```
+
+Hover:
+
+```text
+BrewCraft coffee brown
+```
+
+The native product URL remains intact.
+
+---
+
+## 7. Custom “In Stock” Indicator
+
+The cart originally had no visual stock indicator.
+
+A small stock badge was added below the product name through the cart item template.
+
+Conceptually:
+
+```php
+<?php if ($_item->getProduct()->isAvailable()): ?>
+    <div class="cart-stock-status">
+        In Stock
+    </div>
+<?php endif; ?>
+```
+
+Final presentation:
+
+```text
+BrewCraft Signature Arabica Beans 2kg
+
+[ In Stock ]
+```
+
+Badge style:
+
+* pale green background
+* green text
+* rounded pill
+* small font
+
+This provides useful availability feedback without overloading the row.
+
+---
+
+## 8. Quantity Stepper – Full Cart
+
+Magento's default cart displayed:
+
+```text
+[ 1 ]
+```
+
+We changed this to:
+
+```text
+[ − ][ 1 ][ + ]
+```
+
+The control was implemented using:
+
+```text
+Magento_Checkout/templates/cart/item/default.phtml
+```
+
+plus:
+
+```text
+web/js/brewcraft-cart-qty.js
+```
+
+Important design decision:
+
+The `− / +` controls modify the cart input but retain Magento's native **Update Shopping Cart** workflow.
+
+Flow:
+
+```text
+Click +
+   ↓
+Input changes
+1 → 2
+   ↓
+Click Update Shopping Cart
+   ↓
+Magento submits cart form
+   ↓
+Subtotal / totals recalculated
+```
+
+The quantity cannot go below:
+
+```text
+1
+```
+
+The original Magento input naming was preserved:
+
+```text
+cart[item_id][qty]
+```
+
+which is important because Magento's cart update controller expects this structure.
+
+---
+
+## 9. Update Shopping Cart Button
+
+The default Update Shopping Cart button was redesigned into a BrewCraft secondary CTA.
+
+Final characteristics:
+
+* white background
+* coffee/brown border
+* BrewCraft brown text
+* approximately 44–46px high
+* aligned to the right below product rows
+* subtle cream hover state
+
+Example:
+
+```text
+                           [ Update Shopping Cart ]
+```
+
+---
+
+## 10. Wishlist Action
+
+Magento rendered:
+
+```text
+Move to Wishlist
+```
+
+as text.
+
+This became visually excessive next to Edit/Delete.
+
+We converted the wishlist action into an icon-only circular control.
+
+Final actions:
+
+```text
+♡   ✎   🗑
+```
+
+So the row now has three consistent compact actions:
+
+* Wishlist
+* Edit
+* Delete
+
+All use the same rounded icon-button visual system.
+
+---
+
+## 11. Edit and Delete Actions
+
+Initially Magento's Edit/Delete icons overlapped because native Magento positioning was still active.
+
+We reset:
+
+```less
+position
+margin
+display
+alignment
+```
+
+and converted the action toolbar to flex.
+
+Final layout:
+
+```text
+♡   ✎   🗑
+```
+
+with spacing between each action.
+
+Delete received a subtle destructive/red hover treatment.
+
+Edit retained BrewCraft brown styling.
+
+---
+
+## 12. Coupon / Discount Code
+
+A significant amount of work was spent trying to make Magento's native coupon block visually align with:
+
+```text
+Apply Discount Code                 Update Shopping Cart
+```
+
+The challenge was Magento's DOM structure:
+
+```text
+form-cart
+cart-summary
+cart-discount
+```
+
+The coupon is rendered separately from the Update Cart action.
+
+Several approaches were tested:
+
+#### CSS grid placement
+
+Attempted to place:
+
+```text
+cart      summary
+discount  summary
+```
+
+Problem:
+
+When Summary changed height, especially when Shipping expanded, the coupon could move.
+
+#### Negative margin positioning
+
+Attempted to visually pull the coupon upward beside Update Cart.
+
+Problem:
+
+This was fragile and depended too heavily on surrounding layout heights.
+
+#### JS DOM relocation
+
+A wrapper/relocation experiment was also considered.
+
+Problem:
+
+It introduced unnecessary structural complexity and briefly broke the working cart layout.
+
+#### Final decision
+
+The coupon feature was removed from the BrewCraft cart UI:
+
+```less
+.cart-discount {
+    display: none !important;
+}
+```
+
+This was an intentional product/design decision to avoid spending additional development time on an element that was not essential to the learning storefront.
+
+This also significantly simplified the cart layout.
+
+---
+
+## 13. Order Summary Card
+
+The default Magento gray summary was redesigned as a BrewCraft card.
+
+Final visual structure:
+
+```text
+Summary
+
+Subtotal                         ₹699
+Shipping                           ₹5
+
+Order Total                      ₹704
+
+[ Proceed to Checkout ]
+
+-------------------------------------
+
+Estimate Shipping and Tax          ˅
+```
+
+The summary card uses:
+
+* white background
+* BrewCraft border
+* rounded corners
+* subtle shadow
+* espresso headings
+* compact spacing
+
+---
+
+## 14. Summary Content Reordering
+
+Magento originally displayed the Shipping estimator before totals.
+
+That resulted in:
+
+```text
+Shipping estimator
+Country
+State
+Zip
+Flat rate
+
+Subtotal
+Shipping
+Total
+Checkout
+```
+
+which meant users had to scroll through shipping fields before seeing the order total.
+
+The summary was reordered through flex:
+
+```text
+1. Summary heading
+2. Totals
+3. Checkout
+4. Shipping estimator
+```
+
+using CSS ordering.
+
+Final hierarchy:
+
+```text
+Subtotal
+Shipping
+Order Total
+Checkout
+Shipping Estimator
+```
+
+This is much more appropriate for checkout UX.
+
+---
+
+## 15. Proceed to Checkout Button
+
+Magento's default blue button was replaced by BrewCraft's primary CTA.
+
+Final style:
+
+```text
+dark espresso background
+white text
+full summary width
+approximately 50px high
+brown hover state
+```
+
+Example:
+
+```text
+[        Proceed to Checkout        ]
+```
+
+The multi-address checkout link was hidden from the storefront design because it was not required for BrewCraft's intended flow.
+
+---
+
+## 16. Shipping Estimator
+
+This was one of the most time-consuming cart areas.
+
+Magento's estimator contains:
+
+```text
+Estimate Shipping and Tax
+
+Country
+State/Province
+Zip/Postal Code
+
+Shipping Methods
+```
+
+Initially the section remained permanently expanded.
+
+That made the right summary card extremely tall and pushed other cart content down.
+
+---
+
+## 17. Shipping Radio Alignment
+
+Magento's radio button initially appeared misaligned from:
+
+```text
+Fixed ₹5.00
+```
+
+The field was converted into flex:
+
+```text
+○ Fixed ₹5.00
+```
+
+with:
+
+* 16px radio
+* aligned label
+* consistent spacing
+* no native absolute-position side effects
+
+---
+
+## 18. Shipping Collapse Development
+
+Several conflicting CSS rules accumulated while testing the shipping accordion.
+
+At one stage `_cart.less` still contained an old block explicitly forcing:
+
+```less
+display: block !important;
+```
+
+on shipping content and:
+
+```less
+pointer-events: none;
+```
+
+on the title.
+
+That meant the later collapsible implementation literally could not work. This conflict was identified from the final uploaded stylesheet. 
+
+The conflicting **SHIPPING ESTIMATOR – ALWAYS OPEN** rules were removed.
+
+We returned to Magento's native collapsible behavior instead of manually controlling content display.
+
+Final behavior:
+
+```text
+Estimate Shipping and Tax    ˅
+```
+
+Click:
+
+```text
+Estimate Shipping and Tax    ˄
+
+Country
+State
+Zip
+Flat Rate
+```
+
+The important lesson was:
+
+> Do not use CSS to force `display:block` or `display:none` on Magento's collapsible content if Magento's JS component is supposed to manage the state.
+
+---
+
+## 19. Shipping Chevron
+
+The native/previous arrow styling was inconsistent.
+
+The final arrow is based on the shipping title state and visually communicates:
+
+Closed:
+
+```text
+˅
+```
+
+Open:
+
+```text
+˄
+```
+
+This resolved the earlier UX problem where the shipping title was technically clickable but gave no visual indication.
+
+---
+
+## 20. Request Quote Integration
+
+BrewCraft has a custom module:
+
+```text
+BrewCraft_RequestQuote
+```
+
+The Cart Request Quote block uses:
+
+```php
+$block->canRequestQuote()
+```
+
+so it only renders for customers eligible to request a business quote.
+
+Template:
+
+```text
+BrewCraft_RequestQuote::cart/request-quote.phtml
+```
+
+Block:
+
+```php
+BrewCraft\RequestQuote\Block\Cart\RequestQuote
+```
+
+Initial content:
+
+```text
+Need a Custom Business Quote?
+
+Submit the products in your shopping cart to the
+BrewCraft business team for a custom price proposal.
+
+[ Request a Quote ]
+```
+
+---
+
+## 21. Request Quote Placement Problem
+
+Initially the Request Quote block was rendered directly inside:
+
+```xml
+<referenceContainer name="content">
+```
+
+using:
+
+```xml
+after="-"
+```
+
+Therefore it was positioned after the entire cart container.
+
+This caused a major interaction problem:
+
+```text
+Shipping closed
+→ Request Quote higher
+
+Shipping opened
+→ Summary becomes taller
+→ entire cart container becomes taller
+→ Request Quote gets pushed down
+```
+
+This was not desirable.
+
+The requirement became:
+
+> Request Quote must remain below Update Shopping Cart on the LEFT regardless of whether Shipping is opened or closed.
+
+---
+
+## 22. Request Quote Final Placement
+
+The Request Quote block was moved into the cart's left-side layout instead of being globally appended after content.
+
+The final design is:
+
+```text
+LEFT                                  RIGHT
+
+Cart product rows                     Summary
+                                      Totals
+                        Update Cart   Checkout
+                                      Shipping ▼
+
+Need a Custom Business Quote?
+Description
+[ Request a Quote ]
+```
+
+Opening Shipping:
+
+```text
+LEFT                                  RIGHT
+
+Cart                                  Summary
+Update Cart                           Shipping ↑
+
+Request Quote                         Country
+(stays here)                          State
+                                      Zip
+                                      Rate
+```
+
+The Request Quote section therefore no longer depends on Shipping height.
+
+---
+
+## 23. Request Quote Styling
+
+The business quote block was converted from a plain text section into a BrewCraft B2B callout.
+
+Visual treatment:
+
+* cream background
+* subtle border
+* rounded corners
+* espresso title
+* charcoal description
+* dark brown CTA
+
+Button:
+
+```text
+[ Request a Quote ]
+```
+
+uses the same primary BrewCraft styling as the rest of the storefront rather than Magento blue.
+
+---
+
+## 24. Empty Cart State
+
+Magento's default empty cart message was replaced with a custom BrewCraft state.
+
+Template:
+
+```text
+Magento_Checkout/templates/cart/noItems.phtml
+```
+
+Design:
+
+```text
+              shopping bag icon
+
+              Your cart is empty
+
+Looks like you haven't added anything yet.
+Explore our coffee, machines and brewing essentials.
+
+            [ Continue Shopping ]
+```
+
+The icon is drawn through CSS rather than requiring another image asset.
+
+Styling includes:
+
+* cream circular icon background
+* BrewCraft brown bag outline
+* centered typography
+* espresso heading
+* muted supporting copy
+* BrewCraft primary CTA
+
+This gives an intentional state instead of Magento's basic empty message.
+
+---
+
+## 25. Mini Cart – Initial State
+
+The original Mini Cart had major layout problems:
+
+* enormous product images
+* product names falling below images
+* excessive vertical height
+* default Magento blue Checkout button
+* unstyled View Cart link
+* Qty shown as plain input
+* Edit and Delete actions separated awkwardly
+* product content did not align as a row
+
+Example original structure:
+
+```text
+Huge image
+
+Product Name
+Price
+
+Qty [1]
+
+Edit Delete
+```
+
+---
+
+## 26. Mini Cart Layout
+
+A dedicated:
+
+```text
+_minicart.less
+```
+
+was created.
+
+The dropdown width was standardized around:
+
+```text
+420px
+```
+
+The Mini Cart received:
+
+* BrewCraft border
+* rounded corners
+* shadow
+* fixed product scrolling area
+* compact item rows
+* white background
+
+---
+
+## 27. Mini Cart Product Rows
+
+Native Magento floats were overridden with flex layout.
+
+Final product structure:
+
+```text
+[img]  BrewCraft Signature Arabica Beans 2kg
+       ₹699
+
+       Qty [−][1][+]                   🗑
+```
+
+This dramatically reduced the required height of each item.
+
+---
+
+## 28. Mini Cart Images
+
+Images were initially still too large.
+
+They were reduced further to approximately:
+
+```text
+66px × 82px
+```
+
+with:
+
+```less
+object-fit: cover;
+```
+
+This gave enough room to product information without making the Mini Cart excessively wide or tall.
+
+---
+
+## 29. Mini Cart Product Information
+
+Product information was normalized:
+
+* product name: ~13–14px
+* BrewCraft charcoal text
+* price: bold espresso
+* compact vertical spacing
+* adequate width after shrinking the image
+
+This eliminated the earlier situation where product names wrapped into a very narrow column.
+
+---
+
+## 30. Mini Cart Edit/Delete Decision
+
+Initially both native Magento actions were kept:
+
+```text
+✎   🗑
+```
+
+Once direct quantity editing was implemented inside the Mini Cart, the Edit action became unnecessary.
+
+Final decision:
+
+```text
+Remove Edit
+Keep Delete
+```
+
+Final row action:
+
+```text
+🗑
+```
+
+This simplifies the interaction considerably.
+
+---
+
+## 31. Mini Cart Quantity Control
+
+The plain native:
+
+```text
+Qty: [1]
+```
+
+was replaced with:
+
+```text
+Qty [−][1][+]
+```
+
+through:
+
+```text
+Magento_Checkout/web/template/minicart/item/default.html
+```
+
+The first implementation updated the visible number only.
+
+Example:
+
+```text
+1 → 2
+```
+
+but:
+
+```text
+₹699
+```
+
+did not update.
+
+That exposed an important Magento behavior.
+
+---
+
+## 32. Mini Cart Native Update Mechanism
+
+Magento's Mini Cart includes a native:
+
+```text
+.update-cart-item
+```
+
+control.
+
+Magento's frontend JS expects that action to trigger the asynchronous cart update.
+
+Therefore the final quantity implementation:
+
+```text
+click +
+   ↓
+input quantity changes
+   ↓
+hidden native update-cart-item triggered
+   ↓
+Magento updates quote asynchronously
+   ↓
+product amount changes
+   ↓
+Cart Subtotal changes
+   ↓
+customer-data/minicart refreshes
+```
+
+This allowed quantity updates without navigating to the full cart.
+
+---
+
+## 33. Hidden Native Update Button
+
+While testing, Magento briefly displayed:
+
+```text
+Update
+```
+
+when `+ / -` was clicked.
+
+The native action still needed to exist functionally, but it was unnecessary visually.
+
+Therefore it was hidden permanently:
+
+```less
+.update-cart-item {
+    display: none !important;
+    visibility: hidden !important;
+}
+```
+
+while our JavaScript/Knockout interaction still programmatically triggers:
+
+```javascript
+updateButton.click();
+```
+
+Final UX:
+
+```text
+Qty [−][2][+]   🗑
+```
+
+and Magento silently updates the price.
+
+---
+
+## 34. Mini Cart Subtotal
+
+The Mini Cart subtotal area was redesigned into:
+
+```text
+2 Items in Cart            Cart Subtotal
+                             ₹1,398
+```
+
+with a stronger visual hierarchy on the amount.
+
+The subtotal automatically updates after quantity changes because the native Magento customer-data refresh was retained.
+
+---
+
+## 35. Mini Cart Checkout Button
+
+The default Magento blue:
+
+```text
+Proceed to Checkout
+```
+
+was replaced with BrewCraft espresso.
+
+Final styling:
+
+```text
+dark espresso
+white text
+full width
+rounded corners
+```
+
+Hover:
+
+```text
+coffee brown
+```
+
+---
+
+## 36. Mini Cart View Cart Button
+
+The default plain:
+
+```text
+View and Edit Cart
+```
+
+link was converted into a full-width BrewCraft secondary button.
+
+Final:
+
+```text
+[ View and Edit Cart ]
+```
+
+with:
+
+* white background
+* brown border
+* brown text
+* cream hover state
+
+---
+
+## 37. Mini Cart Header Icon Bug
+
+When Mini Cart was closed, the header icon appeared correctly:
+
+```text
+🛒²
+```
+
+When Mini Cart opened:
+
+* the cart icon shifted
+* the counter moved away from the icon
+
+The open-state `.showcart` styles were normalized so both closed and open states use the same:
+
+```text
+width
+height
+position
+counter top/right
+```
+
+The badge remains:
+
+* coffee/brown background
+* white number
+* circular
+
+So opening the Mini Cart no longer visually changes the cart icon position.
+
+---
+
+## 38. Request a Quote – Mini Cart
+
+Business customers also see:
+
+```text
+Request a Quote
+```
+
+inside the Mini Cart.
+
+The functionality already existed from the custom RequestQuote module.
+
+Only the Magento-blue styling needed to be replaced.
+
+Final Mini Cart quote CTA follows BrewCraft brown styling instead of blue.
+
+---
+
+## 39. Header Category Issue Found During Mini Cart Testing
+
+While opening Mini Cart on the Coffee category page, another issue became visible:
+
+```text
+Coffee
+ ├ Coffee Beans
+ └ Ground Coffee
+```
+
+was permanently open.
+
+Cause:
+
+The header CSS included:
+
+```less
+.level0.active > .submenu
+```
+
+Magento automatically applies:
+
+```text
+.active
+```
+
+to the current category.
+
+Therefore being on `/coffee.html` caused the Coffee submenu to remain permanently visible.
+
+The rule was corrected to show submenus only on:
+
+```text
+:hover
+```
+
+or Magento interaction state:
+
+```text
+._active
+```
+
+but **not** category `.active`.
+
+Result:
+
+Current category receives its underline, but submenu opens only on hover.
+
+---
+
+## 40. Significant Failed/Discarded Approaches
+
+This part is worth documenting because the Cart work took longer mainly due to layout conflicts.
+
+### Nested `.checkout-cart-index`
+
+At one stage sections were written like:
+
+```less
+.checkout-cart-index {
+
+    ...
+
+    .checkout-cart-index {
+        ...
+    }
+}
+```
+
+LESS compiled that into:
+
+```css
+.checkout-cart-index .checkout-cart-index ...
+```
+
+which can never match the page because a checkout page doesn't contain another checkout page inside itself.
+
+This explained why several styles appeared to do absolutely nothing.
+
+#### Lesson
+
+When the entire `_cart.less` is already wrapped with:
+
+```less
+.checkout-cart-index {
+```
+
+do not add another same wrapper inside it.
+
+---
+
+### Multiple cart layout systems
+
+During experimentation the same stylesheet temporarily contained:
+
+* CSS Grid cart layout
+* float-based Magento layout
+* `.brewcraft-cart-left` wrapper layout
+* negative-margin coupon positioning
+
+These competed with each other and caused the page to collapse at one point.
+
+#### Lesson
+
+Only one structural layout model should control the cart container.
+
+---
+
+### JS wrapper for cart layout
+
+A JavaScript-based wrapper was briefly proposed to create:
+
+```text
+brewcraft-cart-left
+```
+
+and relocate:
+
+```text
+form-cart
+cart-discount
+```
+
+This added unnecessary DOM complexity and was discarded.
+
+---
+
+### Coupon alignment hacks
+
+Negative margins such as:
+
+```less
+margin: -70px ...
+```
+
+were tested.
+
+They worked visually in one state but were coupled to Summary height.
+
+They were discarded together with the coupon itself.
+
+---
+
+### CSS-only shipping accordion
+
+Trying to control Magento's shipping widget entirely with:
+
+```less
+display:none
+display:block
+```
+
+caused conflicts with Magento's own collapsible widget.
+
+Final strategy:
+
+Let Magento JS own the state; CSS owns only presentation.
+
+---
+
+### Shipping “Always Open” block
+
+This was retained accidentally during later collapse testing.
+
+It explicitly contained:
+
+```less
+display: block !important;
+pointer-events: none;
+```
+
+which prevented the accordion from working at all. The conflict was eventually identified from the complete uploaded stylesheet. 
+
+---
+
+## 41. Final Full Cart Functionality
+
+Current functional behavior:
+
+```text
+Add products
+    ↓
+Shopping Cart
+    ↓
+Product image/name/stock shown
+    ↓
+[-][qty][+]
+    ↓
+Update Shopping Cart
+    ↓
+Magento recalculates totals
+```
+
+Actions:
+
+```text
+Wishlist
+Edit
+Delete
+```
+
+Summary:
+
+```text
+Subtotal
+Shipping
+Grand Total
+Proceed to Checkout
+Shipping estimator accordion
+```
+
+Business customer:
+
+```text
+Request a Quote block
+```
+
+Normal customer:
+
+```text
+No Request Quote block
+```
+
+---
+
+## 42. Final Mini Cart Functionality
+
+Current flow:
+
+```text
+Open Mini Cart
+    ↓
+Compact products displayed
+    ↓
+[-][qty][+]
+    ↓
+native hidden Magento Update action triggered
+    ↓
+Ajax cart update
+    ↓
+price/subtotal refresh
+```
+
+Available actions:
+
+```text
+Delete
+Proceed to Checkout
+View and Edit Cart
+```
+
+Business customer additionally gets:
+
+```text
+Request a Quote
+```
+
+---
+
+## 43. Cache / Static Cleanup Used During Development
+
+Because most work involved LESS/templates/Knockout, the repeated local cleanup command was:
+
+```bash
+rm -rf var/view_preprocessed/*
+rm -rf pub/static/frontend/BrewCraft/*
+bin/magento cache:flush
+```
+
+For layout-specific changes we also used:
+
+```bash
+bin/magento cache:clean layout block_html
+```
+
+followed by a browser hard refresh:
+
+```text
+Ctrl + Shift + R
+```
+
+---
+
+## 44. Final Design State
+
+### Full cart
+
+```text
+Shopping Cart
+
+┌──────────────────────────────────────┐  ┌─────────────────────┐
+│ Item        Price    Qty   Subtotal │  │ Summary             │
+│                                      │  │                     │
+│ [img] Product                        │  │ Subtotal            │
+│       In Stock     ₹699 [-][1][+]   │  │ Shipping            │
+│                        ♡  ✎  🗑       │  │ Order Total         │
+│                                      │  │                     │
+└──────────────────────────────────────┘  │ Proceed to Checkout │
+                 [ Update Cart ]          │                     │
+                                          │ Shipping & Tax   ˅ │
+┌──────────────────────────────────────┐  └─────────────────────┘
+│ Need a Custom Business Quote?        │
+│ Submit cart for custom pricing.      │
+│                                      │
+│ [ Request a Quote ]                  │
+└──────────────────────────────────────┘
+```
+
+### Mini Cart
+
+```text
+2 Items in Cart                 ₹1,398
+
+[ Request a Quote ]    business only
+[ Proceed to Checkout ]
+
+───────────────────────────────────
+
+[img] Arabica Beans 2kg
+      ₹699
+      Qty [−][2][+]             🗑
+
+───────────────────────────────────
+
+[img] Arabica Beans 1kg
+      ₹399
+      Qty [−][1][+]             🗑
+
+───────────────────────────────────
+
+[ View and Edit Cart ]
+```
+
+---
+
+## 45. Final Status
+
+#### Shopping Cart
+
+**Complete ✅**
+
+#### Product presentation
+
+**Complete ✅**
+
+#### In Stock indicator
+
+**Complete ✅**
+
+#### Quantity stepper
+
+**Complete ✅**
+
+#### Wishlist/Edit/Delete
+
+**Complete ✅**
+
+#### Update Shopping Cart
+
+**Complete ✅**
+
+#### Order Summary
+
+**Complete ✅**
+
+#### Shipping estimator
+
+**Collapsible and working ✅**
+
+#### Coupon
+
+**Intentionally removed ✅**
+
+#### Empty cart
+
+**Designed ✅**
+
+#### Mini Cart
+
+**Complete ✅**
+
+#### Mini Cart automatic quantity update
+
+**Complete ✅**
+
+#### Request Quote integration
+
+**Business-customer conditional behavior retained ✅**
+
+#### Request Quote cart placement
+
+**Decoupled from Shipping estimator and placed with left cart content ✅**
+
+---
+
+### Key development takeaway
+
+The biggest lesson from this Cart implementation was that **Magento's native frontend structure should be preserved whenever possible**.
+
+The implementations that became stable were the ones where we:
+
+```text
+Magento owns:
+    cart data
+    quote calculations
+    cart forms
+    customer-data
+    minicart Ajax updates
+    shipping estimator behavior
+
+BrewCraft owns:
+    visual structure
+    typography
+    spacing
+    buttons
+    quantity controls
+    icons
+    product presentation
+    business-specific UI placement
+```
+
+Whenever we tried to make CSS or custom DOM manipulation replace Magento's structural behavior, the page became fragile. Once we let Magento keep the functional responsibility and limited the theme to presentation and controlled interaction extensions, the Cart became significantly more stable.
+
+Given how much iteration this page required, this is one of the more useful implementation logs for the BrewCraft project because it documents not only **what we built**, but also **which Magento frontend patterns should not be repeated in the remaining Checkout and Request Quote work**.

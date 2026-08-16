@@ -40,7 +40,7 @@
 //
 // Strongly hide Magento's original top-bar content.
 //
-.page-header .header.panel > .header.links,
+.page-header .header.panel>.header.links,
 .page-header .header.panel .greet.welcome {
     display: none !important;
 }
@@ -127,7 +127,7 @@
 // LOGO
 // ============================================================
 
-.header.content > .logo {
+.header.content>.logo {
     order: 1;
 
     float: none;
@@ -156,7 +156,7 @@
 // NAVIGATION
 // ============================================================
 
-.header.content > .navigation {
+.header.content>.navigation {
     order: 2;
 
     display: flex;
@@ -173,7 +173,7 @@
     background: transparent;
 }
 
-.header.content > .navigation > ul {
+.header.content>.navigation>ul {
     display: flex;
     align-items: center;
 
@@ -185,14 +185,14 @@
     padding: 0;
 }
 
-.header.content > .navigation .level0 {
+.header.content>.navigation .level0 {
     float: none;
 
     margin: 0;
     padding: 0;
 }
 
-.header.content > .navigation .level0 > .level-top {
+.header.content>.navigation .level0>.level-top {
     position: relative;
 
     display: flex;
@@ -223,8 +223,8 @@
 
 
 // Active category underline
-.header.content > .navigation .level0.active > .level-top,
-.header.content > .navigation .level0.has-active > .level-top {
+.header.content>.navigation .level0.active>.level-top,
+.header.content>.navigation .level0.has-active>.level-top {
     color: @brewcraft-coffee;
 
     &:after {
@@ -247,7 +247,7 @@
 // DROPDOWN MENU
 // ============================================================
 
-.header.content > .navigation .level0 .submenu {
+.header.content>.navigation .level0 .submenu {
     top: 60px;
 
     min-width: 210px;
@@ -296,7 +296,7 @@
 // Don't collapse/hide it yet.
 //
 
-.header.content > .block-search {
+.header.content>.block-search {
     order: 3;
 
     float: none;
@@ -375,7 +375,7 @@
 // ACCOUNT
 // ============================================================
 
-.header.content > .brewcraft-header-account {
+.header.content>.brewcraft-header-account {
     order: 4;
 
     display: flex;
@@ -417,7 +417,7 @@
 // MINI CART
 // ============================================================
 
-.header.content > .minicart-wrapper {
+.header.content>.minicart-wrapper {
     order: 5;
 
     float: none;
@@ -485,4 +485,203 @@
 
 .page-header {
     border-bottom: 1px solid @brewcraft-border;
+}
+
+//
+// ============================================================
+// BREWCRAFT HEADER - FINAL POLISH
+// ============================================================
+//
+
+//
+// ============================================================
+// DESKTOP NAV DROPDOWNS
+// ============================================================
+//
+
+.header.content>.navigation {
+
+    .level0 {
+        position: relative !important;
+    }
+
+    //
+    // Keep all top-level links on the same line
+    //
+    .level0>.level-top {
+        position: relative !important;
+
+        display: flex !important;
+        align-items: center;
+
+        height: 44px;
+
+        margin: 0 !important;
+        padding: 0 14px !important;
+
+        white-space: nowrap;
+    }
+
+    //
+    // Remove dropdown arrow from top-level category
+    //
+    .level0.parent>.level-top>.ui-menu-icon {
+        display: none !important;
+    }
+
+    .level0.parent>.level-top:after {
+        display: none !important;
+        content: none !important;
+    }
+
+    //
+    // First-level submenu must FLOAT over content
+    //
+    .level0>.submenu {
+        position: absolute !important;
+
+        top: 44px !important;
+        left: 0 !important;
+
+        z-index: 1000;
+
+        display: none;
+
+        min-width: 230px;
+
+        margin: 0 !important;
+        padding: 8px 0 !important;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, .08);
+    }
+
+    .level0:hover>.submenu,
+    .level0._active>.submenu {
+        display: block !important;
+    }
+
+    //
+    // Submenu links
+    //
+    .level0>.submenu .level1>a {
+        display: block;
+
+        padding: 11px 16px !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+
+        line-height: 1.4;
+
+        text-decoration: none;
+    }
+
+    .level0>.submenu .level1>a:hover {
+        background: @brewcraft-cream;
+
+        color: @brewcraft-coffee !important;
+    }
+}
+
+.header.content>.navigation {
+    position: relative;
+
+    display: flex !important;
+    align-items: center;
+
+    height: 44px;
+
+    overflow: visible !important;
+}
+
+.header.content {
+    overflow: visible !important;
+}
+
+//
+// Cart quantity badge
+//
+.minicart-wrapper {
+
+    .action.showcart {
+
+        .counter.qty {
+            min-width: 20px;
+            height: 20px;
+
+            padding: 0 6px;
+
+            border-radius: 10px;
+
+            background: @brewcraft-coffee !important;
+
+            color: @brewcraft-white !important;
+
+            font-family: @brewcraft-font-body;
+            font-size: 11px;
+            font-weight: 600;
+
+            line-height: 20px;
+
+            text-align: center;
+
+            box-sizing: border-box;
+        }
+
+        .counter-number {
+            color: @brewcraft-white !important;
+        }
+    }
+}
+
+//
+// ============================================================
+// TOP UTILITY BAR
+// ============================================================
+//
+
+.page-header .panel.wrapper {
+    border-bottom: 1px solid @brewcraft-border !important;
+    background: @brewcraft-espresso !important;
+    background-color: @brewcraft-espresso !important;
+}
+
+.page-header .panel.header {
+    color: @brewcraft-white !important;
+}
+
+.page-header .panel.header a {
+    color: @brewcraft-white !important;
+}
+
+.page-header .panel.header a:hover {
+    color: @brewcraft-gold !important;
+}
+
+
+.header.content > .navigation .level0:hover > .submenu,
+.header.content > .navigation .level0._active > .submenu {
+    display: block !important;
+}
+
+.header.content > .navigation .level0 > .submenu {
+    position: absolute !important;
+
+    top: 44px !important;
+    left: 0 !important;
+
+    display: none !important;
+
+    z-index: 1000;
 }

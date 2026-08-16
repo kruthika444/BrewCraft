@@ -13,10 +13,16 @@
                    before="-"
                    cacheable="false"/>
 
+        </referenceContainer>
+
+
+        <!-- Request Quote belongs directly inside the cart container -->
+        <referenceContainer name="checkout.cart.container">
+
             <block class="BrewCraft\RequestQuote\Block\Cart\RequestQuote"
                    name="brewcraft.request.quote.cart.action"
                    template="BrewCraft_RequestQuote::cart/request-quote.phtml"
-                   after="-"
+                   after="checkout.cart.form"
                    cacheable="false"/>
 
         </referenceContainer>
