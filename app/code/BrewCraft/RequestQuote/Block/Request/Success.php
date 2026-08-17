@@ -64,4 +64,11 @@ class Success extends Template
             'customer/account'
         );
     }
+
+    public function getMyQuotesUrl(): string
+{
+    return $this->getUrl(
+        'requestquote/account/index'
+    );
+}
 }

@@ -13,388 +13,445 @@ use Magento\Framework\Escaper;
 $cartItems = $block->getCartItems();
 ?>
 
-<div class="brewcraft-request-quote-form">
+<div class="brewcraft-quote-request">
 
-    <section class="brewcraft-request-quote-form__intro">
+    <!-- =====================================================
+         PAGE INTRO
+    ====================================================== -->
 
-        <h1>
+    <header class="brewcraft-quote-request__header">
+
+        <h1 class="brewcraft-quote-request__title">
             <?= $escaper->escapeHtml(
                 __('Request a Business Quote')
             ) ?>
         </h1>
 
-        <p>
+        <p class="brewcraft-quote-request__intro">
             <?= $escaper->escapeHtml(
                 __(
-                    'Review the products below, enter the quantity you want quoted and optionally provide your expected unit price.'
+                    'Review the products in your cart and let us know your requested quantity and expected unit price.'
+                )
+            ) ?>
+
+            <br>
+
+            <?= $escaper->escapeHtml(
+                __(
+                    'You can leave the expected unit price blank to request our best offer.'
                 )
             ) ?>
         </p>
 
-    </section>
+    </header>
 
-    <form class="form brewcraft-request-quote-form__form"
-          action="<?= $escaper->escapeUrl(
-              $block->getFormAction()
-          ) ?>"
-          method="post"
-          data-mage-init='{"validation":{}}'>
+
+    <form
+        class="form brewcraft-quote-request__form"
+        action="<?= $escaper->escapeUrl(
+                    $block->getFormAction()
+                ) ?>"
+        method="post"
+        data-mage-init='{"validation":{}}'>
 
         <?= $block->getBlockHtml('formkey') ?>
 
-        <section class="brewcraft-request-quote-form__items">
 
-            <h2>
-                <?= $escaper->escapeHtml(
-                    __('Products Included')
-                ) ?>
-            </h2>
+        <!-- =====================================================
+             PRODUCTS
+        ====================================================== -->
 
-            <p>
-                <?= $escaper->escapeHtml(
-                    __(
-                        'Enter the quantity you want quoted. You may also enter your expected unit price, or leave it blank to request our best offer.'
-                    )
-                ) ?>
-            </p>
+        <section class="brewcraft-quote-request__products">
 
-            <div class="table-wrapper">
+            <div class="brewcraft-quote-section-heading">
 
-                <table class="data table">
+                <h2>
+                    <?= $escaper->escapeHtml(
+                        __('Products Included')
+                    ) ?>
+                </h2>
 
-                    <caption class="table-caption">
+                <p>
+                    <?= $escaper->escapeHtml(
+                        __(
+                            'Enter the quantity you want quoted. You may also enter your expected unit price, or leave it blank to request our best offer.'
+                        )
+                    ) ?>
+                </p>
+
+            </div>
+
+
+            <div class="brewcraft-quote-products">
+
+                <!-- TABLE HEADER -->
+
+                <div class="brewcraft-quote-products__head">
+
+                    <div>
                         <?= $escaper->escapeHtml(
-                            __('Quote Request Products')
+                            __('Product')
                         ) ?>
-                    </caption>
+                    </div>
 
-                    <thead>
-                    <tr>
-                        <th scope="col">
-                            <?= $escaper->escapeHtml(
-                                __('Product')
-                            ) ?>
-                        </th>
+                    <div>
+                        <?= $escaper->escapeHtml(
+                            __('Current Unit Price')
+                        ) ?>
+                    </div>
 
-                        <th scope="col">
-                            <?= $escaper->escapeHtml(
-                                __('SKU')
-                            ) ?>
-                        </th>
+                    <div>
+                        <?= $escaper->escapeHtml(
+                            __('Requested Quantity')
+                        ) ?>
+                    </div>
 
-                        <th scope="col">
-                            <?= $escaper->escapeHtml(
-                                __('Current Unit Price')
-                            ) ?>
-                        </th>
+                    <div>
+                        <?= $escaper->escapeHtml(
+                            __('Expected Unit Price')
+                        ) ?>
+                    </div>
 
-                        <th scope="col">
-                            <?= $escaper->escapeHtml(
-                                __('Cart Quantity')
-                            ) ?>
-                        </th>
+                </div>
 
-                        <th scope="col">
-                            <?= $escaper->escapeHtml(
-                                __('Requested Quantity')
-                            ) ?>
-                        </th>
 
-                        <th scope="col">
-                            <?= $escaper->escapeHtml(
-                                __('Expected Unit Price')
-                            ) ?>
-                        </th>
-                    </tr>
-                    </thead>
+                <!-- PRODUCTS -->
 
-                    <tbody>
+                <?php foreach ($cartItems as $item): ?>
 
-                    <?php foreach ($cartItems as $item): ?>
+                    <?php
+                    $cartItemId = (int)$item->getId();
+                    $currentQty = (float)$item->getQty();
+                    $currentPrice = (float)$item->getCalculationPrice();
+                    ?>
 
-                        <?php
-                        $cartItemId = (int)$item->getId();
-                        $currentQty = (float)$item->getQty();
-                        $currentPrice = (float)$item->getCalculationPrice();
-                        ?>
+                    <div class="brewcraft-quote-product"
+                        data-quote-product
+                        data-current-price="<?= $escaper->escapeHtmlAttr(
+                                                (string)$currentPrice
+                                            ) ?>">
 
-                        <tr>
+                        <!-- PRODUCT -->
 
-                            <td data-th="<?= $escaper->escapeHtmlAttr(
-                                __('Product')
-                            ) ?>">
-                                <?= $escaper->escapeHtml(
-                                    (string)$item->getName()
-                                ) ?>
-                            </td>
+                        <div class="brewcraft-quote-product__product">
 
-                            <td data-th="<?= $escaper->escapeHtmlAttr(
-                                __('SKU')
-                            ) ?>">
-                                <?= $escaper->escapeHtml(
-                                    (string)$item->getSku()
-                                ) ?>
-                            </td>
+                            <div class="brewcraft-quote-product__image">
 
-                            <td data-th="<?= $escaper->escapeHtmlAttr(
-                                __('Current Unit Price')
-                            ) ?>">
-                                <?= $escaper->escapeHtml(
-                                    $block->formatPrice(
-                                        $currentPrice
-                                    )
-                                ) ?>
-                            </td>
+                                <img
+                                    src="<?= $escaper->escapeUrl(
+                                                $block->getProductImageUrl($item)
+                                            ) ?>"
+                                    alt="<?= $escaper->escapeHtmlAttr(
+                                                (string)$item->getName()
+                                            ) ?>">
 
-                            <td data-th="<?= $escaper->escapeHtmlAttr(
-                                __('Cart Quantity')
-                            ) ?>">
-                                <?= $escaper->escapeHtml(
-                                    (string)$currentQty
-                                ) ?>
-                            </td>
+                            </div>
 
-                            <td data-th="<?= $escaper->escapeHtmlAttr(
-                                __('Requested Quantity')
-                            ) ?>">
+                            <div class="brewcraft-quote-product__info">
 
-                                <label class="label"
-                                       for="requested_qty_<?= $escaper->escapeHtmlAttr(
-                                           (string)$cartItemId
-                                       ) ?>">
-
-                                    <span class="visually-hidden">
-                                        <?= $escaper->escapeHtml(
-                                            __(
-                                                'Requested quantity for %1',
-                                                $item->getName()
-                                            )
-                                        ) ?>
-                                    </span>
-
-                                </label>
-
-                                <input type="number"
-                                       name="items[<?= $escaper->escapeHtmlAttr(
-                                           (string)$cartItemId
-                                       ) ?>][requested_qty]"
-                                       id="requested_qty_<?= $escaper->escapeHtmlAttr(
-                                           (string)$cartItemId
-                                       ) ?>"
-                                       value="<?= $escaper->escapeHtmlAttr(
-                                           number_format(
-                                               $currentQty,
-                                               4,
-                                               '.',
-                                               ''
-                                           )
-                                       ) ?>"
-                                       min="0.0001"
-                                       step="0.0001"
-                                       class="input-text"
-                                       data-validate='{
-                                           "required": true,
-                                           "validate-number": true,
-                                           "validate-greater-than-zero": true
-                                       }'
-                                       required/>
-
-                            </td>
-
-                            <td data-th="<?= $escaper->escapeHtmlAttr(
-                                __('Expected Unit Price')
-                            ) ?>">
-
-                                <label class="label"
-                                       for="expected_price_<?= $escaper->escapeHtmlAttr(
-                                           (string)$cartItemId
-                                       ) ?>">
-
-                                    <span class="visually-hidden">
-                                        <?= $escaper->escapeHtml(
-                                            __(
-                                                'Expected unit price for %1',
-                                                $item->getName()
-                                            )
-                                        ) ?>
-                                    </span>
-
-                                </label>
-
-                                <input type="number"
-                                       name="items[<?= $escaper->escapeHtmlAttr(
-                                           (string)$cartItemId
-                                       ) ?>][expected_price]"
-                                       id="expected_price_<?= $escaper->escapeHtmlAttr(
-                                           (string)$cartItemId
-                                       ) ?>"
-                                       value=""
-                                       min="0.0001"
-                                       step="0.0001"
-                                       class="input-text"
-                                       placeholder="<?= $escaper->escapeHtmlAttr(
-                                           __('Optional')
-                                       ) ?>"
-                                       data-validate='{
-                                           "validate-number": true,
-                                           "validate-greater-than-zero": true
-                                       }'/>
-
-                                <div class="field note">
+                                <strong class="brewcraft-quote-product__name">
                                     <?= $escaper->escapeHtml(
-                                        __(
-                                            'Leave blank to request our best offer.'
-                                        )
+                                        (string)$item->getName()
                                     ) ?>
-                                </div>
+                                </strong>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </div>
 
-                    <?php endforeach; ?>
 
-                    </tbody>
+                        <!-- CURRENT PRICE -->
 
-                    <tfoot>
-                    <tr>
-                        <th colspan="5"
-                            scope="row">
+                        <div class="brewcraft-quote-product__price">
 
                             <?= $escaper->escapeHtml(
-                                __('Current Cart Subtotal')
+                                $block->formatPrice(
+                                    $currentPrice
+                                )
                             ) ?>
 
-                        </th>
+                        </div>
 
-                        <td>
-                            <strong>
+
+                        <!-- REQUESTED QTY -->
+
+                        <div class="brewcraft-quote-product__field">
+
+                            <label
+                                class="visually-hidden"
+                                for="requested_qty_<?= $escaper->escapeHtmlAttr(
+                                                        (string)$cartItemId
+                                                    ) ?>">
                                 <?= $escaper->escapeHtml(
-                                    $block->formatPrice(
-                                        $block->getCartSubtotal()
+                                    __(
+                                        'Requested quantity for %1',
+                                        $item->getName()
                                     )
                                 ) ?>
-                            </strong>
-                        </td>
-                    </tr>
-                    </tfoot>
+                            </label>
 
-                </table>
+                            <input
+                                type="number"
+                                name="items[<?= $escaper->escapeHtmlAttr(
+                                                (string)$cartItemId
+                                            ) ?>][requested_qty]"
+                                id="requested_qty_<?= $escaper->escapeHtmlAttr(
+                                                        (string)$cartItemId
+                                                    ) ?>"
+                                value="<?= $escaper->escapeHtmlAttr(
+                                            number_format(
+                                                $currentQty,
+                                                4,
+                                                '.',
+                                                ''
+                                            )
+                                        ) ?>"
+                                min="0.0001"
+                                step="0.0001"
+                                class="input-text"
+                                data-role="requested-qty"
+                                data-validate='{
+                                    "required": true,
+                                    "validate-number": true,
+                                    "validate-greater-than-zero": true
+                                    }'
+                                required>
+
+                            <div class="brewcraft-quote-product__note">
+                                <?= $escaper->escapeHtml(
+                                    __(
+                                        'Enter the quantity you want quoted.'
+                                    )
+                                ) ?>
+                            </div>
+
+                        </div>
+
+
+                        <!-- EXPECTED PRICE -->
+
+                        <div class="brewcraft-quote-product__field">
+
+                            <label
+                                class="visually-hidden"
+                                for="expected_price_<?= $escaper->escapeHtmlAttr(
+                                                        (string)$cartItemId
+                                                    ) ?>">
+                                <?= $escaper->escapeHtml(
+                                    __(
+                                        'Expected unit price for %1',
+                                        $item->getName()
+                                    )
+                                ) ?>
+                            </label>
+
+                            <input
+                                type="number"
+                                name="items[<?= $escaper->escapeHtmlAttr(
+                                                (string)$cartItemId
+                                            ) ?>][expected_price]"
+                                id="expected_price_<?= $escaper->escapeHtmlAttr(
+                                                        (string)$cartItemId
+                                                    ) ?>"
+                                value=""
+                                min="0.0001"
+                                step="0.0001"
+                                class="input-text"
+                                data-role="expected-price"
+                                placeholder="<?= $escaper->escapeHtmlAttr(
+                                                    __('Optional')
+                                                ) ?>"
+                                data-validate='{
+        "validate-number": true,
+        "validate-greater-than-zero": true
+    }'>
+
+                            <div class="brewcraft-quote-product__note">
+                                <?= $escaper->escapeHtml(
+                                    __(
+                                        'Leave blank to request our best offer.'
+                                    )
+                                ) ?>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+
+                <!-- SUBTOTAL -->
+
+                <div class="brewcraft-quote-products__totals">
+
+                    <div class="brewcraft-quote-products__total-row">
+
+                        <span>
+                            <?= $escaper->escapeHtml(
+                                __('Current Cart Value')
+                            ) ?>
+                        </span>
+
+                        <strong>
+                            <?= $escaper->escapeHtml(
+                                $block->formatPrice(
+                                    $block->getCartSubtotal()
+                                )
+                            ) ?>
+                        </strong>
+
+                    </div>
+
+                    <div class="brewcraft-quote-products__total-row
+                brewcraft-quote-products__total-row--estimate">
+
+                        <span>
+                            <?= $escaper->escapeHtml(
+                                __('Requested Quote Estimate')
+                            ) ?>
+                        </span>
+
+                        <strong
+                            data-role="quote-estimate"
+                            data-currency-symbol="₹">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </section>
 
-        <fieldset class="fieldset">
 
-            <legend class="legend">
-                <span>
+        <!-- =====================================================
+             QUOTE DETAILS
+        ====================================================== -->
+
+        <section class="brewcraft-quote-request__details">
+
+            <div class="brewcraft-quote-section-heading brewcraft-quote-section-heading--details">
+
+                <h2>
                     <?= $escaper->escapeHtml(
                         __('Quote Request Details')
                     ) ?>
-                </span>
-            </legend>
+                </h2>
 
-            <div class="field quote-name required">
+            </div>
 
-                <label class="label"
-                       for="quote_name">
 
+            <!-- QUOTE NAME -->
+
+            <div class="field quote-name required brewcraft-quote-field">
+
+                <label
+                    class="label"
+                    for="quote_name">
                     <span>
                         <?= $escaper->escapeHtml(
                             __('Quote Name')
                         ) ?>
                     </span>
-
                 </label>
 
                 <div class="control">
 
-                    <input type="text"
-                           name="quote_name"
-                           id="quote_name"
-                           class="input-text"
-                           maxlength="255"
-                           data-validate='{"required": true}'
-                           placeholder="<?= $escaper->escapeHtmlAttr(
-                               __(
-                                   'Example: August Coffee Equipment Order'
-                               )
-                           ) ?>"
-                           required/>
+                    <input
+                        type="text"
+                        name="quote_name"
+                        id="quote_name"
+                        class="input-text"
+                        maxlength="255"
+                        data-validate='{"required":true}'
+                        placeholder="<?= $escaper->escapeHtmlAttr(
+                                            __(
+                                                'Example: August Coffee Equipment Order'
+                                            )
+                                        ) ?>"
+                        required>
 
                 </div>
 
             </div>
 
-            <div class="field customer-message">
 
-                <label class="label"
-                       for="customer_message">
+            <!-- MESSAGE -->
 
+            <div class="field customer-message brewcraft-quote-field">
+
+                <label
+                    class="label"
+                    for="customer_message">
                     <span>
                         <?= $escaper->escapeHtml(
                             __('Message')
                         ) ?>
                     </span>
-
                 </label>
 
                 <div class="control">
 
-                    <textarea name="customer_message"
-                              id="customer_message"
-                              class="input-text"
-                              rows="6"
-                              maxlength="5000"
-                              placeholder="<?= $escaper->escapeHtmlAttr(
-                                  __(
-                                      'Tell us about your expected volume, delivery requirements or pricing request.'
-                                  )
-                              ) ?>"></textarea>
+                    <textarea
+                        name="customer_message"
+                        id="customer_message"
+                        class="input-text"
+                        rows="5"
+                        maxlength="5000"
+                        placeholder="<?= $escaper->escapeHtmlAttr(
+                                            __(
+                                                'Tell us about your expected volume, delivery requirements or pricing request.'
+                                            )
+                                        ) ?>"></textarea>
 
                 </div>
 
             </div>
 
-        </fieldset>
+        </section>
 
-        <div class="actions-toolbar">
 
-            <div class="primary">
+        <!-- =====================================================
+             ACTIONS
+        ====================================================== -->
 
-                <button type="submit"
-                        class="action primary">
+        <div class="brewcraft-quote-request__actions">
 
-                    <span>
-                        <?= $escaper->escapeHtml(
-                            __('Submit Quote Request')
-                        ) ?>
-                    </span>
+            <button
+                type="submit"
+                class="action primary brewcraft-quote-submit">
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('Submit Quote Request')
+                    ) ?>
+                </span>
+            </button>
 
-                </button>
-
-            </div>
-
-            <div class="secondary">
-
-                <a class="action secondary"
-                   href="<?= $escaper->escapeUrl(
-                       $block->getBackToCartUrl()
-                   ) ?>">
-
-                    <span>
-                        <?= $escaper->escapeHtml(
-                            __('Back to Shopping Cart')
-                        ) ?>
-                    </span>
-
-                </a>
-
-            </div>
+            <a
+                class="brewcraft-quote-back"
+                href="<?= $escaper->escapeUrl(
+                            $block->getBackToCartUrl()
+                        ) ?>">
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('Back to Shopping Cart')
+                    ) ?>
+                </span>
+            </a>
 
         </div>
 
     </form>
+
+    <script type="text/x-magento-init">
+        {
+    ".brewcraft-quote-request__form": {
+        "js/request-quote-estimate": {}
+    }
+}
+</script>
 
 </div>

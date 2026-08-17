@@ -1,0 +1,840 @@
+//
+// ============================================================
+// BREWCRAFT - REQUEST A BUSINESS QUOTE
+// ============================================================
+//
+
+.brewcraft-quote-request {
+    max-width: 1440px;
+
+    margin: 0 auto;
+    padding: 30px 32px 72px;
+
+    box-sizing: border-box;
+
+
+    //
+    // ========================================================
+    // PAGE INTRO
+    // ========================================================
+    //
+
+    &__header {
+        position: relative;
+
+        margin: 0 0 34px;
+    }
+
+    &__title {
+        margin: 0 0 12px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 40px;
+        font-weight: 600;
+
+        line-height: 1.15;
+    }
+
+    &__intro {
+        max-width: 800px;
+
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        line-height: 1.7;
+    }
+
+
+    //
+    // ========================================================
+    // SECTION HEADINGS
+    // ========================================================
+    //
+
+    .brewcraft-quote-section-heading {
+        margin: 0 0 14px;
+
+        h2 {
+            margin: 0 0 6px;
+
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-heading;
+            font-size: 21px;
+            font-weight: 600;
+
+            line-height: 1.3;
+        }
+
+        p {
+            margin: 0;
+
+            color: @brewcraft-muted;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        &--details {
+            margin-bottom: 18px;
+
+            padding-bottom: 12px;
+
+            border-bottom: 1px solid @brewcraft-border;
+        }
+    }
+
+
+    //
+    // ========================================================
+    // PRODUCTS SECTION
+    // ========================================================
+    //
+
+    &__products {
+        margin-bottom: 28px;
+    }
+
+    .brewcraft-quote-products {
+        width: 100%;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 9px;
+
+        background: @brewcraft-white;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 3px 12px rgba(0, 0, 0, .025);
+    }
+
+
+    //
+    // TABLE HEADER
+    //
+    .brewcraft-quote-products__head {
+        display: grid;
+
+        grid-template-columns:
+            minmax(320px, 1.4fr)
+            minmax(150px, .65fr)
+            minmax(220px, .9fr)
+            minmax(220px, .9fr);
+
+        align-items: center;
+
+        min-height: 46px;
+
+        padding: 0 20px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        background: #faf8f4;
+
+        box-sizing: border-box;
+
+        > div {
+            color: @brewcraft-charcoal;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+            font-weight: 600;
+        }
+    }
+
+
+    //
+    // PRODUCT ROW
+    //
+    .brewcraft-quote-product {
+        display: grid;
+
+        grid-template-columns:
+            minmax(320px, 1.4fr)
+            minmax(150px, .65fr)
+            minmax(220px, .9fr)
+            minmax(220px, .9fr);
+
+        align-items: center;
+
+        padding: 18px 20px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // PRODUCT INFO
+    //
+    .brewcraft-quote-product__product {
+        display: flex;
+        align-items: center;
+
+        gap: 16px;
+
+        min-width: 0;
+    }
+
+    .brewcraft-quote-product__image {
+        flex: 0 0 92px;
+
+        width: 92px;
+        height: 92px;
+
+        border-radius: 6px;
+
+        background: @brewcraft-cream;
+
+        overflow: hidden;
+
+        img {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+
+    .brewcraft-quote-product__info {
+        min-width: 0;
+    }
+
+    .brewcraft-quote-product__name {
+        display: block;
+
+        max-width: 280px;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 600;
+
+        line-height: 1.45;
+    }
+
+
+    //
+    // PRICE
+    //
+    .brewcraft-quote-product__price {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+
+    //
+    // PRODUCT INPUTS
+    //
+    .brewcraft-quote-product__field {
+        padding-right: 22px;
+
+        box-sizing: border-box;
+
+        .input-text {
+            width: 100%;
+            height: 42px;
+
+            padding: 0 12px;
+
+            border: 1px solid @brewcraft-border;
+            border-radius: 5px;
+
+            background: @brewcraft-white;
+
+            color: @brewcraft-charcoal;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+
+            box-shadow: none;
+
+            box-sizing: border-box;
+        }
+
+        .input-text:focus {
+            border-color: @brewcraft-coffee;
+
+            box-shadow: none;
+        }
+    }
+
+    .brewcraft-quote-product__note {
+        margin-top: 7px;
+
+        color: @brewcraft-muted;
+
+        font-size: 11px;
+
+        line-height: 1.4;
+    }
+
+
+    //
+    // SUBTOTAL
+    //
+    .brewcraft-quote-products__subtotal {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        min-height: 58px;
+
+        padding: 0 22px;
+
+        background: @brewcraft-cream;
+
+        box-sizing: border-box;
+    }
+
+    .brewcraft-quote-products__subtotal-label {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        color: @brewcraft-charcoal;
+
+        font-size: 14px;
+    }
+
+    .brewcraft-quote-products__subtotal-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        border-radius: 50%;
+
+        background: @brewcraft-gold;
+
+        color: @brewcraft-white;
+
+        font-size: 14px;
+    }
+
+    .brewcraft-quote-products__subtotal-value {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+
+    //
+    // ========================================================
+    // QUOTE DETAILS
+    // ========================================================
+    //
+
+    &__details {
+        margin-top: 0;
+    }
+
+    .brewcraft-quote-field {
+        margin: 0 0 18px;
+
+        > .label {
+            display: block;
+
+            margin: 0 0 7px;
+
+            color: @brewcraft-charcoal;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        &.required > .label span:after {
+            margin-left: 4px;
+
+            color: #c83f3f;
+
+            content: '*';
+        }
+
+        .control {
+            width: 100%;
+        }
+
+        .input-text {
+            width: 100%;
+
+            border: 1px solid @brewcraft-border;
+            border-radius: 5px;
+
+            background: @brewcraft-white;
+
+            color: @brewcraft-charcoal;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+
+            box-shadow: none;
+
+            box-sizing: border-box;
+        }
+
+        input.input-text {
+            height: 42px;
+
+            padding: 0 13px;
+        }
+
+        textarea.input-text {
+            min-height: 120px;
+
+            padding: 12px 13px;
+
+            resize: vertical;
+        }
+
+        .input-text:focus {
+            border-color: @brewcraft-coffee;
+
+            box-shadow: none;
+        }
+    }
+
+
+    //
+    // ========================================================
+    // ACTIONS
+    // ========================================================
+    //
+
+    &__actions {
+        display: flex;
+        align-items: center;
+
+        gap: 28px;
+
+        margin-top: 22px;
+    }
+
+    .brewcraft-quote-submit {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        gap: 9px;
+
+        min-width: 220px;
+        height: 48px;
+
+        margin: 0 !important;
+        padding: 0 22px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        box-shadow: none !important;
+    }
+
+    .brewcraft-quote-submit:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+    }
+
+    .brewcraft-quote-submit__icon {
+        font-size: 13px;
+    }
+
+.brewcraft-quote-back {
+    position: relative;
+
+    display: inline-flex !important;
+    align-items: center;
+
+    min-height: 48px;
+
+    margin: 0 !important;
+
+    border: 0 !important;
+
+    background: transparent !important;
+
+    color: @brewcraft-coffee !important;
+
+    font-family: @brewcraft-font-body;
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    text-decoration: none !important;
+
+    box-shadow: none !important;
+}
+
+.brewcraft-quote-back:before {
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    color: @brewcraft-coffee;
+
+    // content: '\003C';
+
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+
+    line-height: 1;
+
+    transform: translateY(-50%);
+}
+
+.brewcraft-quote-back:after {
+    display: none !important;
+}
+
+.brewcraft-quote-back:hover {
+    color: @brewcraft-espresso !important;
+
+    text-decoration: none !important;
+}
+
+.brewcraft-quote-back:hover:before {
+    color: @brewcraft-espresso;
+}
+
+    //
+    // Utility
+    //
+    .visually-hidden {
+        position: absolute !important;
+
+        width: 1px !important;
+        height: 1px !important;
+
+        padding: 0 !important;
+        margin: -1px !important;
+
+        overflow: hidden !important;
+
+        clip: rect(0, 0, 0, 0) !important;
+
+        white-space: nowrap !important;
+
+        border: 0 !important;
+    }
+}
+
+.brewcraft-quote-products__totals {
+    background: @brewcraft-cream;
+}
+
+.brewcraft-quote-products__total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 50px;
+
+    padding: 0 22px;
+
+    color: @brewcraft-charcoal;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+.brewcraft-quote-products__total-row +
+.brewcraft-quote-products__total-row {
+    border-top: 1px solid @brewcraft-border;
+}
+
+.brewcraft-quote-products__total-row strong {
+    color: @brewcraft-espresso;
+
+    font-family: @brewcraft-font-heading;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.brewcraft-quote-products__total-row--estimate {
+    background: #faf7f1;
+}
+
+.brewcraft-quote-products__total-row--estimate span {
+    font-weight: 600;
+}
+
+.brewcraft-quote-products__total-row--estimate strong {
+    font-size: 18px;
+}
+
+//
+// ============================================================
+// REQUEST QUOTE SUCCESS
+// ============================================================
+//
+
+.brewcraft-request-quote-success {
+    max-width: 760px;
+
+    margin: 70px auto 90px;
+
+    padding: 0 32px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 72px;
+        height: 72px;
+
+        margin: 0 auto 20px;
+
+        border-radius: 50%;
+
+        background: #edf8ef;
+
+        color: #227a36;
+
+        font-size: 34px;
+        font-weight: 600;
+
+        line-height: 1;
+    }
+
+
+    &__eyebrow {
+        margin-bottom: 8px;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        letter-spacing: .08em;
+
+        text-transform: uppercase;
+    }
+
+
+    &__title {
+        margin: 0 0 14px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 36px;
+        font-weight: 600;
+
+        line-height: 1.2;
+    }
+
+
+    &__text {
+        max-width: 620px;
+
+        margin: 0 auto 30px;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
+
+
+    &__summary {
+        width: 100%;
+
+        margin: 0 auto 28px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 10px;
+
+        background: @brewcraft-white;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 4px 16px rgba(0, 0, 0, .03);
+    }
+
+
+    &__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 24px;
+
+        min-height: 56px;
+
+        padding: 0 20px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+
+        text-align: left;
+
+        span:first-child {
+            color: @brewcraft-muted;
+
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        strong {
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-heading;
+            font-size: 14px;
+            font-weight: 600;
+
+            text-align: right;
+        }
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+
+    &__status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 82px;
+
+        padding: 6px 12px;
+
+        border-radius: 999px;
+
+        background: #fff6dd;
+
+        color: #8a6518 !important;
+
+        font-size: 12px !important;
+        font-weight: 600 !important;
+
+        line-height: 1;
+    }
+
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 14px;
+    }
+
+
+    &__primary {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 180px;
+        height: 46px;
+
+        padding: 0 22px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none !important;
+
+        box-shadow: none !important;
+
+        &:hover {
+            border-color: @brewcraft-coffee !important;
+
+            background: @brewcraft-coffee !important;
+        }
+    }
+
+
+    &__secondary {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 180px;
+        height: 46px;
+
+        padding: 0 22px !important;
+
+        border: 1px solid @brewcraft-coffee !important;
+        border-radius: 5px;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-coffee !important;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none !important;
+
+        box-shadow: none !important;
+
+        &:hover {
+            background: @brewcraft-cream !important;
+
+            color: @brewcraft-espresso !important;
+        }
+    }
+}

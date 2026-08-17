@@ -7543,3 +7543,684 @@ BrewCraft owns:
 Whenever we tried to make CSS or custom DOM manipulation replace Magento's structural behavior, the page became fragile. Once we let Magento keep the functional responsibility and limited the theme to presentation and controlled interaction extensions, the Cart became significantly more stable.
 
 Given how much iteration this page required, this is one of the more useful implementation logs for the BrewCraft project because it documents not only **what we built**, but also **which Magento frontend patterns should not be repeated in the remaining Checkout and Request Quote work**.
+
+# 8. BrewCraft Request Quote — Development Log
+
+---
+
+## 1. Objective
+
+The goal of this phase was to redesign and improve the custom `BrewCraft_RequestQuote` customer quote-request flow while preserving the functionality already developed in the module.
+
+The feature is intended for eligible business/B2B customers, allowing them to submit their shopping cart products to BrewCraft for customized pricing.
+
+**Customer flow covered in this phase:**
+
+```
+Shopping Cart
+      ↓
+Request a Quote
+      ↓
+Request a Business Quote form
+      ↓
+Enter requested quantity / expected price
+      ↓
+Submit Quote Request
+      ↓
+Quote Request Submitted
+```
+
+---
+
+## 2. Existing Cart Integration
+
+The custom module already provided a business-only block on the Shopping Cart page:
+
+```php
+<?php if ($block->canRequestQuote()): ?>
+```
+
+This ensured that Request Quote functionality was shown only when the customer met the business quote eligibility conditions.
+
+**The cart CTA initially appeared as:**
+
+```
+Need a Custom Business Quote?
+
+Submit the products in your shopping cart to the
+BrewCraft business team for a custom price proposal.
+
+[ Request a Quote ]
+```
+
+---
+
+## 3. Request Quote Cart Placement
+
+Originally the block was declared under `<referenceContainer name="content">` with `after="-"`, meaning the quote block appeared after the complete cart container.
+
+**That created a layout dependency:**
+
+```
+Shipping estimator opens
+        ↓
+Summary becomes taller
+        ↓
+Cart container gets taller
+        ↓
+Request Quote gets pushed downward
+```
+
+**Requirement established:** The Request Quote box needed to remain directly below the left-side cart content / Update Shopping Cart, regardless of whether the Shipping estimator on the right was open or closed.
+
+The block was repositioned into the cart layout so the left and right sides behaved independently.
+
+**Final concept:**
+
+```
+LEFT                              RIGHT
+
+Products                          Summary
+                                  Totals
+Update Shopping Cart              Checkout
+                                  Shipping ▼
+
+Request Quote
+```
+
+Opening Shipping now affects only the right-side Summary.
+
+---
+
+## 4. Request Quote Cart CTA Design
+
+The cart Request Quote block received BrewCraft styling:
+
+- Cream surface
+- Subtle border
+- Rounded corners
+- Espresso heading
+- Supporting description
+- Dark BrewCraft primary CTA
+
+Final CTA uses `[ Request a Quote ]` instead of Magento blue.
+
+---
+
+## 5. Request Quote Page — Original State
+
+The original page was functional but largely unstyled.
+
+**It contained:**
+
+```
+Request a Business Quote
+
+Products Included
+
+Product | SKU | Current Unit Price | Cart Quantity | Requested Quantity | Expected Unit Price
+
+Current Cart Subtotal
+
+Quote Request Details
+
+Quote Name
+Message
+
+Submit Quote Request
+Back to Shopping Cart
+```
+
+The main functional fields were already implemented correctly.
+
+---
+
+## 6. Existing Backend Contract Preserved
+
+A major decision was made to **not redesign** the save/controller/service contract.
+
+**The existing form submitted:**
+
+| Field | Input Name |
+|---|---|
+| Requested quantity | `items[ITEM_ID][requested_qty]` |
+| Expected price | `items[ITEM_ID][expected_price]` |
+| Quote name | `quote_name` |
+| Customer message | `customer_message` |
+
+These names were retained exactly so the existing RequestQuote save flow continued to work.
+
+---
+
+## 7. Fields Removed From the UI
+
+After reviewing the actual customer use case, two fields were identified as unnecessary for the customer-facing form:
+
+- SKU
+- Cart Quantity
+
+The cart quantity was still used internally as the default value for **Requested Quantity**, so functionality was retained without showing redundant information.
+
+---
+
+## 8. Final Product Request Structure
+
+The product table was simplified to:
+
+```
+Product | Current Unit Price | Requested Qty | Expected Price
+
+┌──────────────────────────────────────────────────────────────┐
+│ [image]      ₹699            [ 10 ]           [ 500 ]        │
+│ Arabica 2kg                                                   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+This more closely reflects what a business buyer actually needs to provide.
+
+---
+
+## 9. Product Images Added
+
+The original Request Quote page did not render product images.
+
+Instead of accessing Magento services directly from PHTML, image handling was added to `BrewCraft\RequestQuote\Block\Request\Create` through Magento's catalog image helper.
+
+The template therefore only needs to request:
+
+```php
+$block->getProductImageUrl($item)
+```
+
+This kept dependency/service logic out of the template. The page now visually matches the rest of the BrewCraft cart/product experience.
+
+---
+
+## 10. Current Unit Price
+
+The existing `$item->getCalculationPrice()` continues to provide the current Magento cart item unit price. This value represents the current storefront price, not the customer's requested business price.
+
+```
+Current Unit Price
+₹699.00
+```
+
+---
+
+## 11. Requested Quantity
+
+Requested Quantity remains a required numeric field. Existing validation was preserved:
+
+- Required
+- Number
+- Greater than zero
+
+The cart quantity provides its initial value. The business customer can then request `10`, `50`, or `200` without changing the actual Magento shopping cart quantity.
+
+> **Important:** Shopping Cart quantity and Quote Request quantity represent different business intents.
+
+---
+
+## 12. Expected Unit Price
+
+Expected Unit Price remains **optional**.
+
+```
+Expected Unit Price
+[ Optional ]
+```
+
+If left blank: *"Leave blank to request our best offer."* — BrewCraft's business team decides the proposal price.
+
+---
+
+## 13. Cart Value vs Quote Value Problem
+
+During development, an important UX problem was identified.
+
+**Example:**
+
+```
+Current Unit Price  = ₹699
+Requested Quantity  = 10
+Expected Unit Price = ₹500
+
+Yet the page still displayed:
+Current Cart Subtotal = ₹699
+```
+
+Technically correct (the customer's actual cart still contained `1 × ₹699`), but confusing after the customer had entered quote values.
+
+---
+
+## 14. Two Different Financial Concepts
+
+We therefore separated these into two distinct values:
+
+**Current Cart Value** — What the actual Magento cart is worth:
+```
+1 × ₹699 = ₹699
+```
+
+**Requested Quote Estimate** — What the current quote request approximately represents:
+```
+10 × ₹500 = ₹5,000
+```
+
+---
+
+## 15. Requested Quote Estimate Logic
+
+**Final business rule:**
+
+```
+IF expected price exists:
+    estimate = requested quantity × expected price
+
+ELSE:
+    estimate = requested quantity × current unit price
+```
+
+**For multiple products:**
+
+```
+Product A  →  10 × ₹500  = ₹5,000
+Product B  →   5 × ₹1,000 = ₹5,000
+
+Requested Quote Estimate = ₹10,000
+```
+
+---
+
+## 16. Dynamic Quote Estimate
+
+A frontend Magento-compatible JS component was introduced:
+
+```
+web/js/request-quote-estimate.js
+```
+
+It listens to both **Requested Quantity** and **Expected Unit Price** using `input` and `change` events, recalculating while the customer types without needing a button or page refresh.
+
+**Example flow:**
+
+```
+Requested Qty: 1 → 10
+Estimate: ₹699 → ₹6,990
+
+Expected Price: blank → 500
+Estimate: ₹6,990 → ₹5,000
+
+Expected Price: deleted
+Estimate falls back to Current Unit Price automatically
+```
+
+---
+
+## 17. Magento JS Initialization
+
+Initially the quote estimate remained at `₹0.00` even though values were entered, indicating the custom JS component was not being initialized correctly.
+
+**The initialization was separated:**
+
+Magento validation remained:
+```html
+data-mage-init='{"validation":{}}'
+```
+
+The quote calculator used:
+```html
+<script type="text/x-magento-init">
+{
+    ".brewcraft-quote-request__form": {
+        "js/request-quote-estimate": {}
+    }
+}
+</script>
+```
+
+This made the responsibilities clearer — Magento validation and BrewCraft quote calculator run independently without combining both behaviors into the same initializer.
+
+---
+
+## 18. Quote Details Section
+
+The existing fields were retained:
+
+- **Quote Name** — Required (e.g. `August Coffee Equipment Order`)
+- **Message** — Optional. Additional context such as expected volume, delivery requirements, pricing requirement, or business context. 5000 character limit retained.
+
+---
+
+## 19. Duplicate Page Heading
+
+After the new design was applied, the page contained two headings:
+
+- `Request a Quote` — from Magento's native `page.main.title`
+- `Request a Business Quote` — from the custom template
+
+The native page title was removed through the route layout XML:
+
+```xml
+<referenceBlock
+    name="page.main.title"
+    remove="true"
+/>
+```
+
+Final page has only: **Request a Business Quote**
+
+---
+
+## 20. Submit Quote Request CTA
+
+The default Magento-blue submit button was replaced.
+
+**Final design:** `[ Submit Quote Request ]`
+
+- Espresso background
+- White text
+- BrewCraft typography
+- Coffee-brown hover
+- Rounded corners
+- Text-only (experimental icon removed)
+
+---
+
+## 21. Back to Shopping Cart
+
+The original Back link suffered from overlapping Magento pseudo-elements and an unattractive small arrow. The markup was simplified.
+
+**Final design:** `← Back to Shopping Cart`
+
+- BrewCraft brown color
+- Properly sized arrow
+- Consistent vertical alignment
+- No Magento-generated extra icon
+- Subtle hover treatment
+
+---
+
+## 22. Request Form Final Design
+
+```
+Request a Business Quote
+
+Review the products in your cart and let us know your
+requested quantity and expected unit price.
+You can leave the expected unit price blank...
+
+Products Included
+
+┌────────────────────────────────────────────────────────────┐
+│ Product | Unit Price | Requested Qty | Expected Unit Price │
+│                                                            │
+│ [img]      ₹699          [10]             [500]            │
+├────────────────────────────────────────────────────────────┤
+│ Current Cart Value                            ₹699.00      │
+├────────────────────────────────────────────────────────────┤
+│ Requested Quote Estimate                    ₹5,000.00      │
+└────────────────────────────────────────────────────────────┘
+
+Quote Request Details
+──────────────────────────────────────────────────────────────
+
+Quote Name *
+[ August Coffee Equipment Order ]
+
+Message
+[                                                      ]
+[                                                      ]
+
+[ Submit Quote Request ]       ← Back to Shopping Cart
+```
+
+---
+
+## 23. Quote Submission
+
+The original server-side save process was preserved. When the user submits, the request continues to the existing custom route:
+
+```
+requestquote/request/save
+```
+
+No controller/service/repository contract was changed during the redesign. This was an important architectural decision because the quote workflow already functioned correctly.
+
+---
+
+## 24. Quote Submission Success Page
+
+After successful creation, the customer is redirected to the quote confirmation page.
+
+**Original page contained:**
+- `Quote Request Submitted` — Magento success alert
+- `Your Quote Request Has Been Submitted` — custom heading
+- Quote Number, Quote Name, Status
+- Continue Shopping / Go to My Account
+
+There was unnecessary duplicate messaging.
+
+---
+
+## 25. Success Page Redesign
+
+The new success state was simplified:
+
+```
+             ✓
+
+      BREWCRAFT BUSINESS
+
+      Quote Request Submitted
+
+Our business team will review your request
+and prepare a custom price proposal.
+
+┌─────────────────────────────────────┐
+│ Quote Number        BCQ-...         │
+│ Quote Name          ...             │
+│ Status              [ Pending ]     │
+└─────────────────────────────────────┘
+
+[ Continue Shopping ]   [ View My Quotes ]
+```
+
+---
+
+## 26. Status Badge
+
+Instead of plain `Status: Pending`, the status is presented as a visual status pill:
+
+```
+[ Pending ]
+```
+
+Using a warm neutral/yellow treatment. This status language should be reused on My Quotes, Quote Detail pages.
+
+---
+
+## 27. Quote Number
+
+The generated business quote identifier is displayed prominently:
+
+```
+BCQ-20260816-20541133
+```
+
+This gives the customer a reference for future communication with BrewCraft's business team.
+
+---
+
+## 28. Success Page Buttons
+
+| Button | Type |
+|---|---|
+| `[ Continue Shopping ]` | Primary BrewCraft CTA |
+| `[ View My Quotes ]` | Secondary outlined action |
+
+**"View My Quotes"** is more useful than **"Go to My Account"** because it communicates exactly where the customer should go next.
+
+---
+
+## 29. Success Page Duplicate Heading
+
+Like the create page, Magento's native `page.main.title` created another heading. It should likewise be removed through the success route layout XML so the custom success content owns the page title.
+
+---
+
+## 30. Files Involved
+
+**Custom module:** `app/code/BrewCraft/RequestQuote/`
+
+| File | Responsibilities |
+|---|---|
+| `Block/Request/Create.php` | Active customer cart, visible cart items, cart subtotal, price formatting, product image URL, form action, back-to-cart URL |
+| `view/frontend/templates/request/create.phtml` | Request form, product display, requested quantity, expected unit price, quote name, message, submit, back link |
+| `Block/Request/Success.php` | Load quote request by quote number, Continue Shopping URL, Customer/My Quotes URL |
+| `view/frontend/templates/request/success.phtml` | Confirmation, quote number, quote name, status, post-submit actions |
+
+---
+
+## 31. Theme Files
+
+**Request Quote styling:**
+```
+app/design/frontend/BrewCraft/supply/web/css/source/_request-quote.less
+```
+
+Imported from `_extend.less`:
+```less
+@import '_request-quote.less';
+```
+
+**Dynamic estimate:**
+```
+web/js/request-quote-estimate.js
+```
+
+---
+
+## 32. Existing Backend Logic Preserved
+
+This phase intentionally did not modify:
+
+- Quote repository
+- Save controller
+- Quote persistence
+- Admin processing
+- Quote status business logic
+- Customer eligibility
+- Request Quote ACL/business rules
+
+The work focused on UI, UX, presentation, dynamic quote estimation, navigation, and customer clarity. This reduces regression risk.
+
+---
+
+## 33. Current Request Quote Customer Journey
+
+```
+Business Customer
+      ↓
+Shopping Cart
+      ↓
+Request a Quote
+      ↓
+Request a Business Quote
+      ↓
+Review cart products
+      ↓
+Enter requested quantity
+      ↓
+Optionally enter expected unit price
+      ↓
+See Requested Quote Estimate
+      ↓
+Enter Quote Name / Message
+      ↓
+Submit Quote Request
+      ↓
+Quote created
+      ↓
+Quote Request Submitted
+      ↓
+View My Quotes / Continue Shopping
+```
+
+---
+
+## 34. Functional Status
+
+| Feature | Status |
+|---|---|
+| Business-only Request Quote | ✅ |
+| Cart Request Quote CTA | ✅ |
+| Request Quote placement | ✅ |
+| Product images | ✅ |
+| Current Unit Price | ✅ |
+| Requested Quantity | ✅ |
+| Expected Unit Price | ✅ |
+| SKU removed from customer UI | ✅ |
+| Cart Quantity removed from customer UI | ✅ |
+| Current Cart Value | ✅ |
+| Dynamic Requested Quote Estimate | ✅ |
+| Quote Name validation | ✅ |
+| Customer Message | ✅ |
+| Submit Quote Request | ✅ |
+| Back to Shopping Cart | ✅ |
+| Quote creation | ✅ |
+| Success page | ✅ |
+| Quote Number display | ✅ |
+| Pending status | ✅ |
+| Continue Shopping | ✅ |
+| View My Quotes direction | ✅ |
+
+---
+
+## 35. Important Technical Lessons
+
+### Separate cart data from quote-request data
+
+| Cart | Quote Request |
+|---|---|
+| Cart qty | Requested quote qty |
+| Cart price | Expected business price |
+| Cart subtotal | Requested quote estimate |
+
+Changing quote request values must **never** modify the customer's Magento cart.
+
+### Quote estimate is informational
+
+The frontend calculation (`requested quantity × requested/current price`) is an estimate for user clarity only. It is **not** an approved quotation — the business team still controls the final proposed price.
+
+### Preserve existing backend contracts
+
+Because RequestQuote functionality already worked, redesigning only the frontend minimized regression risk.
+
+### Use Magento services in Blocks, not PHTML
+
+Product image handling belongs in the block/service layer — not through ObjectManager or ad-hoc media URL construction in templates.
+
+---
+
+## Next B2B Quote Phase
+
+With this section complete, the next design phase should be:
+
+```
+Create Quote ✅
+      ↓
+Submission Success ✅
+      ↓
+My Quotes             ← NEXT
+      ↓
+Quote Details
+      ↓
+Admin Proposal
+      ↓
+Accept / Reject
+      ↓
+Accepted Quote → Cart / Checkout
+```
+
+**My Quotes** should be designed first because it establishes the status system and navigation that the Quote Detail page will reuse.

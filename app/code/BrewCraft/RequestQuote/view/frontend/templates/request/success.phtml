@@ -17,19 +17,24 @@ $quoteRequest = $block->getQuoteRequest();
 
     <section class="brewcraft-request-quote-success">
 
-        <span>
+        <div class="brewcraft-request-quote-success__icon"
+             aria-hidden="true">
+            ✓
+        </div>
+
+        <div class="brewcraft-request-quote-success__eyebrow">
             <?= $escaper->escapeHtml(
                 __('BrewCraft Business')
             ) ?>
-        </span>
+        </div>
 
-        <h1>
+        <h1 class="brewcraft-request-quote-success__title">
             <?= $escaper->escapeHtml(
-                __('Your Quote Request Has Been Submitted')
+                __('Quote Request Submitted')
             ) ?>
         </h1>
 
-        <p>
+        <p class="brewcraft-request-quote-success__text">
             <?= $escaper->escapeHtml(
                 __(
                     'Our business team will review your request and prepare a custom price proposal.'
@@ -39,81 +44,81 @@ $quoteRequest = $block->getQuoteRequest();
 
         <div class="brewcraft-request-quote-success__summary">
 
-            <p>
+            <div class="brewcraft-request-quote-success__row">
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('Quote Number')
+                    ) ?>
+                </span>
+
                 <strong>
                     <?= $escaper->escapeHtml(
-                        __('Quote Number:')
+                        $quoteRequest->getQuoteNumber()
                     ) ?>
                 </strong>
+            </div>
 
-                <?= $escaper->escapeHtml(
-                    $quoteRequest->getQuoteNumber()
-                ) ?>
-            </p>
+            <div class="brewcraft-request-quote-success__row">
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('Quote Name')
+                    ) ?>
+                </span>
 
-            <p>
                 <strong>
                     <?= $escaper->escapeHtml(
-                        __('Quote Name:')
+                        (string)$quoteRequest->getData(
+                            'quote_name'
+                        )
                     ) ?>
                 </strong>
+            </div>
 
-                <?= $escaper->escapeHtml(
-                    (string)$quoteRequest->getData(
-                        'quote_name'
-                    )
-                ) ?>
-            </p>
-
-            <p>
-                <strong>
+            <div class="brewcraft-request-quote-success__row">
+                <span>
                     <?= $escaper->escapeHtml(
-                        __('Status:')
+                        __('Status')
                     ) ?>
-                </strong>
+                </span>
 
-                <?= $escaper->escapeHtml(
-                    __('Pending')
-                ) ?>
-            </p>
+                <span class="brewcraft-request-quote-success__status">
+                    <?= $escaper->escapeHtml(
+                        __('Pending')
+                    ) ?>
+                </span>
+            </div>
 
         </div>
 
-        <div class="actions-toolbar">
+        <div class="brewcraft-request-quote-success__actions">
 
-            <div class="primary">
+            <a class="action primary brewcraft-request-quote-success__primary"
+               href="<?= $escaper->escapeUrl(
+                   $block->getContinueShoppingUrl()
+               ) ?>">
 
-                <a class="action primary"
-                   href="<?= $escaper->escapeUrl(
-                       $block->getContinueShoppingUrl()
-                   ) ?>">
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('Continue Shopping')
+                    ) ?>
+                </span>
 
-                    <span>
-                        <?= $escaper->escapeHtml(
-                            __('Continue Shopping')
-                        ) ?>
-                    </span>
+            </a>
 
-                </a>
+            <a class="action brewcraft-request-quote-success__secondary"
+               href="<?= $escaper->escapeUrl(
+                   method_exists($block, 'getMyQuotesUrl')
+                       ? $block->getMyQuotesUrl()
+                       : $block->getCustomerAccountUrl()
+               ) ?>">
 
-            </div>
+                <span>
+                    <?= $escaper->escapeHtml(
+                        __('View My Quotes')
+                    ) ?>
+                </span>
 
-            <div class="secondary">
-
-                <a class="action secondary"
-                   href="<?= $escaper->escapeUrl(
-                       $block->getCustomerAccountUrl()
-                   ) ?>">
-
-                    <span>
-                        <?= $escaper->escapeHtml(
-                            __('Go to My Account')
-                        ) ?>
-                    </span>
-
-                </a>
-
-            </div>
+            </a>
 
         </div>
 
