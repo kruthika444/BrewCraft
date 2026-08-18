@@ -1,0 +1,1169 @@
+//
+// ============================================================
+// BREWCRAFT CHECKOUT
+// FINAL CLEAN DESKTOP VERSION
+// ============================================================
+//
+
+.checkout-index-index {
+
+    //
+    // ========================================================
+    // PAGE
+    // ========================================================
+    //
+
+    .page-main {
+        max-width: 1440px !important;
+        margin: 0 auto !important;
+        padding: 32px !important;
+        box-sizing: border-box;
+    }
+
+    .checkout-container {
+        width: 100%;
+        margin: 18px auto 0;
+        box-sizing: border-box;
+    }
+
+    .page-header .header.content {
+        max-width: 1440px;
+    }
+
+    //
+    // Hide Magento checkout Sign In link
+    //
+    .authentication-wrapper,
+    .opc-wrapper .authentication-wrapper {
+        display: none !important;
+    }
+
+
+    //
+    // ========================================================
+    // CHECKOUT TYPOGRAPHY
+    // ========================================================
+    //
+
+    .checkout-container,
+    .checkout-container input,
+    .checkout-container select,
+    .checkout-container textarea,
+    .checkout-container button {
+        font-family: @brewcraft-font-body !important;
+    }
+
+
+    //
+    // ========================================================
+    // PROGRESS
+    // ========================================================
+    //
+
+    .opc-progress-bar {
+        margin: 0 0 28px;
+    }
+
+    .opc-progress-bar-item>span {
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .opc-progress-bar-item._active>span,
+    .opc-progress-bar-item._complete>span {
+        color: @brewcraft-espresso;
+        font-weight: 600;
+    }
+
+
+    //
+    // ========================================================
+    // CHECKOUT COLUMNS
+    // ========================================================
+    //
+
+    .opc-wrapper {
+        padding-right: 32px;
+        box-sizing: border-box;
+    }
+
+    .opc-sidebar {
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // SHIPPING ADDRESS
+    // ========================================================
+    //
+
+    .checkout-shipping-address {
+        padding: 28px 30px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        box-shadow: 0 4px 18px rgba(0, 0, 0, .025);
+
+        box-sizing: border-box;
+    }
+
+    .checkout-shipping-address>.step-title {
+        margin: 0 0 24px !important;
+        padding: 0 0 16px !important;
+
+        border-bottom: 1px solid @brewcraft-border !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 24px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.25 !important;
+    }
+
+
+    //
+    // Email/login part
+    //
+    .form-login {
+        max-width: none !important;
+
+        margin: 0 0 26px !important;
+        padding: 0 0 26px !important;
+
+        border-bottom: 1px solid @brewcraft-border !important;
+
+        font-family: @brewcraft-font-body !important;
+    }
+
+    .form-login .field {
+        max-width: none !important;
+    }
+
+
+    //
+    // Shipping form
+    //
+    .form-shipping-address {
+        max-width: none !important;
+
+        font-family: @brewcraft-font-body !important;
+    }
+
+    .form-shipping-address .field,
+    .form-login .field {
+        margin-bottom: 17px !important;
+    }
+
+
+    //
+    // Labels
+    //
+    .form-shipping-address .label,
+    .form-login .label {
+        display: block;
+
+        margin: 0 0 7px !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+
+        line-height: 1.4;
+    }
+
+    .form-shipping-address .field.required>.label:after,
+    .form-login .field.required>.label:after {
+        color: #c94b4b !important;
+        font-size: 12px;
+    }
+
+
+    //
+    // Inputs
+    //
+    .form-shipping-address .input-text,
+    .form-shipping-address select,
+    .form-login .input-text {
+        width: 100% !important;
+        height: 44px !important;
+
+        padding: 0 13px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 5px !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+
+        box-shadow: none !important;
+
+        box-sizing: border-box;
+    }
+
+    .form-shipping-address select {
+        padding-right: 36px !important;
+    }
+
+    .form-shipping-address .input-text:focus,
+    .form-shipping-address select:focus,
+    .form-login .input-text:focus {
+        border-color: @brewcraft-coffee !important;
+
+        outline: 0 !important;
+
+        box-shadow: 0 0 0 1px @brewcraft-coffee !important;
+    }
+
+
+    //
+    // Helper text
+    //
+    .form-login .note {
+        margin-top: 8px !important;
+
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 12px !important;
+
+        line-height: 1.5;
+    }
+
+
+    //
+    // Street lines
+    //
+    .form-shipping-address .field.street .field {
+        margin-bottom: 10px !important;
+    }
+
+
+    //
+    // Validation
+    //
+    .form-shipping-address .mage-error,
+    .form-login .mage-error {
+        margin-top: 5px !important;
+
+        color: #c94b4b !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 11px !important;
+    }
+
+
+    //
+    // ========================================================
+    // ORDER SUMMARY
+    // ========================================================
+    //
+
+    .opc-block-summary {
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 24px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        box-shadow: 0 4px 18px rgba(0, 0, 0, .035);
+
+        box-sizing: border-box;
+    }
+
+    .opc-block-summary>.title {
+        display: block;
+
+        margin: 0 0 18px !important;
+        padding: 0 0 16px !important;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 22px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.3;
+    }
+
+
+    //
+    // Item header
+    //
+    .brewcraft-checkout-items-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 16px;
+
+        width: 100%;
+
+        padding: 0 0 12px;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        box-sizing: border-box;
+    }
+
+    .brewcraft-checkout-items-heading .title {
+        flex: 1;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+    }
+
+    .brewcraft-checkout-items-heading .title strong {
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .brewcraft-checkout-edit-cart {
+        color: @brewcraft-coffee !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .brewcraft-checkout-edit-cart:hover {
+        color: @brewcraft-espresso !important;
+    }
+
+
+    //
+    // Items
+    //
+    .opc-block-summary .minicart-items-wrapper {
+        max-height: 320px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .opc-block-summary .minicart-items {
+        margin: 0;
+        padding: 0;
+    }
+
+    .opc-block-summary .minicart-items .product-item {
+        margin: 0 !important;
+        padding: 16px 0 !important;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+    .opc-block-summary .minicart-items .product-item:last-child {
+        border-bottom: 0;
+    }
+
+    .opc-block-summary .minicart-items .product {
+        display: flex !important;
+        align-items: flex-start;
+
+        gap: 13px;
+    }
+
+
+    //
+    // Image
+    //
+    .opc-block-summary .product-item-photo {
+        position: static !important;
+
+        flex: 0 0 64px;
+
+        width: 64px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        float: none !important;
+    }
+
+    .opc-block-summary .product-image-container {
+        width: 64px !important;
+        height: 76px !important;
+    }
+
+    .opc-block-summary .product-image-wrapper {
+        width: 64px !important;
+        height: 76px !important;
+
+        padding: 0 !important;
+
+        border-radius: 5px;
+
+        background: @brewcraft-cream;
+
+        overflow: hidden;
+    }
+
+    .opc-block-summary .product-image-photo {
+        position: static !important;
+
+        display: block;
+
+        width: 64px !important;
+        height: 76px !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        object-fit: cover !important;
+        object-position: center !important;
+    }
+
+
+    //
+    // Details
+    //
+    .opc-block-summary .product-item-details {
+        flex: 1;
+
+        min-width: 0;
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        float: none !important;
+    }
+
+    .opc-block-summary .product-item-name {
+        margin: 0 0 6px !important;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 13px;
+        font-weight: 500;
+
+        line-height: 1.45;
+    }
+
+    .opc-block-summary .details-qty {
+        margin: 0 0 5px !important;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+    }
+
+    .opc-block-summary .price {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+
+    //
+    // ========================================================
+    // SHIPPING METHODS - MOVED RIGHT
+    // ========================================================
+    //
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar {
+
+        width: 100% !important;
+
+        margin: 18px 0 0 !important;
+        padding: 24px !important;
+
+        list-style: none !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        box-shadow: 0 4px 18px rgba(0, 0, 0, .035) !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    //
+    // Kill list marker / stray bullet
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar::marker {
+        content: '' !important;
+    }
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar:before,
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar:after {
+        display: none !important;
+        content: none !important;
+    }
+
+
+    //
+    // Shipping title
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar>.step-title {
+
+        display: block !important;
+
+        margin: 0 0 18px !important;
+        padding: 0 0 16px !important;
+
+        border: 0 !important;
+        border-bottom: 1px solid @brewcraft-border !important;
+
+        background: transparent !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 19px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.3 !important;
+    }
+
+
+    //
+    // Remove double-inner-card
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar>.step-content {
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        background: transparent !important;
+
+        box-shadow: none !important;
+    }
+
+
+    //
+    // Shipping table
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method {
+
+        display: block;
+
+        width: 100% !important;
+
+        margin: 0 0 18px !important;
+
+        border: 0 !important;
+
+        background: transparent;
+    }
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method tbody {
+
+        display: block;
+
+        width: 100%;
+    }
+
+
+    //
+    // Shipping row
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method tbody tr {
+
+        display: grid !important;
+
+        grid-template-columns:
+            28px minmax(0, 1fr) auto;
+
+        grid-template-rows:
+            auto auto;
+
+        align-items: center;
+
+        column-gap: 10px;
+        row-gap: 2px;
+
+        width: 100%;
+
+        min-height: 70px;
+
+        margin: 0 !important;
+        padding: 13px 14px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 6px !important;
+
+        background: @brewcraft-white !important;
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // Reset cells
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method td {
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        font-family: @brewcraft-font-body !important;
+
+        vertical-align: middle !important;
+    }
+
+
+    //
+    // Radio
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method td:first-child {
+
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar input[type='radio'] {
+
+        position: static !important;
+
+        display: block;
+
+        width: 17px !important;
+        height: 17px !important;
+
+        margin: 0 !important;
+    }
+
+
+    //
+    // Method
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method td:nth-child(3) {
+
+        grid-column: 2;
+        grid-row: 1;
+
+        color: @brewcraft-charcoal !important;
+
+        font-size: 13px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.35;
+    }
+
+
+    //
+    // Carrier
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method td:nth-child(4) {
+
+        grid-column: 2;
+        grid-row: 2;
+
+        color: @brewcraft-muted !important;
+
+        font-size: 11px !important;
+        font-weight: 400 !important;
+
+        line-height: 1.35;
+    }
+
+
+    //
+    // Price
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .table-checkout-shipping-method .col-price {
+
+        grid-column: 3;
+        grid-row: 1 / span 2;
+
+        align-self: center;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+
+        text-align: right !important;
+
+        white-space: nowrap;
+    }
+
+
+    //
+    // Button area
+    //
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .actions-toolbar {
+
+        width: 100% !important;
+
+        margin: 18px 0 0 !important;
+        padding: 0 !important;
+    }
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .actions-toolbar>.primary {
+
+        float: none !important;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+    }
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .action.primary {
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 48px !important;
+
+        margin: 0 !important;
+        padding: 0 20px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px !important;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+
+        box-shadow: none !important;
+    }
+
+    .opc-sidebar #opc-shipping_method.brewcraft-shipping-method--sidebar .action.primary:hover {
+
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+    }
+}
+
+.checkout-index-index {
+    .table-checkout-shipping-method {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+//
+// ============================================================
+// BREWCRAFT CHECKOUT - SHIPPING FORM FINAL DESKTOP LAYOUT
+// ============================================================
+//
+
+@media (min-width: 1024px) {
+
+    .checkout-index-index {
+
+        //
+        // ----------------------------------------------------
+        // SHIPPING CARD
+        // ----------------------------------------------------
+        //
+
+        .checkout-shipping-address {
+            padding: 26px 30px 30px !important;
+
+            border: 1px solid @brewcraft-border !important;
+            border-radius: 10px !important;
+
+            background: @brewcraft-white !important;
+
+            box-shadow: 0 4px 18px rgba(46, 30, 20, .035);
+
+            box-sizing: border-box;
+        }
+
+        .checkout-shipping-address > .step-title {
+            margin: 0 0 20px !important;
+            padding: 0 0 15px !important;
+
+            border-bottom: 1px solid @brewcraft-border !important;
+
+            color: @brewcraft-espresso !important;
+
+            font-family: @brewcraft-font-heading !important;
+            font-size: 24px !important;
+            font-weight: 600 !important;
+
+            line-height: 1.25 !important;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // EMAIL - REDUCE EMPTY SPACE
+        // ----------------------------------------------------
+        //
+
+        .form-login {
+            margin: 0 0 18px !important;
+            padding: 0 0 18px !important;
+
+            border-bottom: 1px solid @brewcraft-border !important;
+        }
+
+        .form-login .fieldset {
+            margin: 0 !important;
+        }
+
+        .form-login .field {
+            margin-bottom: 0 !important;
+        }
+
+        .form-login .note {
+            margin-top: 7px !important;
+            margin-bottom: 0 !important;
+
+            color: @brewcraft-muted !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 12px !important;
+
+            line-height: 1.45;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // ADDRESS WRAPPER
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address
+        .fieldset.address {
+            display: flex !important;
+            flex-wrap: wrap !important;
+
+            column-gap: 18px;
+            row-gap: 0;
+
+            width: 100%;
+
+            margin: 0 !important;
+        }
+
+        .form-shipping-address
+        .fieldset.address > .field {
+            flex: 0 0 100%;
+
+            width: 100% !important;
+            max-width: none !important;
+
+            margin: 0 0 17px !important;
+
+            box-sizing: border-box;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // FIRST NAME | LAST NAME
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.firstname'] {
+            order: 10;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.lastname'] {
+            order: 20;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // COMPANY | PHONE
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.company'] {
+            order: 30;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.telephone'] {
+            order: 40;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // STREET - FULL WIDTH
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address
+        .fieldset.address >
+        .field.street {
+            order: 50;
+
+            flex: 0 0 100% !important;
+            width: 100% !important;
+        }
+
+        .form-shipping-address
+        .field.street .control,
+        .form-shipping-address
+        .field.street .field {
+            width: 100% !important;
+        }
+
+        .form-shipping-address
+        .field.street .field {
+            margin: 0 0 10px !important;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // COUNTRY | CITY
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.country_id'] {
+            order: 60;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.city'] {
+            order: 70;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // STATE | ZIP
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.region_id'],
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.region'] {
+            order: 80;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+        .form-shipping-address
+        .fieldset.address >
+        .field[name='shippingAddress.postcode'] {
+            order: 90;
+
+            flex: 0 0 calc(50% - 9px) !important;
+            width: calc(50% - 9px) !important;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // LABELS
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address .label,
+        .form-login .label {
+            margin: 0 0 7px !important;
+
+            color: @brewcraft-charcoal !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+
+            line-height: 1.4;
+        }
+
+
+        //
+        // ----------------------------------------------------
+        // INPUTS
+        // ----------------------------------------------------
+        //
+
+        .form-shipping-address .input-text,
+        .form-shipping-address select,
+        .form-login .input-text {
+            width: 100% !important;
+            height: 44px !important;
+
+            padding: 0 13px !important;
+
+            border: 1px solid @brewcraft-border !important;
+            border-radius: 5px !important;
+
+            background: @brewcraft-white !important;
+
+            color: @brewcraft-charcoal !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+
+            box-shadow: none !important;
+
+            box-sizing: border-box;
+        }
+
+        .form-shipping-address .input-text:focus,
+        .form-shipping-address select:focus,
+        .form-login .input-text:focus {
+            border-color: @brewcraft-coffee !important;
+
+            outline: none !important;
+
+            box-shadow: 0 0 0 1px @brewcraft-coffee !important;
+        }
+    }
+}
+
+
+//
+// ============================================================
+// CHECKOUT PROGRESS BAR - RESTORE STEP NUMBERS
+// ============================================================
+//
+
+.checkout-index-index {
+
+    .opc-progress-bar-item > span:before {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+
+        line-height: 1 !important;
+    }
+
+    //
+    // Shipping = 1
+    //
+    .opc-progress-bar-item:nth-child(1) > span:before {
+        content: '1' !important;
+    }
+
+    //
+    // Review & Payments = 2
+    //
+    .opc-progress-bar-item:nth-child(2) > span:before {
+        content: '2' !important;
+    }
+
+    //
+    // Active / completed circle
+    //
+    .opc-progress-bar-item._active > span:before,
+    .opc-progress-bar-item._complete > span:before {
+        border-color: @brewcraft-green !important;
+        background: @brewcraft-white !important;
+        color: @brewcraft-green !important;
+    }
+
+    //
+    // Remove Magento checkmark overlay
+    // so the number stays visible
+    //
+    .opc-progress-bar-item > span:after {
+        display: none !important;
+        content: none !important;
+    }
+}
+.checkout-index-index {
+
+    .opc-progress-bar-item._active:before,
+    .opc-progress-bar-item._complete:before {
+        background: @brewcraft-espresso !important;
+        border-color: @brewcraft-espresso !important;
+    }
+}
+
+.checkout-index-index {
+
+    .opc-progress-bar-item._active > span:before,
+    .opc-progress-bar-item._complete > span:before {
+        border-color: @brewcraft-espresso !important;
+        background: @brewcraft-white !important;
+        color: @brewcraft-espresso !important;
+    }
+}
