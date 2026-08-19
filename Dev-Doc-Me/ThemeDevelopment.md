@@ -8224,3 +8224,1106 @@ Accepted Quote → Cart / Checkout
 ```
 
 **My Quotes** should be designed first because it establishes the status system and navigation that the Quote Detail page will reuse.
+
+# 9.BrewCraft Checkout — Review & Payments Development Log
+
+### 1. Objective
+
+The goal of this phase was to redesign Magento’s default **Review & Payments** step so it visually matches the BrewCraft storefront while preserving the native Magento payment flow.
+
+The step needed to support the real payment options available in the project, not just copy the Figma reference blindly.
+
+The final payment methods used were:
+
+* Razorpay
+* Cash On Delivery
+* Bank Transfer Payment
+* Check / Money Order
+
+The page also needed to include:
+
+* payment-method selection
+* billing-address handling
+* Place Order action
+* discount/coupon entry
+* Order Summary
+* Ship To
+* Shipping Method
+* edit actions
+* BrewCraft typography, spacing and colors
+
+---
+
+## 2. Starting State
+
+The default Magento payment page initially looked very plain:
+
+```text
+Payment Method
+
+○ Check / Money Order
+
+○ Razorpay
+
+Apply Discount Code
+
+                         Order Summary
+                         Ship To
+                         Shipping Method
+```
+
+Problems:
+
+* only Razorpay + Check/Money Order were initially visible
+* payment methods looked like simple default Magento rows
+* Place Order button was Magento blue
+* coupon form looked unfinished
+* right-side information looked like loose text rather than designed cards
+* typography did not fully match the BrewCraft theme
+* Ship To and Shipping Method were visually disconnected
+* right-side layout was not consistent with the already-designed Shipping step
+
+---
+
+## 3. Payment Methods Review
+
+Before styling, we reviewed what payment methods could realistically be enabled without adding another third-party integration.
+
+Magento Open Source includes offline payment methods such as:
+
+```text
+Check / Money Order
+Bank Transfer Payment
+Cash On Delivery
+Purchase Order
+Zero Subtotal Checkout
+```
+
+For the BrewCraft test flow, we chose:
+
+```text
+Razorpay
+Cash On Delivery
+Bank Transfer Payment
+Check / Money Order
+```
+
+We intentionally did not enable methods just for appearance if they required another real gateway integration.
+
+For example, we did not add fake:
+
+```text
+PayPal
+Google Pay
+Apple Pay
+Credit Card
+Installments
+```
+
+unless the actual payment gateway supports them.
+
+This was important because the design should reflect real functionality.
+
+---
+
+## 4. Enabling Magento Native Payment Methods
+
+The additional methods were enabled from:
+
+```text
+Admin
+→ Stores
+→ Configuration
+→ Sales
+→ Payment Methods
+```
+
+We enabled:
+
+```text
+Cash On Delivery Payment
+Bank Transfer Payment
+Check / Money Order
+```
+
+Razorpay was already installed and configured through the Razorpay extension.
+
+The result was four real payment choices on Checkout:
+
+```text
+○ Razorpay
+
+○ Cash On Delivery
+
+○ Bank Transfer Payment
+
+○ Check / Money Order
+```
+
+This gave us a realistic payment page to design.
+
+---
+
+## 5. Why We Enabled Native Methods First
+
+This was done before styling because designing against only one payment method can create a fragile UI.
+
+With four methods visible, we could properly test:
+
+* multiple rows
+* active payment state
+* long method names
+* payment method switching
+* billing-address expansion
+* Place Order position
+* card spacing
+
+This made the payment design more production-ready.
+
+---
+
+## 6. Payment Page Design Direction
+
+The reference design showed payment methods as clean selectable sections.
+
+We adapted that concept to the payment methods actually available in BrewCraft.
+
+Target structure:
+
+```text
+Payment Method
+
+┌───────────────────────────────┐
+│ ○ Razorpay                   │
+└───────────────────────────────┘
+
+┌───────────────────────────────┐
+│ ○ Cash On Delivery           │
+└───────────────────────────────┘
+
+┌───────────────────────────────┐
+│ ○ Bank Transfer Payment      │
+└───────────────────────────────┘
+
+┌───────────────────────────────┐
+│ ○ Check / Money Order        │
+│                               │
+│ ☑ Billing = Shipping          │
+│                               │
+│ Billing Address               │
+│                               │
+│ [ Place Order ]               │
+└───────────────────────────────┘
+```
+
+---
+
+## 7. Payment Method Cards
+
+Each payment method was converted from a plain Magento row into a card.
+
+Key visual treatment:
+
+```text
+white background
+thin BrewCraft border
+rounded corners
+consistent vertical spacing
+hover border
+active-state highlight
+```
+
+Active payment method behavior was kept native.
+
+Magento still controls:
+
+```text
+selected method
+active state
+method content
+billing address
+Place Order availability
+```
+
+Only the appearance changed.
+
+---
+
+## 8. Payment Method Alignment
+
+One of the first visible problems was that:
+
+```text
+○
+    Cash On Delivery
+```
+
+did not align properly.
+
+Razorpay was even more noticeable because its logo sat lower than the radio button.
+
+We corrected the method title to use:
+
+```text
+display: flex
+align-items: center
+gap
+```
+
+so the layout became:
+
+```text
+○  Cash On Delivery
+```
+
+and:
+
+```text
+○  [Razorpay logo]
+```
+
+This was a small change but made the method cards look much more polished.
+
+---
+
+## 9. Razorpay Logo Handling
+
+The Razorpay payment method uses its own image/logo.
+
+We deliberately did not replace it.
+
+Instead, we constrained:
+
+```text
+max-width
+max-height
+vertical alignment
+```
+
+so it sits correctly inside the payment card.
+
+This preserved the official gateway branding while keeping the card consistent.
+
+---
+
+## 10. Selected Payment Method Content
+
+When a payment method is selected, Magento expands its content area.
+
+For offline methods, that can include:
+
+```text
+Billing address checkbox
+Billing address details
+Place Order button
+```
+
+We styled this area separately from the payment title.
+
+The selected section now uses:
+
+```text
+border-top
+white background
+clean padding
+consistent spacing
+```
+
+instead of Magento’s default content layout.
+
+---
+
+## 11. Billing Address — Same as Shipping
+
+Magento provides:
+
+```text
+My billing and shipping address are the same
+```
+
+with a checkbox.
+
+We retained that native functionality.
+
+The layout was improved to align:
+
+```text
+☑  My billing and shipping address are the same
+```
+
+in a single clean row.
+
+No checkout logic was replaced.
+
+---
+
+## 12. Billing Address Card
+
+When the billing address is displayed, it was initially plain text.
+
+We styled it into a BrewCraft information card:
+
+```text
+cream background
+stone border
+rounded corners
+compact body typography
+```
+
+This matched the visual language already established in:
+
+* Cart
+* Request Quote
+* Shipping Address
+
+---
+
+## 13. Place Order Button
+
+Magento’s default Place Order button was blue.
+
+That did not match BrewCraft.
+
+We changed it to:
+
+```text
+espresso background
+white text
+BrewCraft body font
+full width
+48px height
+rounded corners
+coffee hover state
+```
+
+Final behavior:
+
+```text
+[             Place Order             ]
+```
+
+The button remains Magento’s original button.
+
+We did not replace:
+
+```text
+placeOrder()
+payment validation
+checkout submission
+order creation
+gateway logic
+```
+
+Only the styling changed.
+
+---
+
+## 14. Discount / Coupon Design
+
+The coupon form became one of the most specific debugging points on the payment page.
+
+Initially it looked like:
+
+```text
+Apply Discount Code
+
+[ Enter discount code ]
+
+                [ Apply Discount ]
+```
+
+The button did not line up with the input.
+
+---
+
+## 15. Why Coupon Styling Initially Failed
+
+At first, we assumed the form structure was simpler than it actually was.
+
+The user inspected the real Magento DOM and supplied:
+
+```html
+<form class="form form-discount">
+
+    <div class="payment-option-inner">
+
+        <div class="field">
+
+            <label class="label">
+                Enter discount code
+            </label>
+
+            <div class="control">
+                <input class="input-text">
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="actions-toolbar">
+
+        <div class="primary">
+
+            <button class="action action-apply">
+                Apply Discount
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
+```
+
+This revealed the actual reason the button was difficult to align.
+
+The input and button were not siblings inside one simple flex row.
+
+---
+
+## 16. Correct Coupon Solution
+
+Once the real DOM was known, we changed strategy.
+
+Instead of forcing nested wrappers with Flexbox, we made the actual:
+
+```text
+.form.form-discount
+```
+
+a CSS Grid.
+
+Conceptually:
+
+```text
+row 1:
+Enter discount code
+
+row 2:
+[ input                     ][ Apply Discount ]
+```
+
+We used:
+
+```text
+payment-option-inner → display: contents
+field                → display: contents
+```
+
+so the label, control and actions toolbar could participate directly in the grid.
+
+This was the cleanest solution because it matched the actual Magento HTML.
+
+---
+
+## 17. Final Coupon Layout
+
+The resulting design became:
+
+```text
+Apply Discount Code
+
+Enter discount code
+┌──────────────────────────────┬─────────────────┐
+│ Enter discount code          │ Apply Discount  │
+└──────────────────────────────┴─────────────────┘
+```
+
+This is much more aligned with the BrewCraft form language.
+
+---
+
+## 18. Order Summary
+
+The right-side Order Summary was already partially styled during the Shipping phase.
+
+On the Payment step, Magento now had full totals available:
+
+```text
+Cart Subtotal
+Shipping
+Order Total
+```
+
+So we refined rather than rebuilt it.
+
+Final structure:
+
+```text
+Order Summary
+────────────────────
+
+Cart Subtotal        ₹699
+Shipping               ₹5
+Flat Rate - Fixed
+────────────────────
+Order Total          ₹704
+
+1 Item in Cart     Edit Cart
+
+[img] Product
+      Qty: 1
+      ₹699
+```
+
+We kept Magento’s totals and item rendering intact.
+
+---
+
+## 19. Ship To / Shipping Method
+
+Initially these rendered below Order Summary as loose sections:
+
+```text
+Ship To:
+[address]
+
+Shipping Method:
+Flat Rate - Fixed
+```
+
+They did not visually match Order Summary.
+
+The goal became:
+
+```text
+[ Ship To Card ]
+
+[ Shipping Method Card ]
+```
+
+---
+
+## 20. First Right-Side Card Problem
+
+An early CSS attempt styled both:
+
+```text
+.opc-block-shipping-information
+.shipping-information
+.ship-to
+.shipping-information
+```
+
+as cards.
+
+This created:
+
+```text
+outer card
+└── inner Ship To card
+    └── Shipping Method
+```
+
+which looked like a card inside another card.
+
+---
+
+## 21. Actual Magento Shipping Information Structure
+
+The important DOM understanding was:
+
+```text
+opc-block-shipping-information
+└── shipping-information
+    ├── ship-to
+    └── ship-via
+```
+
+The mistake was treating:
+
+```text
+.shipping-information
+```
+
+as the actual Shipping Method card.
+
+It is only a wrapper.
+
+The real method section is:
+
+```text
+.ship-via
+```
+
+---
+
+## 22. Final Right-Side Structure
+
+The corrected CSS keeps these transparent:
+
+```text
+.opc-block-shipping-information
+.shipping-information
+```
+
+and styles only:
+
+```text
+.ship-to
+.ship-via
+```
+
+as cards.
+
+Final structure:
+
+```text
+Order Summary
+
+┌──────────────────────────────┐
+│ Ship To                   ✎ │
+│──────────────────────────────│
+│ Customer name                │
+│ Address                      │
+│ Phone                        │
+└──────────────────────────────┘
+
+┌──────────────────────────────┐
+│ Shipping Method           ✎ │
+│──────────────────────────────│
+│ Flat Rate - Fixed            │
+└──────────────────────────────┘
+```
+
+---
+
+## 23. Edit Icons
+
+Magento already provides edit actions for:
+
+```text
+Ship To
+Shipping Method
+```
+
+We retained these.
+
+Instead of leaving the raw pencil icon, we styled the actions as:
+
+```text
+small circular button
+stone border
+coffee icon
+cream hover state
+```
+
+This matches the edit/delete icon language already used on the Cart page.
+
+---
+
+## 24. Payment Page Column Layout
+
+The page uses the familiar checkout structure:
+
+```text
+LEFT                   RIGHT
+
+Payment Methods        Order Summary
+                       Ship To
+Coupon                 Shipping Method
+```
+
+We refined desktop proportions around:
+
+```text
+68% left
+30% right
+```
+
+while preserving Magento’s two-column checkout.
+
+---
+
+## 25. CSS Cascade Problem
+
+As with Shipping, the payment page temporarily accumulated multiple rounds of CSS.
+
+The uploaded payment stylesheet showed repeated definitions for:
+
+* payment cards
+* coupon form
+* coupon button
+* Order Summary
+* shipping information
+* Ship To
+* Shipping Method
+
+Some components had three different styling strategies in the same file. 
+
+That created unnecessary override complexity.
+
+---
+
+## 26. Final CSS Consolidation
+
+Instead of appending another fix, the payment section was consolidated into one clean version.
+
+The final payment CSS now has one owner for each area:
+
+```text
+Payment page columns
+Payment heading
+Payment cards
+Selected payment content
+Billing address
+Place Order
+Coupon
+Order Summary
+Shipping information wrapper
+Ship To
+Ship Via
+```
+
+This eliminated the cascade conflicts.
+
+---
+
+## 27. What Stayed Native
+
+A major principle of this phase was:
+
+> Style Magento payment behavior; do not rebuild payment behavior.
+
+We retained all of Magento’s native functionality.
+
+Magento still controls:
+
+```text
+payment method registration
+selected method
+billing address state
+payment validation
+coupon application
+totals refresh
+shipping information
+Place Order
+order creation
+gateway calls
+checkout errors
+```
+
+Razorpay remains controlled by the Razorpay extension.
+
+---
+
+## 28. What We Intentionally Did Not Rebuild
+
+We did not create custom:
+
+```text
+payment-method UI components
+payment JS
+place-order controller
+coupon controller
+shipping-information templates
+order total logic
+```
+
+This kept the payment step much safer than the earlier Shipping experimentation.
+
+---
+
+## 29. Payment Methods — Technical Purpose
+
+The four methods now serve different purposes in the test project.
+
+### Razorpay
+
+Primary real online payment gateway.
+
+Used to test:
+
+```text
+external payment integration
+online payment selection
+gateway checkout flow
+```
+
+### Cash On Delivery
+
+Native Magento offline method.
+
+Useful for testing:
+
+```text
+order placement without gateway
+offline payment order status
+checkout UX
+```
+
+### Bank Transfer
+
+Native Magento offline method.
+
+Useful for:
+
+```text
+manual bank-payment instructions
+offline payment workflow
+B2B-style scenarios
+```
+
+### Check / Money Order
+
+Native Magento offline method.
+
+Useful as a simple default Magento payment method and for testing Magento’s standard offline payment implementation.
+
+---
+
+## 30. Why We Did Not Enable Every Available Method
+
+Magento also offers other offline capabilities such as:
+
+```text
+Purchase Order
+Zero Subtotal Checkout
+```
+
+but they were not needed for this design.
+
+Zero Subtotal only appears when the total reaches zero.
+
+Purchase Order is more appropriate for a future B2B-focused flow.
+
+We also avoided adding additional third-party payment providers only to make the UI resemble the reference.
+
+---
+
+## 31. What Consumed the Most Time
+
+The most time-consuming areas on this page were:
+
+#### Coupon alignment
+
+The main reason was that the actual Magento DOM differed from the assumed layout.
+
+Once the real HTML was inspected, the solution became straightforward.
+
+#### Right-side Ship To / Shipping Method cards
+
+The initial selector targeted the wrapper rather than the actual `.ship-via` child.
+
+This created nested cards.
+
+#### CSS duplication
+
+Repeated iterations made it harder to know which rule was currently active.
+
+The consolidated replacement solved this.
+
+---
+
+## 32. What Helped Most
+
+### Browser Inspect / DevTools
+
+Inspecting the actual rendered HTML was the single most useful technique.
+
+The coupon fix is the best example.
+
+Once we knew:
+
+```text
+form-discount
+├── payment-option-inner
+│   └── field
+│       ├── label
+│       └── control/input
+└── actions-toolbar
+    └── primary/button
+```
+
+we could write the correct Grid layout immediately.
+
+---
+
+### Existing Magento class names
+
+Rather than overriding templates, we relied on:
+
+```text
+.payment-method
+.payment-method-title
+.payment-method-content
+.form-discount
+.action-apply
+.opc-block-summary
+.opc-block-shipping-information
+.ship-to
+.ship-via
+```
+
+This reduced the number of files we needed to maintain.
+
+---
+
+## 33. Current Review & Payments UX
+
+The final conceptual layout is:
+
+```text
+BrewCraft Header
+
+        1                       2
+───────○───────────────────────○──────
+     Shipping          Review & Payments
+
+
+LEFT                                  RIGHT
+
+Payment Method                        Order Summary
+
+┌───────────────────────────────┐     Cart Subtotal
+│ ○ Razorpay                   │     Shipping
+└───────────────────────────────┘     Order Total
+
+┌───────────────────────────────┐     Product
+│ ○ Cash On Delivery           │
+└───────────────────────────────┘     ┌───────────────────┐
+                                      │ Ship To        ✎ │
+┌───────────────────────────────┐     │ Address           │
+│ ○ Bank Transfer Payment      │     └───────────────────┘
+└───────────────────────────────┘
+                                      ┌───────────────────┐
+┌───────────────────────────────┐     │ Shipping       ✎ │
+│ ● Check / Money Order        │     │ Flat Rate         │
+│───────────────────────────────│     └───────────────────┘
+│ ☑ Billing = Shipping         │
+│ Billing Address              │
+│                              │
+│ [ Place Order ]              │
+└───────────────────────────────┘
+
+┌───────────────────────────────┐
+│ Apply Discount Code          │
+│                              │
+│ [ code ][ Apply Discount ]   │
+└───────────────────────────────┘
+```
+
+---
+
+## 34. Important Lessons From the Payment Page
+
+#### Inspect the DOM before styling complex Magento UI components
+
+The coupon work demonstrated this clearly.
+
+#### Prefer CSS before template overrides
+
+This page required much less risky customization than Shipping because we preserved the existing components.
+
+#### Native Magento payment methods are useful for development
+
+They allow us to test realistic payment layouts without external credentials.
+
+#### Real functionality should drive the design
+
+We used actual available payment methods rather than displaying fake payment choices.
+
+#### Consolidate CSS after experimentation
+
+Once the layout is accepted, duplicated iteration rules should be deleted.
+
+---
+
+## 35. Remaining Future Enhancements
+
+The current payment step is complete for the present scope, but future improvements could include:
+
+### A. Razorpay sub-payment presentation
+
+If the Razorpay extension exposes:
+
+```text
+Cards
+UPI
+Netbanking
+Wallets
+```
+
+inside its own payment modal/flow, we can later harmonize that presentation.
+
+We should not fake these as separate Magento payment methods.
+
+---
+
+### B. Purchase Order for Business Customers
+
+Later, when we work on B2B account behavior, we can consider enabling:
+
+```text
+Purchase Order
+```
+
+for approved business customers.
+
+This would fit naturally with the Request Quote / business-account workflow.
+
+---
+
+### C. Payment method descriptions
+
+Each method could later include helpful supporting text:
+
+```text
+Cash On Delivery
+Pay when your order arrives.
+
+Bank Transfer
+Transfer directly using the bank details provided after checkout.
+```
+
+This can improve UX without changing checkout behavior.
+
+---
+
+### D. Payment availability rules
+
+Future business logic could conditionally expose methods based on:
+
+```text
+customer group
+cart total
+country
+business approval state
+quote order
+product type
+```
+
+For example:
+
+```text
+Retail:
+Razorpay
+COD
+
+Business:
+Razorpay
+Bank Transfer
+Purchase Order
+```
+
+This is a backend/business-rule phase rather than a design phase.
+
+---
+
+### E. Responsive Payment Design
+
+The current implementation is primarily desktop-focused.
+
+A later mobile pass should address:
+
+```text
+payment card widths
+sidebar stacking
+coupon input/button stacking
+Ship To / Shipping Method cards
+Place Order visibility
+```
+
+---
+

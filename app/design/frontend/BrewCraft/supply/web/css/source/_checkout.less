@@ -427,8 +427,6 @@
 
         border-radius: 5px;
 
-        background: @brewcraft-cream;
-
         overflow: hidden;
     }
 
@@ -1164,6 +1162,845 @@
     .opc-progress-bar-item._complete > span:before {
         border-color: @brewcraft-espresso !important;
         background: @brewcraft-white !important;
+        color: @brewcraft-espresso !important;
+    }
+}
+
+//
+// ============================================================
+// BREWCRAFT CHECKOUT - REVIEW & PAYMENTS
+// CLEAN FINAL DESKTOP VERSION
+// ============================================================
+//
+
+.checkout-index-index {
+
+    //
+    // ========================================================
+    // PAYMENT PAGE COLUMNS
+    // ========================================================
+    //
+
+    .opc-wrapper {
+        width: 68% !important;
+        padding-right: 32px !important;
+        box-sizing: border-box;
+    }
+
+    .opc-sidebar {
+        width: 30% !important;
+        margin-top: 0 !important;
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // PAYMENT HEADING
+    // ========================================================
+    //
+
+    .checkout-payment-method
+    .payment-group
+    > .step-title {
+        margin: 0 0 22px !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 26px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.25 !important;
+    }
+
+
+    //
+    // ========================================================
+    // PAYMENT METHOD CARDS
+    // ========================================================
+    //
+
+    .checkout-payment-method
+    .payment-method {
+        margin: 0 0 14px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 8px !important;
+
+        background: @brewcraft-white !important;
+
+        overflow: hidden;
+        box-shadow: none !important;
+    }
+
+    .checkout-payment-method
+    .payment-method:hover {
+        border-color: @brewcraft-coffee !important;
+    }
+
+    .checkout-payment-method
+    .payment-method._active {
+        border-color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // RADIO + PAYMENT NAME
+    //
+    .checkout-payment-method
+    .payment-method-title {
+        display: flex !important;
+        align-items: center !important;
+
+        gap: 12px !important;
+
+        min-height: 66px;
+
+        margin: 0 !important;
+        padding: 14px 18px !important;
+
+        border: 0 !important;
+
+        background: @brewcraft-white !important;
+
+        box-sizing: border-box;
+    }
+
+    .checkout-payment-method
+    .payment-method._active
+    .payment-method-title {
+        background: @brewcraft-cream !important;
+    }
+
+    .checkout-payment-method
+    .payment-method-title
+    input[type='radio'] {
+        position: static !important;
+
+        flex: 0 0 18px;
+
+        width: 18px !important;
+        height: 18px !important;
+
+        margin: 0 !important;
+    }
+
+    .checkout-payment-method
+    .payment-method-title
+    .label {
+        display: flex !important;
+        align-items: center !important;
+
+        min-height: 32px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.3 !important;
+    }
+
+    .checkout-payment-method
+    .payment-method-title
+    img {
+        display: block !important;
+
+        width: auto !important;
+        max-width: 170px !important;
+        max-height: 38px !important;
+
+        margin: 0 !important;
+    }
+
+
+    //
+    // ========================================================
+    // SELECTED PAYMENT CONTENT
+    // ========================================================
+    //
+
+    .checkout-payment-method
+    .payment-method-content {
+        margin: 0 !important;
+        padding: 18px !important;
+
+        border-top: 1px solid @brewcraft-border !important;
+
+        background: @brewcraft-white !important;
+    }
+
+
+    //
+    // Same billing + shipping checkbox
+    //
+    .checkout-payment-method
+    .billing-address-same-as-shipping-block {
+        display: flex !important;
+        align-items: center !important;
+
+        gap: 9px;
+
+        margin: 0 0 14px !important;
+    }
+
+    .checkout-payment-method
+    .billing-address-same-as-shipping-block
+    input[type='checkbox'] {
+        width: 16px !important;
+        height: 16px !important;
+
+        margin: 0 !important;
+    }
+
+    .checkout-payment-method
+    .billing-address-same-as-shipping-block
+    label {
+        margin: 0 !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+    }
+
+
+    //
+    // Billing address card
+    //
+    .checkout-payment-method
+    .billing-address-details {
+        margin: 0 !important;
+        padding: 16px 18px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 8px !important;
+
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+
+        line-height: 1.65 !important;
+    }
+
+
+    //
+    // ========================================================
+    // PLACE ORDER
+    // ========================================================
+    //
+
+    .checkout-payment-method
+    .payment-method-content
+    .actions-toolbar {
+        display: block !important;
+
+        width: 100% !important;
+
+        margin: 20px 0 0 !important;
+        padding: 20px 0 0 !important;
+
+        border-top: 1px solid @brewcraft-border !important;
+    }
+
+    .checkout-payment-method
+    .payment-method-content
+    .actions-toolbar
+    > .primary {
+        float: none !important;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+    }
+
+    .checkout-payment-method
+    .payment-method-content
+    .action.checkout {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 48px !important;
+
+        margin: 0 !important;
+        padding: 0 22px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px !important;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+
+        box-shadow: none !important;
+    }
+
+    .checkout-payment-method
+    .payment-method-content
+    .action.checkout:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // ========================================================
+    // COUPON CARD
+    // ========================================================
+    //
+
+    .checkout-payment-method
+    .payment-option {
+        margin: 20px 0 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 8px !important;
+
+        background: @brewcraft-white !important;
+
+        overflow: hidden;
+    }
+
+    .checkout-payment-method
+    .payment-option-title {
+        margin: 0 !important;
+        padding: 16px 18px !important;
+
+        border: 0 !important;
+
+        background: @brewcraft-white !important;
+    }
+
+    .checkout-payment-method
+    .payment-option-title
+    .action-toggle {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+
+        width: 100% !important;
+
+        padding: 0 24px 0 0 !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+
+        text-align: left !important;
+        text-decoration: none !important;
+    }
+
+    .checkout-payment-method
+    .payment-option-content {
+        margin: 0 !important;
+        padding: 0 18px 18px !important;
+
+        border: 0 !important;
+
+        background: transparent !important;
+    }
+
+
+    //
+    // ========================================================
+    // COUPON FORM - ACTUAL MAGENTO DOM
+    // ========================================================
+    //
+
+    .checkout-payment-method
+    .form.form-discount {
+        display: grid !important;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            180px;
+
+        grid-template-rows:
+            auto
+            46px;
+
+        column-gap: 0;
+        row-gap: 7px;
+
+        width: 100% !important;
+        max-width: 620px !important;
+
+        margin: 0 !important;
+
+        align-items: stretch;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .payment-option-inner {
+        display: contents !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .field {
+        display: contents !important;
+
+        margin: 0 !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .field
+    > .label {
+        grid-column: 1 / -1;
+        grid-row: 1;
+
+        display: block !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+
+        line-height: 1.4 !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .control {
+        grid-column: 1;
+        grid-row: 2;
+
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .input-text {
+        display: block;
+
+        width: 100% !important;
+        height: 46px !important;
+
+        margin: 0 !important;
+        padding: 0 14px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-right: 0 !important;
+
+        border-radius: 5px 0 0 5px !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+
+        line-height: 46px !important;
+
+        box-shadow: none !important;
+
+        box-sizing: border-box;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .input-text:focus {
+        position: relative;
+
+        z-index: 2;
+
+        border-color: @brewcraft-coffee !important;
+
+        outline: none !important;
+
+        box-shadow:
+            inset 0 0 0 1px @brewcraft-coffee !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    > .actions-toolbar {
+        grid-column: 2;
+        grid-row: 2;
+
+        display: block !important;
+
+        width: 180px !important;
+        height: 46px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        float: none !important;
+        clear: none !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    > .actions-toolbar
+    > .primary {
+        display: block !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        margin: 0 !important;
+
+        float: none !important;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .action.action-apply {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: 100% !important;
+        height: 46px !important;
+
+        min-width: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 18px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+
+        border-radius:
+            0
+            5px
+            5px
+            0 !important;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+
+        box-shadow: none !important;
+
+        box-sizing: border-box;
+    }
+
+    .checkout-payment-method
+    .form.form-discount
+    .action.action-apply:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // ========================================================
+    // ORDER SUMMARY
+    // ========================================================
+    //
+
+    .opc-block-summary {
+        width: 100% !important;
+
+        margin: 0 0 18px !important;
+        padding: 24px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        box-shadow: 0 4px 18px rgba(46, 30, 20, .03);
+
+        box-sizing: border-box;
+    }
+
+    .opc-block-summary
+    > .title {
+        margin: 0 0 18px !important;
+        padding: 0 0 14px !important;
+
+        border-bottom: 1px solid @brewcraft-border !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 22px !important;
+        font-weight: 600 !important;
+    }
+
+    .opc-block-summary
+    .table-totals {
+        margin: 0 !important;
+
+        border-top: 0 !important;
+    }
+
+    .opc-block-summary
+    .table-totals
+    th,
+    .opc-block-summary
+    .table-totals
+    td {
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+    }
+
+    .opc-block-summary
+    .grand.totals
+    th,
+    .opc-block-summary
+    .grand.totals
+    td {
+        padding-top: 14px !important;
+
+        border-top: 1px solid @brewcraft-border !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+    }
+
+    .opc-block-summary
+    .brewcraft-checkout-items-heading {
+        margin-top: 10px;
+    }
+
+    .opc-block-summary
+    .product-item-name {
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+    }
+
+
+    //
+    // ========================================================
+    // SHIPPING INFORMATION WRAPPER
+    //
+    // IMPORTANT:
+    // Magento structure is:
+    //
+    // .opc-block-shipping-information
+    //      .shipping-information
+    //          .ship-to
+    //          .ship-via
+    //
+    // Therefore .shipping-information MUST NOT be styled
+    // as a card.
+    // ========================================================
+    //
+
+    .opc-block-shipping-information {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+
+        background: transparent !important;
+
+        box-shadow: none !important;
+
+        box-sizing: border-box;
+    }
+
+    .opc-block-shipping-information
+    > .shipping-information {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+
+        background: transparent !important;
+
+        box-shadow: none !important;
+    }
+
+
+    //
+    // ========================================================
+    // SHIP TO CARD
+    // ========================================================
+    //
+
+    .opc-block-shipping-information
+    .ship-to {
+        width: 100% !important;
+
+        margin: 0 0 14px !important;
+        padding: 20px 22px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        box-shadow:
+            0 4px 16px rgba(46, 30, 20, .025);
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // SHIPPING METHOD CARD
+    // Magento uses .ship-via
+    // ========================================================
+    //
+
+    .opc-block-shipping-information
+    .ship-via {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 20px 22px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        box-shadow:
+            0 4px 16px rgba(46, 30, 20, .025);
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // ========================================================
+    // SHIP TO / SHIP VIA TITLES
+    // ========================================================
+    //
+
+    .opc-block-shipping-information
+    .shipping-information-title {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+
+        margin: 0 0 13px !important;
+        padding: 0 0 11px !important;
+
+        border-bottom: 1px solid @brewcraft-border !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.3 !important;
+    }
+
+
+    //
+    // Edit icon
+    //
+    .opc-block-shipping-information
+    .shipping-information-title
+    .action-edit {
+        position: static !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        flex: 0 0 32px;
+
+        width: 32px !important;
+        height: 32px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 50% !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-coffee !important;
+
+        box-shadow: none !important;
+    }
+
+    .opc-block-shipping-information
+    .shipping-information-title
+    .action-edit:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-cream !important;
+    }
+
+
+    //
+    // Content
+    //
+    .opc-block-shipping-information
+    .shipping-information-content {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+
+        line-height: 1.65 !important;
+    }
+
+    .opc-block-shipping-information
+    .shipping-information-content
+    a {
+        color: @brewcraft-coffee !important;
+
+        font-weight: 500 !important;
+
+        text-decoration: none !important;
+    }
+
+    .opc-block-shipping-information
+    .shipping-information-content
+    a:hover {
         color: @brewcraft-espresso !important;
     }
 }
