@@ -2004,3 +2004,1242 @@
         color: @brewcraft-espresso !important;
     }
 }
+
+//
+// ============================================================
+// BREWCRAFT ORDER SUCCESS
+// ============================================================
+//
+
+.checkout-onepage-success {
+
+    .page-main {
+        max-width: 1440px;
+
+        margin: 0 auto;
+
+        padding: 52px 32px 72px;
+
+        box-sizing: border-box;
+    }
+
+    .page-title-wrapper {
+        position: relative;
+
+        display: block !important;
+
+        max-width: 920px;
+
+        margin: 0 auto !important;
+        padding: 0 !important;
+
+        text-align: right;
+    }
+
+    .page-title-wrapper .page-title {
+        display: none !important;
+    }
+
+    //
+    // Main wrapper
+    //
+    .brewcraft-order-success {
+        max-width: 920px;
+
+        margin: 0 auto;
+    }
+
+
+    //
+    // Success card
+    //
+    .brewcraft-order-success__card {
+        padding: 46px 56px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 12px;
+
+        background: @brewcraft-white;
+
+        text-align: center;
+
+        box-shadow:
+            0 8px 28px rgba(46, 30, 20, .04);
+
+        box-sizing: border-box;
+    }
+
+
+    //
+    // Check icon
+    //
+    .brewcraft-order-success__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 64px;
+        height: 64px;
+
+        margin: 0 auto 18px;
+
+        border: 1px solid @brewcraft-coffee;
+        border-radius: 50%;
+
+        background: @brewcraft-cream;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+
+    //
+    // Small label
+    //
+    .brewcraft-order-success__eyebrow {
+        margin: 0 0 8px;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 700;
+
+        letter-spacing: .08em;
+
+        text-transform: uppercase;
+    }
+
+
+    //
+    // Main title
+    //
+    .brewcraft-order-success__title {
+        margin: 0;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 36px;
+        font-weight: 600;
+
+        line-height: 1.2;
+    }
+
+
+    //
+    // Order number
+    //
+    .brewcraft-order-success__order {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin: 26px 0 0;
+        padding: 11px 16px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 6px;
+
+        background: @brewcraft-cream;
+    }
+
+    .brewcraft-order-success__order-label {
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .brewcraft-order-success__order-number {
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 15px;
+        font-weight: 700;
+
+        text-decoration: none !important;
+    }
+
+    a.brewcraft-order-success__order-number:hover {
+        color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // Confirmation copy
+    //
+    .brewcraft-order-success__message {
+        max-width: 610px;
+
+        margin: 20px auto 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        line-height: 1.65;
+    }
+
+
+    //
+    // Main actions
+    //
+    .brewcraft-order-success__actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 12px;
+
+        margin: 28px 0 0;
+    }
+
+    .brewcraft-order-success__actions .action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 170px;
+        height: 46px;
+
+        margin: 0 !important;
+        padding: 0 20px;
+
+        border-radius: 5px;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none !important;
+
+        box-shadow: none;
+    }
+
+
+    //
+    // Continue
+    //
+    .brewcraft-order-success__continue {
+        border: 1px solid @brewcraft-espresso !important;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+    }
+
+    .brewcraft-order-success__continue:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // View Order
+    //
+    .brewcraft-order-success__view-order {
+        border: 1px solid @brewcraft-coffee !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-coffee !important;
+    }
+
+    .brewcraft-order-success__view-order:hover {
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-espresso !important;
+    }
+
+
+    //
+    // ========================================================
+    // MAGENTO ADDITIONAL INFO
+    // Guest account creation / extension content
+    // ========================================================
+    //
+
+    .brewcraft-order-success__additional {
+        margin: 34px 0 0;
+        padding: 26px 0 0;
+
+        border-top: 1px solid @brewcraft-border;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    //
+    // Generic Magento buttons inside additional content
+    //
+    .brewcraft-order-success__additional
+    .action.primary,
+    .brewcraft-order-success__additional
+    button.primary {
+        min-height: 42px;
+
+        padding: 0 18px;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        box-shadow: none !important;
+    }
+
+    .brewcraft-order-success__additional
+    a {
+        color: @brewcraft-coffee;
+    }
+
+
+    //
+    // ========================================================
+    // WHAT HAPPENS NEXT
+    // ========================================================
+    //
+
+    .brewcraft-order-success__next {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 16px;
+
+        margin: 20px 0 0;
+    }
+
+    .brewcraft-order-success__next-item {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 18px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 8px;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+    }
+
+    .brewcraft-order-success__next-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 30px;
+
+        width: 30px;
+        height: 30px;
+
+        border: 1px solid @brewcraft-coffee;
+        border-radius: 50%;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .brewcraft-order-success__next-item strong {
+        display: block;
+
+        margin: 0 0 4px;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .brewcraft-order-success__next-item span:not(
+        .brewcraft-order-success__next-number
+    ) {
+        display: block;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 11px;
+
+        line-height: 1.45;
+    }
+}
+
+
+
+
+//
+// ============================================================
+// SUCCESS PAGE - PRINT RECEIPT
+// ============================================================
+//
+
+.checkout-onepage-success {
+
+    .page-title-wrapper
+    .action.print {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 0 12px !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        background: transparent !important;
+
+        color: @brewcraft-coffee !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+
+        text-decoration: none !important;
+
+        box-shadow: none !important;
+    }
+
+    .page-title-wrapper
+    .action.print:before {
+        content: '↗';
+
+        margin-right: 6px;
+
+        font-size: 12px;
+    }
+
+    .page-title-wrapper
+    .action.print:hover {
+        color: @brewcraft-espresso !important;
+
+        text-decoration: underline !important;
+    }
+}
+
+
+
+//
+// ============================================================
+// ORDER SUCCESS - GUEST ACCOUNT CTA
+// STANDALONE WORKING VERSION
+// ============================================================
+//
+
+.checkout-onepage-success {
+
+    .brewcraft-success-registration-wrapper {
+        width: 100%;
+        max-width: 920px;
+
+        margin: 18px auto 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box;
+    }
+
+    .brewcraft-success-registration-host {
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .brewcraft-success-registration-host > .messages {
+        margin: 0 !important;
+    }
+
+    .brewcraft-success-registration-host
+    > div:not(.messages) {
+        position: relative;
+
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        column-gap: 24px;
+        row-gap: 5px;
+
+        width: 100%;
+
+        margin: 0 !important;
+        padding: 22px 24px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-cream !important;
+
+        box-shadow:
+            0 4px 16px rgba(46, 30, 20, .025);
+
+        box-sizing: border-box;
+    }
+
+    //
+    // Main message
+    //
+    .brewcraft-success-registration-host
+    > div:not(.messages)
+    > p:first-of-type {
+        grid-column: 1;
+        grid-row: 1;
+
+        margin: 0 !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-heading !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+
+        line-height: 1.4 !important;
+    }
+
+    //
+    // Email
+    //
+    .brewcraft-success-registration-host
+    > div:not(.messages)
+    > p:nth-of-type(2) {
+        grid-column: 1;
+        grid-row: 2;
+
+        margin: 0 !important;
+
+        color: @brewcraft-muted !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 12px !important;
+
+        line-height: 1.5 !important;
+    }
+
+    .brewcraft-success-registration-host
+    > div:not(.messages)
+    > p:nth-of-type(2)
+    span:last-child {
+        color: @brewcraft-charcoal !important;
+        font-weight: 600 !important;
+    }
+
+    //
+    // Create account button
+    //
+    .brewcraft-success-registration-host
+    > div:not(.messages)
+    > .action.primary {
+        grid-column: 2;
+        grid-row: 1 / 3;
+
+        align-self: center;
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 170px;
+        height: 44px;
+
+        margin: 0 !important;
+        padding: 0 20px !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: 5px !important;
+
+        background: @brewcraft-espresso !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+
+        text-decoration: none !important;
+
+        box-shadow: none !important;
+    }
+
+    .brewcraft-success-registration-host
+    > div:not(.messages)
+    > .action.primary:hover {
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+    }
+}
+
+//
+// ============================================================
+// LOGGED-IN SHIPPING ADDRESS - SAVED ADDRESS + NEW ADDRESS
+// ============================================================
+//
+
+.checkout-index-index {
+
+    //
+    // ========================================================
+    // SAVED ADDRESS AREA
+    // ========================================================
+    //
+
+    .checkout-shipping-address .field.addresses {
+        margin: 0 0 18px !important;
+    }
+
+    .checkout-shipping-address .shipping-address-items {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+
+        width: 100%;
+    }
+
+
+    //
+    // Saved address card
+    //
+    .checkout-shipping-address .shipping-address-item {
+        position: relative;
+
+        width: auto !important;
+        min-height: 180px;
+
+        margin: 0 !important;
+        padding: 20px 22px 54px !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-charcoal !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        line-height: 1.7 !important;
+
+        box-shadow: 0 4px 16px rgba(46, 30, 20, .025);
+
+        box-sizing: border-box;
+    }
+
+    .checkout-shipping-address .shipping-address-item:hover {
+        border-color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // Selected address
+    //
+    .checkout-shipping-address
+    .shipping-address-item.selected-item {
+        border: 2px solid @brewcraft-coffee !important;
+
+        background: @brewcraft-cream !important;
+
+        box-shadow: 0 4px 18px rgba(46, 30, 20, .04);
+    }
+
+
+    //
+    // Magento triangle marker - remove default look
+    //
+    .checkout-shipping-address
+    .shipping-address-item.selected-item:after {
+        border-color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // Phone
+    //
+    .checkout-shipping-address
+    .shipping-address-item a {
+        color: @brewcraft-coffee !important;
+
+        font-weight: 500;
+
+        text-decoration: none !important;
+    }
+
+
+    //
+    // Edit address
+    //
+    .checkout-shipping-address
+    .edit-address-link {
+        position: absolute !important;
+
+        right: 18px;
+        bottom: 16px;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+
+        background: transparent !important;
+
+        color: @brewcraft-coffee !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+
+        box-shadow: none !important;
+    }
+
+
+    //
+    // ========================================================
+    // NEW ADDRESS BUTTON
+    // ========================================================
+    //
+
+    .checkout-shipping-address .new-address-popup {
+        margin: 4px 0 24px !important;
+    }
+
+    .checkout-shipping-address
+    .new-address-popup
+    .action-show-popup {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 150px;
+        height: 44px;
+
+        margin: 0 !important;
+        padding: 0 18px !important;
+
+        border: 1px solid @brewcraft-coffee !important;
+        border-radius: 5px !important;
+
+        background: @brewcraft-white !important;
+
+        color: @brewcraft-coffee !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+
+        box-shadow: none !important;
+    }
+
+     .checkout-shipping-address
+    .new-address-popup
+    .action-show-popup {
+
+        &:before {
+            content: '+' !important;
+            display: inline-block !important;
+            margin: 0 7px 0 0 !important;
+        }
+
+        &:after {
+            display: none !important;
+            content: none !important;
+        }
+
+        span:before,
+        span:after {
+            display: none !important;
+            content: none !important;
+        }
+    }
+
+    .checkout-shipping-address
+    .new-address-popup
+    .action-show-popup:hover {
+        border-color: @brewcraft-espresso !important;
+
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-espresso !important;
+    }
+}
+
+
+.checkout-index-index {
+
+    .checkout-shipping-address
+    .shipping-address-item.selected-item:after {
+        border-color: @brewcraft-espresso !important;
+        background: @brewcraft-espresso !important;
+    }
+
+    .checkout-shipping-address
+    .shipping-address-item.selected-item:before {
+        color: @brewcraft-white !important;
+    }
+}
+
+//
+// ============================================================
+// NEW SHIPPING ADDRESS MODAL - FINAL RESET + LAYOUT
+// ============================================================
+//
+
+.checkout-index-index {
+
+    .modal-popup.new-shipping-address-modal {
+
+        //
+        // ====================================================
+        // MODAL SHELL
+        // ====================================================
+        //
+
+        .modal-inner-wrap {
+
+            border-radius: 12px !important;
+
+            background: @brewcraft-white !important;
+
+            box-shadow:
+                0 20px 60px rgba(46, 30, 20, .18) !important;
+
+            overflow: hidden !important;
+        }
+
+        //
+        // HEADER
+        //
+        .modal-header {
+            padding: 24px 32px 18px !important;
+            background: @brewcraft-white !important;
+        }
+
+        .modal-title {
+            margin: 0 !important;
+
+            color: @brewcraft-espresso !important;
+
+            font-family: @brewcraft-font-heading !important;
+            font-size: 28px !important;
+            font-weight: 600 !important;
+
+            line-height: 1.25 !important;
+        }
+
+        .action-close {
+            width: 38px !important;
+            height: 38px !important;
+
+            border: 1px solid @brewcraft-border !important;
+            border-radius: 50% !important;
+
+            background: @brewcraft-white !important;
+
+            color: @brewcraft-charcoal !important;
+
+            box-shadow: none !important;
+        }
+
+        .action-close:hover {
+            border-color: @brewcraft-coffee !important;
+
+            background: @brewcraft-cream !important;
+        }
+
+
+        //
+        // BODY
+        //
+        .modal-content {
+            padding: 28px 32px 30px !important;
+
+            background: @brewcraft-white !important;
+        }
+
+
+        //
+        // FORM
+        //
+        #co-shipping-form {
+            margin: 0 !important;
+        }
+
+        #shipping-new-address-form {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+
+        //
+        // FIELD SPACING
+        //
+        #shipping-new-address-form
+        > .field,
+        #shipping-new-address-form
+        > fieldset.field {
+            margin-bottom: 18px !important;
+        }
+
+
+        //
+        // LABELS
+        //
+        #shipping-new-address-form
+        .field
+        > .label,
+        #shipping-new-address-form
+        fieldset.street
+        > .label {
+            display: block !important;
+
+            margin: 0 0 7px !important;
+            padding: 0 !important;
+
+            color: @brewcraft-charcoal !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+
+            line-height: 1.35 !important;
+        }
+
+
+        //
+        // Required star
+        //
+        #shipping-new-address-form
+        .field._required
+        > .label:after,
+        #shipping-new-address-form
+        fieldset.required
+        > .label:after {
+            color: @brewcraft-coffee !important;
+        }
+
+
+        //
+        // CONTROLS
+        //
+        #shipping-new-address-form
+        .control {
+            width: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+
+        //
+        // INPUTS / SELECTS
+        //
+        #shipping-new-address-form
+        .input-text,
+        #shipping-new-address-form
+        select.select {
+            width: 100% !important;
+            height: 46px !important;
+
+            margin: 0 !important;
+            padding: 0 14px !important;
+
+            border: 1px solid @brewcraft-border !important;
+            border-radius: 6px !important;
+
+            background: @brewcraft-white !important;
+
+            color: @brewcraft-charcoal !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+
+            line-height: 46px !important;
+
+            box-shadow: none !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        //
+        // Focus
+        //
+        #shipping-new-address-form
+        .input-text:focus,
+        #shipping-new-address-form
+        select.select:focus {
+            border-color: @brewcraft-coffee !important;
+
+            outline: none !important;
+
+            box-shadow:
+                0 0 0 1px @brewcraft-coffee !important;
+        }
+
+
+        //
+        // Disabled
+        //
+        #shipping-new-address-form
+        .input-text:disabled,
+        #shipping-new-address-form
+        select.select:disabled {
+            background: @brewcraft-cream !important;
+
+            color: @brewcraft-muted !important;
+
+            opacity: 1 !important;
+        }
+
+
+        //
+        // STREET
+        //
+        #shipping-new-address-form
+        fieldset.street {
+            margin-bottom: 18px !important;
+        }
+
+        #shipping-new-address-form
+        fieldset.street
+        > .control {
+            display: block !important;
+
+            width: 100% !important;
+        }
+
+        #shipping-new-address-form
+        fieldset.street
+        .field {
+            width: 100% !important;
+
+            margin: 0 0 10px !important;
+        }
+
+        #shipping-new-address-form
+        fieldset.street
+        .field:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        //
+        // Hide Line 1 / Line 2 labels;
+        // keep only outer "Street Address"
+        //
+        #shipping-new-address-form
+        fieldset.street
+        .field
+        > .label {
+            display: none !important;
+        }
+
+
+        //
+        // PHONE TOOLTIP
+        //
+        #shipping-new-address-form
+        .field[name='shippingAddress.telephone']
+        .control {
+            position: relative !important;
+        }
+
+        #shipping-new-address-form
+        .field[name='shippingAddress.telephone']
+        .input-text {
+            padding-right: 44px !important;
+        }
+
+        #shipping-new-address-form
+        .field-tooltip {
+            top: 50% !important;
+            right: 12px !important;
+
+            margin: 0 !important;
+
+            transform: translateY(-50%);
+        }
+
+        #shipping-new-address-form
+        .field-tooltip-action {
+            color: @brewcraft-coffee !important;
+        }
+
+
+        //
+        // VALIDATION ERROR
+        //
+        #shipping-new-address-form
+        .mage-error {
+            margin-top: 5px !important;
+
+            color: #b42318 !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 11px !important;
+        }
+
+
+        //
+        // SAVE IN ADDRESS BOOK
+        //
+        #co-shipping-form
+        > .field.choice {
+            display: flex !important;
+            align-items: center !important;
+
+            gap: 8px !important;
+
+            margin: 6px 0 0 !important;
+            padding: 0 !important;
+        }
+
+        #co-shipping-form
+        > .field.choice
+        input[type='checkbox'] {
+            width: 17px !important;
+            height: 17px !important;
+
+            margin: 0 !important;
+
+            accent-color: @brewcraft-espresso !important;
+        }
+
+        #co-shipping-form
+        > .field.choice
+        > .label {
+            margin: 0 !important;
+
+            color: @brewcraft-charcoal !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+
+            line-height: 1.4 !important;
+        }
+
+
+        //
+        // FOOTER
+        //
+        .modal-footer {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+
+            gap: 12px !important;
+
+            padding: 18px 32px 24px !important;
+
+            border-top: 1px solid @brewcraft-border !important;
+
+            background: @brewcraft-white !important;
+        }
+
+
+        //
+        // CANCEL
+        //
+        .action-hide-popup {
+            min-width: 120px !important;
+            height: 46px !important;
+
+            margin: 0 !important;
+            padding: 0 20px !important;
+
+            border: 1px solid @brewcraft-border !important;
+            border-radius: 6px !important;
+
+            background: @brewcraft-white !important;
+
+            color: @brewcraft-charcoal !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+
+            box-shadow: none !important;
+        }
+
+        .action-hide-popup:hover {
+            border-color: @brewcraft-coffee !important;
+
+            background: @brewcraft-cream !important;
+
+            color: @brewcraft-espresso !important;
+        }
+
+
+        //
+        // SHIP HERE
+        //
+        .action-save-address {
+            min-width: 170px !important;
+            height: 46px !important;
+
+            margin: 0 !important;
+            padding: 0 22px !important;
+
+            border: 1px solid @brewcraft-espresso !important;
+            border-radius: 6px !important;
+
+            background: @brewcraft-espresso !important;
+
+            color: @brewcraft-white !important;
+
+            font-family: @brewcraft-font-body !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+
+            box-shadow: none !important;
+        }
+
+        .action-save-address:hover {
+            border-color: @brewcraft-coffee !important;
+
+            background: @brewcraft-coffee !important;
+        }
+
+    }
+}
+
+.checkout-index-index {
+
+    .checkout-shipping-address
+    .shipping-address-item.selected-item:after {
+        border-color: @brewcraft-espresso !important;
+        background: @brewcraft-espresso !important;
+        border-radius: 8px;
+    }
+}
+
+.checkout-index-index
+.modal-popup.new-shipping-address-modal
+#shipping-save-in-address-book {
+    accent-color: @brewcraft-espresso !important;
+}
+

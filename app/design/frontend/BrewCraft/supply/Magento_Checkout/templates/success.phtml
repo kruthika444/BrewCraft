@@ -1,0 +1,201 @@
+<?php
+
+/**
+ * BrewCraft Checkout Success
+ *
+ * Theme override of:
+ * Magento_Checkout::success.phtml
+ *
+ * @var $block \Magento\Checkout\Block\Onepage\Success
+ */
+?>
+<p>KENJI WARNER </p>
+<div class="checkout-success brewcraft-order-success">
+
+    <div class="brewcraft-order-success__card">
+
+        <div class="brewcraft-order-success__icon"
+            aria-hidden="true">
+            ✓
+        </div>
+
+        <div class="brewcraft-order-success__eyebrow">
+            <?= $block->escapeHtml(__('Order Confirmed')) ?>
+        </div>
+
+        <h1 class="brewcraft-order-success__title">
+            <?= $block->escapeHtml(
+                __('Thank you for your purchase!')
+            ) ?>
+        </h1>
+
+        <?php if ($block->getOrderId()) : ?>
+
+            <div class="brewcraft-order-success__order">
+
+                <span class="brewcraft-order-success__order-label">
+                    <?= $block->escapeHtml(__('Order Number')) ?>
+                </span>
+
+                <?php if ($block->getCanViewOrder()) : ?>
+
+                    <a class="brewcraft-order-success__order-number"
+                        href="<?= $block->escapeUrl(
+                                    $block->getViewOrderUrl()
+                                ) ?>">
+
+                        <?= $block->escapeHtml(
+                            $block->getOrderId()
+                        ) ?>
+
+                    </a>
+
+                <?php else : ?>
+
+                    <strong class="brewcraft-order-success__order-number">
+                        <?= $block->escapeHtml(
+                            $block->getOrderId()
+                        ) ?>
+                    </strong>
+
+                <?php endif; ?>
+
+            </div>
+
+            <p class="brewcraft-order-success__message">
+                <?= $block->escapeHtml(
+                    __(
+                        'We have received your order and will email you a confirmation with your order details and tracking information.'
+                    )
+                ) ?>
+            </p>
+
+        <?php endif; ?>
+
+        <div class="brewcraft-order-success__actions">
+
+            <a class="action primary continue brewcraft-order-success__continue"
+                href="<?= $block->escapeUrl($block->getContinueUrl()) ?>">
+
+                <span>
+                    <?= $block->escapeHtml(__('Continue Shopping')) ?>
+                </span>
+
+            </a>
+
+            <?php if ($block->getOrderId() && $block->getCanViewOrder()) : ?>
+
+                <a class="action secondary brewcraft-order-success__view-order"
+                    href="<?= $block->escapeUrl($block->getViewOrderUrl()) ?>">
+
+                    <span>
+                        <?= $block->escapeHtml(__('View Order')) ?>
+                    </span>
+
+                </a>
+
+            <?php endif; ?>
+
+        </div>
+
+
+        <?php
+        /**
+         * IMPORTANT:
+         *
+         * Keep Magento/extension supplied success content.
+         *
+         * Guest checkout may use this area for account creation.
+         * Logged-in checkout/extensions may provide receipt or
+         * other success actions here.
+         */
+        ?>
+
+        <?php $additionalInfo = trim(
+            (string)$block->getAdditionalInfoHtml()
+        ); ?>
+
+        <?php if ($additionalInfo !== '') : ?>
+
+            <div class="brewcraft-order-success__additional">
+
+                <?= /* @noEscape */ $additionalInfo ?>
+
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+
+
+    <div class="brewcraft-order-success__next">
+
+        <div class="brewcraft-order-success__next-item">
+
+            <span class="brewcraft-order-success__next-number">
+                1
+            </span>
+
+            <div>
+                <strong>
+                    <?= $block->escapeHtml(
+                        __('Order Received')
+                    ) ?>
+                </strong>
+
+                <span>
+                    <?= $block->escapeHtml(
+                        __('Your order has been successfully placed.')
+                    ) ?>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="brewcraft-order-success__next-item">
+
+            <span class="brewcraft-order-success__next-number">
+                2
+            </span>
+
+            <div>
+                <strong>
+                    <?= $block->escapeHtml(
+                        __('Confirmation Email')
+                    ) ?>
+                </strong>
+
+                <span>
+                    <?= $block->escapeHtml(
+                        __('We will send your order details by email.')
+                    ) ?>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="brewcraft-order-success__next-item">
+
+            <span class="brewcraft-order-success__next-number">
+                3
+            </span>
+
+            <div>
+                <strong>
+                    <?= $block->escapeHtml(
+                        __('Order Updates')
+                    ) ?>
+                </strong>
+
+                <span>
+                    <?= $block->escapeHtml(
+                        __('Tracking information will be shared when available.')
+                    ) ?>
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

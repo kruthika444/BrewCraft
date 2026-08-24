@@ -1,0 +1,245 @@
+<?php
+/**
+ * BrewCraft Checkout Success
+ *
+ * Theme override for:
+ * Magento_InventoryInStorePickupFrontend::success.phtml
+ *
+ * Preserves Magento's normal shipping / store pickup logic.
+ *
+ * @var $block \Magento\Checkout\Block\Onepage\Success
+ */
+?>
+
+<div class="checkout-success brewcraft-order-success">
+
+    <div class="brewcraft-order-success__card">
+
+        <!-- Success Icon -->
+        <div class="brewcraft-order-success__icon"
+             aria-hidden="true">
+            ✓
+        </div>
+
+
+        <!-- Small heading -->
+        <div class="brewcraft-order-success__eyebrow">
+            <?= $block->escapeHtml(__('Order Confirmed')) ?>
+        </div>
+
+
+        <!-- Main heading -->
+        <h1 class="brewcraft-order-success__title">
+            <?= $block->escapeHtml(__('Thank you for your purchase!')) ?>
+        </h1>
+
+
+        <?php if ($block->getOrderId()) : ?>
+
+            <!-- Order Number -->
+            <div class="brewcraft-order-success__order">
+
+                <span class="brewcraft-order-success__order-label">
+                    <?= $block->escapeHtml(__('Order Number')) ?>
+                </span>
+
+
+                <?php if ($block->getCanViewOrder()) : ?>
+
+                    <a class="brewcraft-order-success__order-number"
+                       href="<?= $block->escapeUrl(
+                           $block->getViewOrderUrl()
+                       ) ?>">
+
+                        <?= $block->escapeHtml(
+                            $block->getOrderId()
+                        ) ?>
+
+                    </a>
+
+                <?php else : ?>
+
+                    <strong class="brewcraft-order-success__order-number">
+                        <?= $block->escapeHtml(
+                            $block->getOrderId()
+                        ) ?>
+                    </strong>
+
+                <?php endif; ?>
+
+            </div>
+
+
+            <!-- Confirmation message -->
+            <?php if ($block->getIsOrderStorePickup()->execute()) : ?>
+
+                <p class="brewcraft-order-success__message">
+                    <?= $block->escapeHtml(
+                        __(
+                            'Your order has been received. We\'ll email you an order and pick-up confirmation with the details.'
+                        )
+                    ) ?>
+                </p>
+
+            <?php else : ?>
+
+                <p class="brewcraft-order-success__message">
+                    <?= $block->escapeHtml(
+                        __(
+                            'Your order has been received. We\'ll email you a confirmation with your order details and tracking information.'
+                        )
+                    ) ?>
+                </p>
+
+            <?php endif; ?>
+
+        <?php endif; ?>
+
+
+        <!-- Main Actions -->
+        <div class="brewcraft-order-success__actions">
+
+            <a class="action primary continue brewcraft-order-success__continue"
+               href="<?= $block->escapeUrl(
+                   $block->getContinueUrl()
+               ) ?>">
+
+                <span>
+                    <?= $block->escapeHtml(
+                        __('Continue Shopping')
+                    ) ?>
+                </span>
+
+            </a>
+
+
+            <?php if (
+                $block->getOrderId()
+                && $block->getCanViewOrder()
+            ) : ?>
+
+                <a class="action secondary brewcraft-order-success__view-order"
+                   href="<?= $block->escapeUrl(
+                       $block->getViewOrderUrl()
+                   ) ?>">
+
+                    <span>
+                        <?= $block->escapeHtml(
+                            __('View Order')
+                        ) ?>
+                    </span>
+
+                </a>
+
+            <?php endif; ?>
+
+        </div>
+
+
+        <!-- Additional Magento / Extension information -->
+        <?= $block->getAdditionalInfoHtml() ?>
+
+    </div>
+
+
+    <!-- What Happens Next -->
+    <div class="brewcraft-order-success__next">
+
+        <div class="brewcraft-order-success__next-item">
+
+            <span class="brewcraft-order-success__next-number">
+                1
+            </span>
+
+            <div class="brewcraft-order-success__next-content">
+
+                <strong>
+                    <?= $block->escapeHtml(
+                        __('Order Received')
+                    ) ?>
+                </strong>
+
+                <span>
+                    <?= $block->escapeHtml(
+                        __('Your order has been successfully placed.')
+                    ) ?>
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="brewcraft-order-success__next-item">
+
+            <span class="brewcraft-order-success__next-number">
+                2
+            </span>
+
+            <div class="brewcraft-order-success__next-content">
+
+                <strong>
+                    <?= $block->escapeHtml(
+                        __('Confirmation Email')
+                    ) ?>
+                </strong>
+
+                <span>
+                    <?= $block->escapeHtml(
+                        __('We will send your order details by email.')
+                    ) ?>
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="brewcraft-order-success__next-item">
+
+            <span class="brewcraft-order-success__next-number">
+                3
+            </span>
+
+            <div class="brewcraft-order-success__next-content">
+
+                <strong>
+                    <?php if ($block->getIsOrderStorePickup()->execute()) : ?>
+
+                        <?= $block->escapeHtml(
+                            __('Pickup Confirmation')
+                        ) ?>
+
+                    <?php else : ?>
+
+                        <?= $block->escapeHtml(
+                            __('Order Updates')
+                        ) ?>
+
+                    <?php endif; ?>
+                </strong>
+
+
+                <span>
+                    <?php if ($block->getIsOrderStorePickup()->execute()) : ?>
+
+                        <?= $block->escapeHtml(
+                            __('We will let you know when your order is ready for pickup.')
+                        ) ?>
+
+                    <?php else : ?>
+
+                        <?= $block->escapeHtml(
+                            __('Tracking information will be shared when your order ships.')
+                        ) ?>
+
+                    <?php endif; ?>
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

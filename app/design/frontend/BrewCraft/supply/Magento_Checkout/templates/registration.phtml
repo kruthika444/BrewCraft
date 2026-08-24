@@ -1,0 +1,58 @@
+<?php
+/**
+ * BrewCraft Guest Registration Wrapper
+ *
+ * Keeps Magento's native Knockout registration component intact.
+ *
+ * @var $block \Magento\Checkout\Block\Registration
+ */
+?>
+
+<div class="brewcraft-success-registration-wrapper">
+
+    <div id="registration"
+         class="brewcraft-success-registration-host"
+         data-bind="scope:'registration'">
+
+        <!-- ko template: getTemplate() --><!-- /ko -->
+
+        <script type="text/x-magento-init">
+        {
+            "#registration": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "registration": {
+                            "component": "Magento_Checkout/js/view/registration",
+                            "config": {
+                                "registrationUrl":
+                                    "<?= $block->escapeJs(
+                                        $block->escapeUrl(
+                                            $block->getCreateAccountUrl()
+                                        )
+                                    ) ?>",
+                                "email":
+                                    "<?= $block->escapeJs(
+                                        $block->getEmailAddress()
+                                    ) ?>"
+                            },
+                            "children": {
+                                "errors": {
+                                    "component":
+                                        "Magento_Ui/js/view/messages",
+                                    "sortOrder": 0,
+                                    "displayArea": "messages",
+                                    "config": {
+                                        "autoHideTimeOut": -1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        </script>
+
+    </div>
+
+</div>
