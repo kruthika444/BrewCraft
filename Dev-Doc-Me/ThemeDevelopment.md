@@ -9327,3 +9327,996 @@ Place Order visibility
 
 ---
 
+# 10.BrewCraft Storefront – Development Log
+
+## Final UI Cleanup: 7-Point Fix List
+
+**Project:** BrewCraft Supply – Magento 2
+**Scope:** Storefront / PLP / PDP / Cart / Checkout UI cleanup
+**Status:** ✅ All 7 points completed
+**Theme:** `app/design/frontend/BrewCraft/supply`
+
+---
+
+## 1. Empty Cart Icon Styling
+
+#### Requirement
+
+The Magento empty-cart state was still using the default Magento visual/icon treatment and did not match the BrewCraft theme.
+
+#### Work completed
+
+The empty-cart icon/state was updated to match the BrewCraft storefront styling.
+
+The user completed the final styling directly.
+
+#### Result
+
+The empty-cart page now visually belongs to the BrewCraft theme rather than looking like an untouched Magento component.
+
+**Status:** ✅ Completed
+
+---
+
+## 2. PLP – Recently Ordered Block
+
+#### Problem
+
+For logged-in customers who had previously placed orders, Magento automatically rendered the native:
+
+```text
+Recently Ordered
+```
+
+block in the PLP sidebar.
+
+The block used default Magento styling and visually conflicted with the BrewCraft filter/sidebar design.
+
+#### Magento DOM identified
+
+The actual component was:
+
+```html
+<div class="block block-reorder">
+    <div class="block-title">
+        <strong>Recently Ordered</strong>
+    </div>
+
+    <div class="block-content">
+        <form class="form reorder">
+            ...
+        </form>
+    </div>
+</div>
+```
+
+with products rendered under:
+
+```html
+<ol class="product-items product-items-names">
+```
+
+and actions:
+
+```html
+<button class="action tocart primary">
+    Add to Cart
+</button>
+
+<a class="action view">
+    View All
+</a>
+```
+
+#### Implementation
+
+Scoped the design specifically to:
+
+```less
+.catalog-category-view
+.sidebar-additional
+.block.block-reorder
+```
+
+so that Compare Products and Wishlist were unaffected.
+
+The block was styled with:
+
+* BrewCraft white background
+* subtle stone border
+* rounded card
+* espresso heading
+* BrewCraft typography
+* compact product presentation
+* espresso checkbox
+* BrewCraft primary Add to Cart button
+* coffee-colored View All link
+* redundant `Last Ordered Items` subtitle hidden
+
+Example:
+
+```less
+.catalog-category-view {
+
+    .sidebar-additional
+    .block.block-reorder {
+        border: 1px solid @brewcraft-border !important;
+        border-radius: 10px !important;
+        background: @brewcraft-white !important;
+    }
+
+    .sidebar-additional
+    .block.block-reorder
+    input.checkbox {
+        accent-color: @brewcraft-espresso !important;
+    }
+
+    .sidebar-additional
+    .block.block-reorder
+    .action.tocart.primary {
+        background: @brewcraft-espresso !important;
+        color: @brewcraft-white !important;
+    }
+}
+```
+
+#### Result
+
+The native Magento Recently Ordered feature was preserved, but visually integrated into the BrewCraft PLP.
+
+**Status:** ✅ Completed
+
+---
+
+## 3. Review Star Styling
+
+#### Problem
+
+Magento review stars were still using the default Magento rating color.
+
+This affected product cards and other rating components.
+
+#### Actual Magento structure
+
+```html
+<div class="product-reviews-summary short">
+    <div class="rating-summary">
+        <div class="rating-result">
+            <span style="width: 80%;">
+                ...
+            </span>
+        </div>
+    </div>
+</div>
+```
+
+Magento creates the actual stars through pseudo-elements on:
+
+```less
+.rating-result
+```
+
+#### Implementation
+
+The empty stars were changed to a soft stone color and filled stars to BrewCraft gold.
+
+```less
+.rating-summary {
+
+    .rating-result {
+
+        &:before {
+            color: #D8D1C7 !important;
+        }
+
+        > span:before {
+            color: @brewcraft-gold !important;
+        }
+    }
+}
+```
+
+Theme gold:
+
+```less
+@brewcraft-gold: #C8A66A;
+```
+
+#### Important decision
+
+The rating percentage was left untouched.
+
+For example:
+
+```html
+<span style="width: 80%;">
+```
+
+still controls whether the product displays 4/5 stars, 3/5 stars, etc.
+
+Only the visual color changed.
+
+#### Coverage
+
+The rule applies to standard Magento rating summaries used in:
+
+```text
+PLP
+PDP
+Related Products
+Upsell Products
+Cross-sell Products
+Other product cards
+```
+
+#### Result
+
+Ratings now use the BrewCraft gold/stone visual language instead of Magento's default styling.
+
+**Status:** ✅ Completed
+
+---
+
+## 4. Breadcrumb and Review Link Colors
+
+#### Problem
+
+Some Magento-native links were still blue, particularly:
+
+```text
+Breadcrumb links
+2 Reviews
+Add Your Review
+```
+
+This introduced a color outside the BrewCraft design system.
+
+#### Breadcrumb implementation
+
+```less
+.breadcrumbs {
+
+    a {
+        color: @brewcraft-coffee !important;
+        text-decoration: none !important;
+    }
+
+    a:hover {
+        color: @brewcraft-espresso !important;
+        text-decoration: underline !important;
+    }
+
+    .item strong {
+        color: @brewcraft-charcoal !important;
+    }
+}
+```
+
+#### PDP review links
+
+```less
+.catalog-product-view {
+
+    .product-reviews-summary {
+
+        .reviews-actions {
+
+            .action.view,
+            .action.add {
+                color: @brewcraft-coffee !important;
+                text-decoration: none !important;
+            }
+
+            .action.view:hover,
+            .action.add:hover {
+                color: @brewcraft-espresso !important;
+                text-decoration: underline !important;
+            }
+        }
+    }
+}
+```
+
+#### Design behavior
+
+```text
+Normal link    → Coffee
+Hover          → Espresso
+Current item   → Charcoal
+```
+
+#### Result
+
+Magento blue was removed from these catalog UI elements without globally overriding unrelated links.
+
+**Status:** ✅ Completed
+
+---
+
+## 5. Add-to-Cart Message Styling + Automatic Visibility
+
+This point had two separate requirements.
+
+### A. Message styling
+
+#### Problem
+
+Magento's default Add to Cart success message was visually too strong/default and did not match the BrewCraft UI.
+
+#### Implementation
+
+Magento messages were styled globally using:
+
+```less
+.page.messages,
+.messages
+```
+
+Success messages use:
+
+* subtle pale green background
+* BrewCraft green text
+* custom circular success indicator
+* rounded corners
+* BrewCraft typography
+
+Example:
+
+```less
+.page.messages,
+.messages {
+
+    .message.success {
+        border: 1px solid #BFD8C8 !important;
+        background: #F1F8F3 !important;
+        color: @brewcraft-green !important;
+    }
+
+    .message.success:before {
+        content: '✓' !important;
+        background: @brewcraft-green !important;
+        color: @brewcraft-white !important;
+    }
+}
+```
+
+Error and warning states were also given matching visual treatment.
+
+---
+
+### B. Automatically bring new messages into view
+
+#### Problem
+
+When a customer clicked Add to Cart lower down a PDP or PLP, Magento displayed the success message near the top of the page.
+
+The customer might never see it because the browser remained at the current scroll position.
+
+#### First implementation
+
+A `MutationObserver` was initially used to watch:
+
+```html
+.page.messages
+```
+
+for new Magento messages.
+
+However, this did not reliably trigger with the actual Magento Add to Cart lifecycle.
+
+#### Final solution
+
+A new theme JavaScript module was created:
+
+```text
+app/design/frontend/BrewCraft/supply/web/js/brewcraft-messages.js
+```
+
+The final implementation listens directly for Magento's:
+
+```js
+ajax:addToCart
+```
+
+event.
+
+Core logic:
+
+```js
+$(document).on('ajax:addToCart', function () {
+    scrollToMessage();
+});
+```
+
+A `MutationObserver` remains as a fallback.
+
+The script waits for Magento to generate the message and then performs:
+
+```js
+window.scrollTo({
+    top: Math.max(messageTop, 0),
+    behavior: 'smooth'
+});
+```
+
+A header offset is included so the message is not hidden behind the storefront header.
+
+The script also checks whether the message is already visible:
+
+```js
+if (isMessageVisible(message)) {
+    return;
+}
+```
+
+Therefore unnecessary scrolling is avoided.
+
+#### RequireJS registration
+
+`requirejs-config.js` now includes:
+
+```js
+var config = {
+    deps: [
+        'js/brewcraft-move-shipping-method',
+        'js/brewcraft-cart-qty',
+        'js/brewcraft-messages'
+    ]
+};
+```
+
+#### Result
+
+Customer action:
+
+```text
+Click Add to Cart
+        ↓
+Magento processes AJAX request
+        ↓
+Success message is generated
+        ↓
+ajax:addToCart event detected
+        ↓
+Page smoothly moves to message
+        ↓
+Customer immediately sees confirmation
+```
+
+The user verified the final version was working.
+
+**Status:** ✅ Completed
+
+---
+
+## 6. Cart Quantity `+ / -` Regression
+
+#### Problem
+
+The BrewCraft cart had custom quantity controls:
+
+```text
+[-]  1  [+]
+```
+
+but both buttons stopped working.
+
+Browser console showed an error similar to:
+
+```text
+Refused to execute script ...
+brewcraft-cart-qty.js
+because MIME type text/plain ...
+```
+
+#### Investigation
+
+The source JavaScript file expected by RequireJS did not actually exist:
+
+```text
+app/design/frontend/BrewCraft/supply/web/js/brewcraft-cart-qty.js
+```
+
+The HTML controls themselves were correct:
+
+```html
+<div class="brewcraft-cart-qty">
+
+    <button
+        type="button"
+        data-role="cart-qty-minus">
+        −
+    </button>
+
+    <input
+        class="input-text qty"
+        data-role="cart-item-qty">
+
+    <button
+        type="button"
+        data-role="cart-qty-plus">
+        +
+    </button>
+
+</div>
+```
+
+#### Root cause
+
+RequireJS was trying to load:
+
+```text
+js/brewcraft-cart-qty
+```
+
+but the physical JavaScript file had been removed/missing.
+
+The browser therefore received an invalid static response rather than executable JavaScript.
+
+#### Fix
+
+The file was recreated:
+
+```text
+web/js/brewcraft-cart-qty.js
+```
+
+with delegated event handlers:
+
+```js
+$(document).on(
+    'click',
+    '[data-role="cart-qty-minus"]',
+    function (event) {
+        ...
+    }
+);
+```
+
+and:
+
+```js
+$(document).on(
+    'click',
+    '[data-role="cart-qty-plus"]',
+    function (event) {
+        ...
+    }
+);
+```
+
+The script:
+
+* finds the associated input
+* reads the current quantity
+* respects the minimum quantity
+* updates the value
+* triggers Magento's `change` event
+
+RequireJS was updated to load it:
+
+```js
+'js/brewcraft-cart-qty'
+```
+
+#### Result
+
+Both cart quantity buttons work again.
+
+The user explicitly verified:
+
+```text
+thanks, now it works
+```
+
+**Status:** ✅ Completed
+
+---
+
+## 7. Logged-In Checkout – Saved Address + New Address Modal
+
+This was the largest item in the cleanup list.
+
+### A. Saved Address Card
+
+#### Requirement
+
+Logged-in customers use saved Magento addresses during checkout.
+
+The native saved-address card did not match the BrewCraft checkout.
+
+Actual DOM:
+
+```html
+<div class="shipping-address-items">
+
+    <div class="shipping-address-item selected-item">
+
+        Kruthika SJ
+        ...
+        India
+
+        <button class="action edit-address-link">
+            Edit
+        </button>
+
+    </div>
+
+</div>
+```
+
+#### Implementation
+
+The saved-address block was converted into a BrewCraft-style card with:
+
+* white background
+* theme border
+* rounded corners
+* BrewCraft typography
+* espresso/coffee selected state
+* proper spacing
+* themed New Address action
+
+#### Selected address indicator
+
+Magento's selected-address marker originally appeared orange.
+
+It was changed to BrewCraft espresso by overriding the selected item pseudo-element.
+
+```less
+.checkout-index-index
+.checkout-shipping-address
+.shipping-address-item.selected-item:after {
+    border-color: @brewcraft-espresso !important;
+    background: @brewcraft-espresso !important;
+}
+```
+
+---
+
+### B. LESS Compilation Issue
+
+During development, the saved-address CSS initially appeared to do absolutely nothing.
+
+We confirmed the source existed:
+
+```bash
+grep -n "SAVED ADDRESS AREA" \
+app/design/frontend/BrewCraft/supply/web/css/source/_checkout.less
+```
+
+Result:
+
+```text
+2607: // SAVED ADDRESS AREA
+```
+
+We also confirmed `_checkout.less` was imported from:
+
+```text
+_extend.less
+```
+
+using:
+
+```less
+@import '_checkout.less';
+```
+
+However:
+
+```bash
+grep -R "shipping-address-item.selected-item" \
+pub/static/frontend/BrewCraft/supply/en_US/css \
+-n
+```
+
+returned nothing.
+
+#### Root cause
+
+The latest LESS source had not reached the generated storefront CSS.
+
+This proved the problem was not the DOM selectors but static-content/LESS compilation.
+
+
+
+This was an important debugging lesson:
+
+> Before repeatedly rewriting selectors, verify whether the CSS actually exists in Magento's generated output.
+
+---
+
+## New Address Popup
+
+
+#### Initial problem
+
+The first custom attempt over-controlled the form using:
+
+```less
+grid-column
+grid-row
+width
+max-width
+flex
+```
+
+This conflicted with the already-customized Shipping Address form because Magento uses the same:
+
+```html
+.form.form-shipping-address
+```
+
+classes inside the modal.
+
+The result was an awkward layout with fields compressed into incorrect positions.
+
+#### Second issue
+
+The New Address button temporarily displayed:
+
+```text
++ + New Address
+```
+
+because Magento already generated a plus icon while custom CSS added another:
+
+```less
+content: '+';
+```
+
+The custom duplicate pseudo-element was removed.
+
+#### Final approach
+
+The modal's width and centering were left to Magento/current working styles.
+
+The user intentionally commented out custom rules such as:
+
+```less
+// width: 760px !important;
+// max-width: calc(100% - 80px) !important;
+
+// margin-left: auto !important;
+// margin-right: auto !important;
+```
+
+because the native/current modal dimensions looked better.
+
+From that point, styling was restricted to the **inner fields only**.
+
+Final polishing included:
+
+* modal title
+* labels
+* field spacing
+* input height
+* border radius
+* border colors
+* focus state
+* street fields
+* telephone tooltip
+* required validation
+* Save in Address Book checkbox
+* Cancel button
+* Ship Here button
+
+Example field styling:
+
+```less
+#shipping-new-address-form
+.input-text,
+#shipping-new-address-form
+select.select {
+
+    width: 100% !important;
+    height: 46px !important;
+
+    padding: 0 14px !important;
+
+    border: 1px solid @brewcraft-border !important;
+    border-radius: 6px !important;
+
+    background: @brewcraft-white !important;
+
+    color: @brewcraft-charcoal !important;
+
+    box-shadow: none !important;
+}
+```
+
+Focus state:
+
+```less
+#shipping-new-address-form
+.input-text:focus,
+#shipping-new-address-form
+select.select:focus {
+
+    border-color: @brewcraft-coffee !important;
+
+    box-shadow:
+        0 0 0 1px @brewcraft-coffee !important;
+}
+```
+
+Checkbox:
+
+```less
+#shipping-save-in-address-book {
+    accent-color: @brewcraft-espresso !important;
+}
+```
+
+#### Result
+
+Logged-in checkout now has:
+
+```text
+Saved address card
+        ✓ BrewCraft selected indicator
+
++ New Address
+
+New Address Modal
+        BrewCraft typography
+        BrewCraft inputs
+        BrewCraft checkbox
+        Cancel
+        Ship Here
+```
+
+The final layout was confirmed visually acceptable.
+
+**Status:** ✅ Completed
+
+---
+
+Current RequireJS dependencies include:
+
+```js
+var config = {
+    deps: [
+        'js/brewcraft-move-shipping-method',
+        'js/brewcraft-cart-qty',
+        'js/brewcraft-messages'
+    ]
+};
+```
+
+---
+
+## Static Asset Workflow Used
+
+During these changes, the reliable clean-build sequence was:
+
+```bash
+rm -rf var/view_preprocessed/*
+rm -rf pub/static/frontend/BrewCraft/*
+rm -rf var/cache/*
+rm -rf var/page_cache/*
+
+bin/magento cache:flush
+```
+
+When Magento did not regenerate newer LESS/JS correctly:
+
+```bash
+bin/magento setup:static-content:deploy \
+-f \
+en_US \
+--theme BrewCraft/supply
+```
+
+followed by:
+
+```text
+Ctrl + Shift + R
+```
+
+in the browser.
+
+---
+
+## Key Technical Lessons from This Cleanup
+
+#### Verify compiled CSS before changing selectors
+
+A correct selector can appear broken simply because Magento has not compiled the latest LESS.
+
+Useful check:
+
+```bash
+grep -R "selector-name" \
+pub/static/frontend/BrewCraft/supply/en_US/css \
+-n
+```
+
+If the source has the selector but generated CSS does not, the issue is compilation/static assets — not selector specificity.
+
+#### Inspect Magento's exact DOM first
+
+This was especially important for:
+
+```text
+Recently Ordered
+Saved addresses
+New Address modal
+Review stars
+```
+
+Styling the actual rendered classes was much more reliable than assuming Magento's structure.
+
+#### Shared Magento classes can create unexpected conflicts
+
+The normal Shipping page and the New Address popup both use:
+
+```html
+<form class="form form-shipping-address">
+```
+
+So page-level rules can unintentionally affect the popup.
+
+Modal-specific selectors should therefore begin with:
+
+```less
+.modal-popup.new-shipping-address-modal
+```
+
+when appropriate.
+
+#### Don't duplicate Magento-generated icons
+
+The double:
+
+```text
++ + New Address
+```
+
+came from custom CSS adding an icon Magento already supplied.
+
+Before using:
+
+```less
+content: '+';
+```
+
+check whether Magento's `:before` / `:after` already creates the icon.
+
+#### Use Magento events when available
+
+For the Add to Cart scroll behavior, observing the DOM alone was unreliable.
+
+The final reliable solution used:
+
+```js
+ajax:addToCart
+```
+
+because it directly represents the Magento action we care about.
+
+#### Diagnose missing JavaScript from the source upward
+
+The cart quantity regression initially appeared to be a behavioral bug, but the actual cause was simply that:
+
+```text
+brewcraft-cart-qty.js
+```
+
+was missing while RequireJS still referenced it.
+
+The correct debugging path was:
+
+```text
+Browser error
+→ RequireJS module
+→ static file
+→ theme source file
+→ discovered missing file
+→ recreate file
+```
+
+---
+
+

@@ -2219,7 +2219,7 @@
     }
 
     .brewcraft-review-stars__base {
-        color: #d2d2d2;
+        color:  @brewcraft-gold;
         display: block;
     }
 
@@ -2229,7 +2229,7 @@
         left: 0;
         overflow: hidden;
         white-space: nowrap;
-        color: #ff6a00;
+        color:  @brewcraft-espresso;
     }
 
     .brewcraft-review-card__summary {
@@ -2271,3 +2271,37 @@
     }
 }
 
+
+
+//
+// ============================================================
+// PDP REVIEW LINKS
+// ============================================================
+//
+
+.catalog-product-view {
+
+    .product-reviews-summary {
+
+        .reviews-actions {
+
+            .action.view,
+            .action.add {
+                color: @brewcraft-coffee !important;
+
+                font-family: @brewcraft-font-body !important;
+                font-size: 13px !important;
+                font-weight: 600 !important;
+
+                text-decoration: none !important;
+            }
+
+            .action.view:hover,
+            .action.add:hover {
+                color: @brewcraft-espresso !important;
+
+                text-decoration: underline !important;
+            }
+        }
+    }
+}

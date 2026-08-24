@@ -17,3 +17,203 @@ body {
     background: @brewcraft-white;
     color: @brewcraft-charcoal;
 }
+
+.rating-summary {
+
+    .rating-result {
+
+        &:before {
+            color: @brewcraft-gold !important;
+        }
+
+        > span:before {
+            color: @brewcraft-espresso !important;
+        }
+    }
+}
+
+//
+// ============================================================
+// GLOBAL BREADCRUMB LINKS
+// ============================================================
+//
+
+.breadcrumbs {
+
+    a {
+        color: @brewcraft-coffee !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-weight: 500 !important;
+
+        text-decoration: none !important;
+    }
+
+    a:hover {
+        color: @brewcraft-espresso !important;
+
+        text-decoration: underline !important;
+    }
+
+    .item strong {
+        color: @brewcraft-charcoal !important;
+
+        font-weight: 500 !important;
+    }
+}
+
+//
+// ============================================================
+// BREWCRAFT GLOBAL MESSAGES
+// ============================================================
+//
+
+.page.messages,
+.messages {
+
+    .message {
+        position: relative;
+
+        max-width: 1440px;
+
+        margin: 14px auto !important;
+        padding: 14px 18px 14px 48px !important;
+
+        border-radius: 7px !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+
+        line-height: 1.55 !important;
+
+        box-sizing: border-box;
+
+        box-shadow:
+            0 4px 14px rgba(46, 30, 20, .035);
+    }
+
+
+    //
+    // ========================================================
+    // SUCCESS
+    // ========================================================
+    //
+
+    .message.success {
+        border: 1px solid #BFD8C8 !important;
+
+        background: #F1F8F3 !important;
+
+        color: @brewcraft-green !important;
+    }
+
+    .message.success:before {
+        position: absolute;
+
+        top: 50%;
+        left: 17px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 22px;
+        height: 22px;
+
+        border-radius: 50%;
+
+        background: @brewcraft-green !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+
+        line-height: 1 !important;
+
+        transform: translateY(-50%);
+    }
+
+
+    //
+    // Success links
+    //
+    .message.success a {
+        color: @brewcraft-green !important;
+
+        font-weight: 700 !important;
+
+        text-decoration: underline !important;
+    }
+
+
+    //
+    // ========================================================
+    // ERROR
+    // ========================================================
+    //
+
+    .message.error {
+        border: 1px solid #E5B8B3 !important;
+
+        background: #FFF5F3 !important;
+
+        color: #9B2C22 !important;
+    }
+
+    .message.error:before {
+        position: absolute;
+
+        top: 50%;
+        left: 17px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 22px;
+        height: 22px;
+
+        border-radius: 50%;
+
+        background: #9B2C22 !important;
+
+        color: @brewcraft-white !important;
+
+        font-size: 12px !important;
+        font-weight: 700 !important;
+
+        transform: translateY(-50%);
+    }
+
+
+    //
+    // ========================================================
+    // NOTICE / WARNING
+    // ========================================================
+    //
+
+    .message.notice,
+    .message.warning {
+        border: 1px solid @brewcraft-gold !important;
+
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-espresso !important;
+    }
+
+    .message.notice:before,
+    .message.warning:before {
+        color: @brewcraft-coffee !important;
+    }
+
+
+    //
+    // Remove unnecessary inner margins
+    //
+    .message > * {
+        margin: 0 !important;
+    }
+}
