@@ -1,5 +1,6 @@
 var config = {
     deps: [
-        'js/brewcraft-move-shipping-method'
+        'js/brewcraft-move-shipping-method',
+        'js/brewcraft-cart-qty'
     ]
 };
