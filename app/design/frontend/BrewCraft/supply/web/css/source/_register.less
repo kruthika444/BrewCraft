@@ -1,0 +1,325 @@
+.customer-account-create {
+    .page-main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: @bc-space-6 @bc-space-3 @bc-space-8;
+    }
+
+    .page-title-wrapper {
+        margin: 0 0 @bc-space-6;
+    }
+
+    .page-title {
+        margin: 0;
+        text-align: center;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-heading;
+        font-size: 42px;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    form.form.create.account.form-create-account {
+        display: block !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 700px !important;
+
+        margin: 0 auto !important;
+        padding: @bc-space-5 !important;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        float: none !important;
+        box-sizing: border-box;
+    }
+
+    .form-create-account > .fieldset.create.info,
+    .form-create-account > .fieldset.create.account {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .form-create-account > .fieldset.create.account {
+        margin-top: @bc-space-6 !important;
+    }
+
+    .form-create-account > .fieldset.additional_info {
+        display: none !important;
+    }
+
+    .form-create-account > .fieldset > .legend {
+        display: block;
+        width: 100%;
+
+        margin: 0 0 @bc-space-4 !important;
+        padding: 0 0 @bc-space-2 !important;
+
+        border-bottom: 1px solid @brewcraft-stone;
+
+        color: @brewcraft-espresso;
+        font-family: @brewcraft-font-heading;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .form-create-account > .fieldset > .legend + br {
+        display: none;
+    }
+
+    /*
+     * First name + last name in same row
+     */
+    .fieldset.create.info {
+        .field-name-firstname,
+        .field-name-lastname {
+            display: inline-block;
+            vertical-align: top;
+
+            width: calc(50% - (@bc-space-2 / 2));
+        }
+
+        .field-name-firstname {
+            margin-right: @bc-space-2;
+        }
+    }
+
+    .form-create-account .field {
+        margin: 0 0 @bc-space-3;
+    }
+
+    .form-create-account .field > .label {
+        display: block;
+
+        margin: 0 0 @bc-space-1;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .form-create-account .control {
+        width: 100%;
+    }
+
+    /*
+     * Smaller / medium inputs
+     */
+    .form-create-account input.input-text,
+    .form-create-account select {
+        width: 100% !important;
+        height: 44px;
+
+        padding: 0 @bc-space-2;
+
+        background: @brewcraft-white;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        box-shadow: none;
+        box-sizing: border-box;
+
+        &:focus {
+            border-color: @brewcraft-coffee;
+            box-shadow: 0 0 0 1px @brewcraft-coffee;
+            outline: 0;
+        }
+    }
+
+    /*
+     * Keep sign-in fields from feeling too wide
+     */
+    .fieldset.create.account {
+        .field:not(.choice) {
+            max-width: 560px;
+        }
+    }
+
+    .form-create-account .field.choice {
+        display: flex;
+        align-items: center;
+        gap: @bc-space-1;
+
+        margin-bottom: @bc-space-2;
+    }
+
+    .form-create-account .field.choice > .checkbox {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        flex: 0 0 auto;
+    }
+
+    .form-create-account .field.choice > .label {
+        margin: 0;
+        font-weight: 400;
+    }
+
+    .form-create-account .field-tooltip.toggle {
+        margin-left: @bc-space-1;
+    }
+
+    .form-create-account .password-strength-meter {
+        max-width: 560px;
+
+        margin-top: @bc-space-1;
+        padding: 10px @bc-space-2;
+
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        box-sizing: border-box;
+    }
+
+    .form-create-account .fieldset.create.account::after {
+        display: block;
+
+        margin-top: @bc-space-3;
+
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+    }
+
+    .form-create-account > .actions-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: @bc-space-3;
+
+        margin: @bc-space-5 0 0 !important;
+        padding: @bc-space-4 0 0 !important;
+
+        border-top: 1px solid @brewcraft-stone;
+
+        float: none !important;
+        clear: both !important;
+    }
+
+    .form-create-account > .actions-toolbar::before,
+    .form-create-account > .actions-toolbar::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    .form-create-account > .actions-toolbar > .primary,
+    .form-create-account > .actions-toolbar > .secondary {
+        float: none !important;
+        margin: 0 !important;
+    }
+
+    .form-create-account
+    > .actions-toolbar
+    .action.submit.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 210px;
+        height: 46px;
+
+        padding: 0 @bc-space-3;
+
+        background: @brewcraft-espresso !important;
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        &:hover {
+            background: @brewcraft-coffee !important;
+            border-color: @brewcraft-coffee !important;
+        }
+    }
+
+    .form-create-account
+    > .actions-toolbar
+    .action.back {
+        color: @brewcraft-espresso;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 500;
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    @media (max-width: 768px) {
+        .page-main {
+            padding: @bc-space-4 @bc-space-2 @bc-space-7;
+        }
+
+        .page-title {
+            font-size: 34px;
+        }
+
+        form.form.create.account.form-create-account {
+            max-width: 100% !important;
+            padding: @bc-space-3 !important;
+        }
+
+        .fieldset.create.info {
+            .field-name-firstname,
+            .field-name-lastname {
+                display: block;
+                width: 100%;
+            }
+
+            .field-name-firstname {
+                margin-right: 0;
+            }
+        }
+
+        .fieldset.create.account {
+            .field:not(.choice) {
+                max-width: none;
+            }
+        }
+
+        .form-create-account .password-strength-meter {
+            max-width: none;
+        }
+
+        .form-create-account > .actions-toolbar {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+
+        .form-create-account
+        > .actions-toolbar
+        .action.submit.primary {
+            width: 100%;
+        }
+
+        .form-create-account
+        > .actions-toolbar
+        .action.back {
+            text-align: center;
+        }
+    }
+}

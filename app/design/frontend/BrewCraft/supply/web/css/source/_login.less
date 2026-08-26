@@ -1,0 +1,558 @@
+.customer-account-login .page-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+    box-sizing: border-box;
+}
+
+.customer-account-login .page-title-wrapper {
+    margin: 0 0 55px;
+}
+
+.customer-account-login .page-title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+/* MAIN TWO COLUMN LAYOUT */
+.customer-account-login .login-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+
+    padding: 0;
+}
+
+/* RESET MAGENTO DEFAULT WIDTH / FLOAT */
+.customer-account-login .login-container .block-customer-login,
+.customer-account-login .login-container .block-new-customer {
+    float: none !important;
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    position: relative;
+    max-height: fit-content;
+    padding: @bc-space-5;
+    display: flex;
+    flex-direction: column;
+
+    background: @brewcraft-cream;
+    border: 1px solid @brewcraft-gold;
+    border-radius: @bc-radius-md;
+
+    box-shadow: 0 10px 30px fade(@brewcraft-espresso, 5%);
+
+    box-sizing: border-box;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+
+        border-color: @brewcraft-coffee;
+
+        box-shadow: 0 16px 38px fade(@brewcraft-espresso, 9%);
+    }
+}
+
+/* TITLES */
+.customer-account-login .login-container .block-title {
+    margin: 0 0 24px !important;
+    padding: 0 !important;
+    border: 0 !important;
+}
+
+.customer-account-login .login-container .block-title strong {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* CONTENT TEXT */
+.customer-account-login .field.note,
+.customer-account-login .block-new-customer .block-content>p {
+    margin: 0 0 28px !important;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 380px;
+}
+
+/* LOGIN FORM */
+.customer-account-login .fieldset.login {
+    margin: 0;
+}
+
+.customer-account-login .fieldset.login .field {
+    margin: 0 0 20px;
+}
+
+.customer-account-login .fieldset.login .label {
+    display: block;
+    margin: 0 0 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* INPUTS */
+.customer-account-login .fieldset.login .control {
+    width: 100%;
+}
+
+.customer-account-login .fieldset.login .input-text {
+    display: block;
+
+    width: 100%;
+    height: 50px;
+
+    margin: 0;
+    padding: 0 14px;
+
+    border: 1px solid #d9d3ce;
+    border-radius: 2px;
+
+    background: #fff;
+    box-shadow: none;
+
+    box-sizing: border-box;
+}
+
+.customer-account-login .fieldset.login .input-text:focus {
+    border-color: #432718;
+    box-shadow: none;
+    outline: none;
+}
+
+/* SHOW PASSWORD */
+.customer-account-login .fieldset.login .field.choice {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin: 4px 0 0;
+}
+
+.customer-account-login .fieldset.login .field.choice .checkbox {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.customer-account-login .fieldset.login .field.choice .label {
+    margin: 0;
+    font-weight: 400;
+}
+
+/* ACTIONS */
+.customer-account-login .login-container .actions-toolbar {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 24px;
+
+    margin: 28px 0 0 !important;
+    padding: 0 !important;
+}
+
+.customer-account-login .actions-toolbar::before,
+.customer-account-login .actions-toolbar::after {
+    display: none !important;
+}
+
+.customer-account-login .actions-toolbar .primary,
+.customer-account-login .actions-toolbar .secondary {
+    float: none !important;
+    margin: 0 !important;
+}
+
+/* BUTTONS */
+.customer-account-login button.action.primary,
+.customer-account-login a.action.primary {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 180px;
+    height: 48px;
+
+    margin: 0;
+    padding: 0 26px;
+
+    background: #432718 !important;
+    border: 1px solid #432718 !important;
+    border-radius: 2px;
+
+    color: #fff !important;
+
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.customer-account-login button.action.primary:hover,
+.customer-account-login a.action.primary:hover {
+    background: #2f1b10 !important;
+    border-color: #2f1b10 !important;
+}
+
+/* FORGOT PASSWORD */
+.customer-account-login .action.remind {
+    color: #432718 !important;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* REQUIRED FIELDS */
+.customer-account-login .fieldset.login::after {
+    margin-top: 24px;
+    font-size: 12px;
+}
+
+/* NEW CUSTOMER */
+.customer-account-login .block-new-customer .actions-toolbar {
+    justify-content: flex-start !important;
+    margin-top: 30px !important;
+}
+
+.customer-account-login .block-new-customer .action.create {
+    min-width: 195px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .customer-account-login .page-main {
+        padding: 28px 20px 50px;
+    }
+
+    .customer-account-login .page-title-wrapper {
+        margin-bottom: 35px;
+    }
+
+    .customer-account-login .page-title {
+        font-size: 32px;
+    }
+
+    .customer-account-login .login-container {
+        grid-template-columns: 1fr;
+        gap: 45px;
+
+        max-width: 100%;
+    }
+
+    .customer-account-login .login-container .actions-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .customer-account-login button.action.primary,
+    .customer-account-login a.action.primary {
+        width: 100%;
+    }
+}
+
+.customer-account-login .login-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* IMPORTANT: Magento clearfix creates fake grid items */
+.customer-account-login .login-container::before,
+.customer-account-login .login-container::after {
+    content: none !important;
+    display: none !important;
+}
+
+.customer-account-login .login-container .block-customer-login,
+.customer-account-login .login-container .block-new-customer {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    float: none !important;
+    clear: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* =========================================================
+   BREWCRAFT - FORGOT PASSWORD
+   ========================================================= */
+
+
+.customer-account-forgotpassword {
+    .page-main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: @bc-space-6 @bc-space-3 @bc-space-8;
+    }
+
+    .page-title-wrapper {
+        margin: 0 0 @bc-space-6;
+    }
+
+    .page-title {
+        margin: 0;
+        text-align: center;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-heading;
+        font-size: 42px;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .fieldset {
+        margin: 0 0 25px !important;
+    }
+
+    /*
+     * Forgot password card
+     */
+    form.form.password.forget {
+        display: block !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 700px !important;
+
+        margin: 0 auto !important;
+        padding: @bc-space-5 !important;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        float: none !important;
+        box-sizing: border-box;
+    }
+
+    /*
+     * Description / note
+     */
+    .form.password.forget .field.note {
+        margin: 0 0 @bc-space-4;
+
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /*
+     * Fields
+     */
+    .form.password.forget .field {
+        margin: 0 0 @bc-space-3;
+    }
+
+    .form.password.forget .field>.label {
+        display: block;
+
+        margin: 0 0 @bc-space-1;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .form.password.forget .control {
+        width: 100%;
+    }
+
+    /*
+     * Email input
+     */
+    .form.password.forget input.input-text {
+        width: 100% !important;
+        height: 44px;
+
+        padding: 0 @bc-space-2;
+
+        background: @brewcraft-white;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        box-shadow: none;
+        box-sizing: border-box;
+
+        &:focus {
+            border-color: @brewcraft-coffee;
+            box-shadow: 0 0 0 1px @brewcraft-coffee;
+            outline: 0;
+        }
+    }
+
+    /*
+     * CAPTCHA
+     */
+    .form.password.forget .field.captcha {
+        margin-top: @bc-space-4;
+    }
+
+    .form.password.forget .field.captcha>.label {
+        margin-bottom: @bc-space-1;
+    }
+
+    .form.password.forget .control.captcha {
+        width: 100%;
+    }
+
+    .form.password.forget .captcha-image {
+        display: flex;
+        align-items: center;
+        gap: @bc-space-2;
+
+        margin-top: @bc-space-2;
+    }
+
+    .form.password.forget .captcha-img {
+        display: block;
+
+        height: 50px;
+        width: auto;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-white;
+    }
+
+    .form.password.forget .captcha-reload {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 40px;
+        height: 40px;
+
+        padding: 0 @bc-space-2;
+
+        background: @brewcraft-white;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+
+        &:hover {
+            background: @brewcraft-bg-soft;
+            border-color: @brewcraft-coffee;
+            color: @brewcraft-coffee;
+        }
+    }
+
+    /*
+     * Bottom action area
+     */
+    .form.password.forget>.actions-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: @bc-space-3;
+
+        float: none !important;
+        clear: both !important;
+    }
+
+    .form.password.forget>.actions-toolbar::before,
+    .form.password.forget>.actions-toolbar::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    .form.password.forget>.actions-toolbar>.primary,
+    .form.password.forget>.actions-toolbar>.secondary {
+        float: none !important;
+        margin: 0 !important;
+    }
+
+    /*
+     * Reset button
+     */
+    .form.password.forget .action.submit.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 210px;
+        height: 46px;
+
+        padding: 0 @bc-space-3;
+
+        background: @brewcraft-espresso !important;
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        &:hover {
+            background: @brewcraft-coffee !important;
+            border-color: @brewcraft-coffee !important;
+        }
+    }
+
+    /*
+     * Go back
+     */
+    .form.password.forget .action.back {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 500;
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+
+        &:hover {
+            color: @brewcraft-coffee;
+        }
+    }
+
+    /*
+     * Validation messages
+     */
+    .form.password.forget .mage-error {
+        margin-top: @bc-space-1;
+
+        color: #a94442;
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+    }
+
+}

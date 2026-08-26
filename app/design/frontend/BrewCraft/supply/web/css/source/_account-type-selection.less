@@ -1,0 +1,194 @@
+.account-select-index {
+    .page-main {
+        max-width: none;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .page-title-wrapper {
+        display: none;
+    }
+
+    .brewcraft-account-type {
+        min-height: calc(100vh - 220px);
+        padding: @bc-space-8 @bc-space-3 90px;
+    }
+
+    .account-type-heading {
+        max-width: 720px;
+        margin: 0 auto @bc-space-6;
+        text-align: center;
+
+        h1 {
+            margin: 0 0 @bc-space-2;
+
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-heading;
+            font-size: 42px;
+            font-weight: 500;
+            line-height: 1.15;
+        }
+
+        p {
+            margin: 0;
+
+            color: @brewcraft-muted;
+
+            font-family: @brewcraft-font-body;
+            font-size: 16px;
+            line-height: 1.65;
+        }
+    }
+
+    .account-type-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: @bc-space-4;
+
+        width: 100%;
+        max-width: 1050px;
+        margin: 0 auto;
+    }
+
+    .account-type-card {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        min-height: 340px;
+        padding: @bc-space-5;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-gold;
+        border-radius: @bc-radius-md;
+
+        box-shadow: 0 10px 30px fade(@brewcraft-espresso, 5%);
+
+        box-sizing: border-box;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+
+        &:hover {
+            transform: translateY(-3px);
+
+            border-color: @brewcraft-coffee;
+
+            box-shadow: 0 16px 38px fade(@brewcraft-espresso, 9%);
+        }
+    }
+
+    .account-type-content {
+        max-width: 430px;
+    }
+
+    .account-type-label {
+        display: inline-block;
+        margin-bottom: @bc-space-2;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        line-height: 1;
+    }
+
+    .account-type-card h2 {
+        margin: 0 0 @bc-space-2;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1.25;
+    }
+
+    .account-type-card p {
+        margin: 0 0 @bc-space-4;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .account-type-action {
+        align-self: flex-start;
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 230px;
+        height: 50px;
+        padding: 0 @bc-space-3;
+
+        background: @brewcraft-espresso !important;
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1;
+
+        text-decoration: none;
+
+        box-sizing: border-box;
+
+        transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+
+        &:hover {
+            background: @brewcraft-coffee !important;
+            border-color: @brewcraft-coffee !important;
+            transform: translateY(-1px);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .brewcraft-account-type {
+            min-height: auto;
+            padding: @bc-space-5 @bc-space-2 @bc-space-7;
+        }
+
+        .account-type-heading {
+            margin-bottom: @bc-space-4;
+
+            h1 {
+                font-size: 34px;
+            }
+        }
+
+        .account-type-options {
+            grid-template-columns: 1fr;
+            gap: @bc-space-3;
+        }
+
+        .account-type-card {
+            min-height: auto;
+            padding: @bc-space-4 @bc-space-3;
+        }
+
+        .account-type-card h2 {
+            font-size: 25px;
+        }
+
+        .account-type-action {
+            width: 100%;
+        }
+    }
+}

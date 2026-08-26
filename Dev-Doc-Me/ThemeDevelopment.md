@@ -689,7 +689,7 @@ Navigation below header      ✅
 
 ## Key Magento Theme Lessons Learned
 
-#### 1. Never edit vendor theme files
+### 1. Never edit vendor theme files
 
 We kept all BrewCraft work under:
 
@@ -699,7 +699,7 @@ app/design/frontend/BrewCraft/supply
 
 so Magento updates do not overwrite customizations.
 
-#### 2. Child themes inherit functionality
+### 2. Child themes inherit functionality
 
 Using:
 
@@ -709,7 +709,7 @@ Using:
 
 lets us reuse Magento storefront functionality while changing the design.
 
-#### 3. Be careful with Magento core LESS filenames
+### 3. Be careful with Magento core LESS filenames
 
 Files such as:
 
@@ -722,7 +722,7 @@ have special meaning in Magento theme inheritance.
 
 A small custom version can unintentionally remove parent definitions.
 
-#### 4. Use unique project-specific LESS partial names
+### 4. Use unique project-specific LESS partial names
 
 Safer pattern:
 
@@ -734,7 +734,7 @@ _brewcraft-footer.less
 
 or similarly unique project prefixes.
 
-#### 5. `_extend.less` is our main customization entry point
+### 5. `_extend.less` is our main customization entry point
 
 Instead of copying huge parent-theme LESS files, BrewCraft additions can be loaded through:
 
@@ -742,7 +742,7 @@ Instead of copying huge parent-theme LESS files, BrewCraft additions can be load
 _extend.less
 ```
 
-#### 6. Debug from the first compilation error
+### 6. Debug from the first compilation error
 
 When Magento says:
 
@@ -758,7 +758,7 @@ the solution is not necessarily:
 
 If several Magento variables disappear together, investigate theme inheritance first.
 
-#### 7. Resetting to a minimal theme is a useful debugging technique
+### 7. Resetting to a minimal theme is a useful debugging technique
 
 The most useful diagnostic step was:
 
@@ -784,7 +784,7 @@ from:
 Our theme customization problem
 ```
 
-#### 8. Preserve Magento's functional blocks
+### 8. Preserve Magento's functional blocks
 
 Instead of rewriting:
 
@@ -897,7 +897,7 @@ Magento_Cms/layout/cms_index_index.xml
 
 This was preferred over placing all homepage components in `default.xml`.
 
-#### Why?
+### Why?
 
 `default.xml` affects almost every storefront page.
 
@@ -1191,7 +1191,7 @@ Magento Admin
 
 The homepage reads Magento's category image.
 
-#### Why this is better
+### Why this is better
 
 If an administrator changes:
 
@@ -1703,7 +1703,7 @@ BrewCraft\ErpIntegration\Block\Home\FeaturedProducts
 
 An important part of the homepage architecture was deciding what should be dynamic.
 
-#### Dynamic Magento data
+### Dynamic Magento data
 
 ```text
 Category names
@@ -1720,7 +1720,7 @@ Add to Cart
 Product availability
 ```
 
-#### Theme-managed content
+### Theme-managed content
 
 ```text
 Hero copy
@@ -1750,7 +1750,7 @@ Brand/design content
 
 After the implementation, several homepage changes can now be made without touching code.
 
-#### Category images
+### Category images
 
 ```text
 Admin
@@ -1759,7 +1759,7 @@ Admin
 → Category Image
 ```
 
-#### Featured products
+### Featured products
 
 ```text
 Admin
@@ -1769,7 +1769,7 @@ Admin
 → Products in Category
 ```
 
-#### Product images
+### Product images
 
 ```text
 Admin
@@ -1778,7 +1778,7 @@ Admin
 → Images and Videos
 ```
 
-#### Product price
+### Product price
 
 In our project the main selling prices can continue being updated through:
 
@@ -1972,7 +1972,7 @@ and resulted in:
 * product area collapsing;
 * products becoming barely visible.
 
-#### Lesson learned
+### Lesson learned
 
 Do not unnecessarily replace Magento’s major page-layout containers.
 
@@ -4263,15 +4263,15 @@ Although the tabs now appear and switch correctly, their internal content is **s
 
 Examples:
 
-#### Specifications
+### Specifications
 
 fills most of the content area.
 
-#### What's Included
+### What's Included
 
 when empty, its message may appear too far right/small.
 
-#### Reviews
+### Reviews
 
 Magento's native review form has its own width/float behavior, so it can appear aligned differently.
 
@@ -5517,19 +5517,19 @@ bin/magento cache:flush
 
 Why?
 
-#### `var/view_preprocessed`
+### `var/view_preprocessed`
 
 Magento creates preprocessed LESS/theme files here.
 
 If stale files remain, updated LESS may not be reflected.
 
-#### `pub/static/frontend/BrewCraft`
+### `pub/static/frontend/BrewCraft`
 
 Contains generated frontend theme assets.
 
 Deleting this forces Magento developer-mode asset generation to use the newest source.
 
-#### `cache:flush`
+### `cache:flush`
 
 Clears Magento caches that may preserve stale layout/template/configuration output.
 
@@ -5572,7 +5572,7 @@ Footer
 
 ## 41. Important files involved
 
-#### PDP page structure
+### PDP page structure
 
 ```text
 Magento_Catalog/layout/catalog_product_view.xml
@@ -5589,7 +5589,7 @@ add detailed-info tabs
 
 ---
 
-#### Product gallery/image configuration
+### Product gallery/image configuration
 
 ```text
 etc/view.xml
@@ -5607,7 +5607,7 @@ vertical thumbnails
 
 ---
 
-#### Product tabs templates
+### Product tabs templates
 
 ```text
 Magento_Catalog/templates/product/view/
@@ -5625,7 +5625,7 @@ benefits.phtml
 
 ---
 
-#### Quantity / cart template
+### Quantity / cart template
 
 ```text
 Magento_Catalog/templates/product/view/addtocart.phtml
@@ -5640,7 +5640,7 @@ native Magento Add to Cart
 
 ---
 
-#### Review-list override
+### Review-list override
 
 ```text
 Magento_Review/templates/product/view/list.phtml
@@ -5656,7 +5656,7 @@ Though the final deeper review redesign was abandoned.
 
 ---
 
-#### Theme translations
+### Theme translations
 
 ```text
 i18n/en_US.csv
@@ -5677,7 +5677,7 @@ Related Products
 
 ---
 
-#### PDP LESS
+### PDP LESS
 
 ```text
 web/css/source/_pdp.less
@@ -5704,7 +5704,7 @@ related products
 
 This phase gave us several very useful Magento lessons:
 
-#### 1. Structure problem ≠ CSS problem
+### 1. Structure problem ≠ CSS problem
 
 If a block appears in the wrong place:
 
@@ -5716,7 +5716,7 @@ not CSS.
 
 ---
 
-#### 2. Image white border ≠ CSS padding
+### 2. Image white border ≠ CSS padding
 
 If the actual cached JPG contains white pixels:
 
@@ -5728,7 +5728,7 @@ not only `.product-image-photo`.
 
 ---
 
-#### 3. Text-only change ≠ template override
+### 3. Text-only change ≠ template override
 
 If all you need is:
 
@@ -5746,7 +5746,7 @@ instead of copying a large template.
 
 ---
 
-#### 4. Native Magento JS should be reused
+### 4. Native Magento JS should be reused
 
 Avoid initializing the same native widget twice.
 
@@ -5754,7 +5754,7 @@ We learned this during tab customization.
 
 ---
 
-#### 5. Optional product content should disappear
+### 5. Optional product content should disappear
 
 For fields like:
 
@@ -5776,7 +5776,7 @@ empty tab with placeholder message
 
 ---
 
-#### 6. Always locate the real vendor template
+### 6. Always locate the real vendor template
 
 Before overriding:
 
@@ -6322,7 +6322,7 @@ The coupon is rendered separately from the Update Cart action.
 
 Several approaches were tested:
 
-#### CSS grid placement
+### CSS grid placement
 
 Attempted to place:
 
@@ -6335,7 +6335,7 @@ Problem:
 
 When Summary changed height, especially when Shipping expanded, the coupon could move.
 
-#### Negative margin positioning
+### Negative margin positioning
 
 Attempted to visually pull the coupon upward beside Update Cart.
 
@@ -6343,7 +6343,7 @@ Problem:
 
 This was fragile and depended too heavily on surrounding layout heights.
 
-#### JS DOM relocation
+### JS DOM relocation
 
 A wrapper/relocation experiment was also considered.
 
@@ -6351,7 +6351,7 @@ Problem:
 
 It introduced unnecessary structural complexity and briefly broke the working cart layout.
 
-#### Final decision
+### Final decision
 
 The coupon feature was removed from the BrewCraft cart UI:
 
@@ -7198,7 +7198,7 @@ which can never match the page because a checkout page doesn't contain another c
 
 This explained why several styles appeared to do absolutely nothing.
 
-#### Lesson
+### Lesson
 
 When the entire `_cart.less` is already wrapped with:
 
@@ -7221,7 +7221,7 @@ During experimentation the same stylesheet temporarily contained:
 
 These competed with each other and caused the page to collapse at one point.
 
-#### Lesson
+### Lesson
 
 Only one structural layout model should control the cart container.
 
@@ -7456,59 +7456,59 @@ Shopping Cart
 
 ## 45. Final Status
 
-#### Shopping Cart
+### Shopping Cart
 
 **Complete ✅**
 
-#### Product presentation
+### Product presentation
 
 **Complete ✅**
 
-#### In Stock indicator
+### In Stock indicator
 
 **Complete ✅**
 
-#### Quantity stepper
+### Quantity stepper
 
 **Complete ✅**
 
-#### Wishlist/Edit/Delete
+### Wishlist/Edit/Delete
 
 **Complete ✅**
 
-#### Update Shopping Cart
+### Update Shopping Cart
 
 **Complete ✅**
 
-#### Order Summary
+### Order Summary
 
 **Complete ✅**
 
-#### Shipping estimator
+### Shipping estimator
 
 **Collapsible and working ✅**
 
-#### Coupon
+### Coupon
 
 **Intentionally removed ✅**
 
-#### Empty cart
+### Empty cart
 
 **Designed ✅**
 
-#### Mini Cart
+### Mini Cart
 
 **Complete ✅**
 
-#### Mini Cart automatic quantity update
+### Mini Cart automatic quantity update
 
 **Complete ✅**
 
-#### Request Quote integration
+### Request Quote integration
 
 **Business-customer conditional behavior retained ✅**
 
-#### Request Quote cart placement
+### Request Quote cart placement
 
 **Decoupled from Shipping estimator and placed with left cart content ✅**
 
@@ -9096,19 +9096,19 @@ We also avoided adding additional third-party payment providers only to make the
 
 The most time-consuming areas on this page were:
 
-#### Coupon alignment
+### Coupon alignment
 
 The main reason was that the actual Magento DOM differed from the assumed layout.
 
 Once the real HTML was inspected, the solution became straightforward.
 
-#### Right-side Ship To / Shipping Method cards
+### Right-side Ship To / Shipping Method cards
 
 The initial selector targeted the wrapper rather than the actual `.ship-via` child.
 
 This created nested cards.
 
-#### CSS duplication
+### CSS duplication
 
 Repeated iterations made it harder to know which rule was currently active.
 
@@ -9208,23 +9208,23 @@ Payment Method                        Order Summary
 
 ## 34. Important Lessons From the Payment Page
 
-#### Inspect the DOM before styling complex Magento UI components
+### Inspect the DOM before styling complex Magento UI components
 
 The coupon work demonstrated this clearly.
 
-#### Prefer CSS before template overrides
+### Prefer CSS before template overrides
 
 This page required much less risky customization than Shipping because we preserved the existing components.
 
-#### Native Magento payment methods are useful for development
+### Native Magento payment methods are useful for development
 
 They allow us to test realistic payment layouts without external credentials.
 
-#### Real functionality should drive the design
+### Real functionality should drive the design
 
 We used actual available payment methods rather than displaying fake payment choices.
 
-#### Consolidate CSS after experimentation
+### Consolidate CSS after experimentation
 
 Once the layout is accepted, duplicated iteration rules should be deleted.
 
@@ -9340,17 +9340,17 @@ Place Order visibility
 
 ## 1. Empty Cart Icon Styling
 
-#### Requirement
+### Requirement
 
 The Magento empty-cart state was still using the default Magento visual/icon treatment and did not match the BrewCraft theme.
 
-#### Work completed
+### Work completed
 
 The empty-cart icon/state was updated to match the BrewCraft storefront styling.
 
 The user completed the final styling directly.
 
-#### Result
+### Result
 
 The empty-cart page now visually belongs to the BrewCraft theme rather than looking like an untouched Magento component.
 
@@ -9360,7 +9360,7 @@ The empty-cart page now visually belongs to the BrewCraft theme rather than look
 
 ## 2. PLP – Recently Ordered Block
 
-#### Problem
+### Problem
 
 For logged-in customers who had previously placed orders, Magento automatically rendered the native:
 
@@ -9372,7 +9372,7 @@ block in the PLP sidebar.
 
 The block used default Magento styling and visually conflicted with the BrewCraft filter/sidebar design.
 
-#### Magento DOM identified
+### Magento DOM identified
 
 The actual component was:
 
@@ -9408,7 +9408,7 @@ and actions:
 </a>
 ```
 
-#### Implementation
+### Implementation
 
 Scoped the design specifically to:
 
@@ -9460,7 +9460,7 @@ Example:
 }
 ```
 
-#### Result
+### Result
 
 The native Magento Recently Ordered feature was preserved, but visually integrated into the BrewCraft PLP.
 
@@ -9470,13 +9470,13 @@ The native Magento Recently Ordered feature was preserved, but visually integrat
 
 ## 3. Review Star Styling
 
-#### Problem
+### Problem
 
 Magento review stars were still using the default Magento rating color.
 
 This affected product cards and other rating components.
 
-#### Actual Magento structure
+### Actual Magento structure
 
 ```html
 <div class="product-reviews-summary short">
@@ -9496,7 +9496,7 @@ Magento creates the actual stars through pseudo-elements on:
 .rating-result
 ```
 
-#### Implementation
+### Implementation
 
 The empty stars were changed to a soft stone color and filled stars to BrewCraft gold.
 
@@ -9522,7 +9522,7 @@ Theme gold:
 @brewcraft-gold: #C8A66A;
 ```
 
-#### Important decision
+### Important decision
 
 The rating percentage was left untouched.
 
@@ -9536,7 +9536,7 @@ still controls whether the product displays 4/5 stars, 3/5 stars, etc.
 
 Only the visual color changed.
 
-#### Coverage
+### Coverage
 
 The rule applies to standard Magento rating summaries used in:
 
@@ -9549,7 +9549,7 @@ Cross-sell Products
 Other product cards
 ```
 
-#### Result
+### Result
 
 Ratings now use the BrewCraft gold/stone visual language instead of Magento's default styling.
 
@@ -9559,7 +9559,7 @@ Ratings now use the BrewCraft gold/stone visual language instead of Magento's de
 
 ## 4. Breadcrumb and Review Link Colors
 
-#### Problem
+### Problem
 
 Some Magento-native links were still blue, particularly:
 
@@ -9571,7 +9571,7 @@ Add Your Review
 
 This introduced a color outside the BrewCraft design system.
 
-#### Breadcrumb implementation
+### Breadcrumb implementation
 
 ```less
 .breadcrumbs {
@@ -9592,7 +9592,7 @@ This introduced a color outside the BrewCraft design system.
 }
 ```
 
-#### PDP review links
+### PDP review links
 
 ```less
 .catalog-product-view {
@@ -9617,7 +9617,7 @@ This introduced a color outside the BrewCraft design system.
 }
 ```
 
-#### Design behavior
+### Design behavior
 
 ```text
 Normal link    → Coffee
@@ -9625,7 +9625,7 @@ Hover          → Espresso
 Current item   → Charcoal
 ```
 
-#### Result
+### Result
 
 Magento blue was removed from these catalog UI elements without globally overriding unrelated links.
 
@@ -9639,11 +9639,11 @@ This point had two separate requirements.
 
 ### A. Message styling
 
-#### Problem
+### Problem
 
 Magento's default Add to Cart success message was visually too strong/default and did not match the BrewCraft UI.
 
-#### Implementation
+### Implementation
 
 Magento messages were styled globally using:
 
@@ -9686,13 +9686,13 @@ Error and warning states were also given matching visual treatment.
 
 ### B. Automatically bring new messages into view
 
-#### Problem
+### Problem
 
 When a customer clicked Add to Cart lower down a PDP or PLP, Magento displayed the success message near the top of the page.
 
 The customer might never see it because the browser remained at the current scroll position.
 
-#### First implementation
+### First implementation
 
 A `MutationObserver` was initially used to watch:
 
@@ -9704,7 +9704,7 @@ for new Magento messages.
 
 However, this did not reliably trigger with the actual Magento Add to Cart lifecycle.
 
-#### Final solution
+### Final solution
 
 A new theme JavaScript module was created:
 
@@ -9751,7 +9751,7 @@ if (isMessageVisible(message)) {
 
 Therefore unnecessary scrolling is avoided.
 
-#### RequireJS registration
+### RequireJS registration
 
 `requirejs-config.js` now includes:
 
@@ -9765,7 +9765,7 @@ var config = {
 };
 ```
 
-#### Result
+### Result
 
 Customer action:
 
@@ -9791,7 +9791,7 @@ The user verified the final version was working.
 
 ## 6. Cart Quantity `+ / -` Regression
 
-#### Problem
+### Problem
 
 The BrewCraft cart had custom quantity controls:
 
@@ -9809,7 +9809,7 @@ brewcraft-cart-qty.js
 because MIME type text/plain ...
 ```
 
-#### Investigation
+### Investigation
 
 The source JavaScript file expected by RequireJS did not actually exist:
 
@@ -9841,7 +9841,7 @@ The HTML controls themselves were correct:
 </div>
 ```
 
-#### Root cause
+### Root cause
 
 RequireJS was trying to load:
 
@@ -9853,7 +9853,7 @@ but the physical JavaScript file had been removed/missing.
 
 The browser therefore received an invalid static response rather than executable JavaScript.
 
-#### Fix
+### Fix
 
 The file was recreated:
 
@@ -9899,7 +9899,7 @@ RequireJS was updated to load it:
 'js/brewcraft-cart-qty'
 ```
 
-#### Result
+### Result
 
 Both cart quantity buttons work again.
 
@@ -9919,7 +9919,7 @@ This was the largest item in the cleanup list.
 
 ### A. Saved Address Card
 
-#### Requirement
+### Requirement
 
 Logged-in customers use saved Magento addresses during checkout.
 
@@ -9945,7 +9945,7 @@ Actual DOM:
 </div>
 ```
 
-#### Implementation
+### Implementation
 
 The saved-address block was converted into a BrewCraft-style card with:
 
@@ -9957,7 +9957,7 @@ The saved-address block was converted into a BrewCraft-style card with:
 * proper spacing
 * themed New Address action
 
-#### Selected address indicator
+### Selected address indicator
 
 Magento's selected-address marker originally appeared orange.
 
@@ -10013,7 +10013,7 @@ pub/static/frontend/BrewCraft/supply/en_US/css \
 
 returned nothing.
 
-#### Root cause
+### Root cause
 
 The latest LESS source had not reached the generated storefront CSS.
 
@@ -10030,7 +10030,7 @@ This was an important debugging lesson:
 ## New Address Popup
 
 
-#### Initial problem
+### Initial problem
 
 The first custom attempt over-controlled the form using:
 
@@ -10052,7 +10052,7 @@ classes inside the modal.
 
 The result was an awkward layout with fields compressed into incorrect positions.
 
-#### Second issue
+### Second issue
 
 The New Address button temporarily displayed:
 
@@ -10068,7 +10068,7 @@ content: '+';
 
 The custom duplicate pseudo-element was removed.
 
-#### Final approach
+### Final approach
 
 The modal's width and centering were left to Magento/current working styles.
 
@@ -10149,7 +10149,7 @@ Checkbox:
 }
 ```
 
-#### Result
+### Result
 
 Logged-in checkout now has:
 
@@ -10221,7 +10221,7 @@ in the browser.
 
 ## Key Technical Lessons from This Cleanup
 
-#### Verify compiled CSS before changing selectors
+### Verify compiled CSS before changing selectors
 
 A correct selector can appear broken simply because Magento has not compiled the latest LESS.
 
@@ -10235,7 +10235,7 @@ pub/static/frontend/BrewCraft/supply/en_US/css \
 
 If the source has the selector but generated CSS does not, the issue is compilation/static assets — not selector specificity.
 
-#### Inspect Magento's exact DOM first
+### Inspect Magento's exact DOM first
 
 This was especially important for:
 
@@ -10248,7 +10248,7 @@ Review stars
 
 Styling the actual rendered classes was much more reliable than assuming Magento's structure.
 
-#### Shared Magento classes can create unexpected conflicts
+### Shared Magento classes can create unexpected conflicts
 
 The normal Shipping page and the New Address popup both use:
 
@@ -10266,7 +10266,7 @@ Modal-specific selectors should therefore begin with:
 
 when appropriate.
 
-#### Don't duplicate Magento-generated icons
+### Don't duplicate Magento-generated icons
 
 The double:
 
@@ -10284,7 +10284,7 @@ content: '+';
 
 check whether Magento's `:before` / `:after` already creates the icon.
 
-#### Use Magento events when available
+### Use Magento events when available
 
 For the Add to Cart scroll behavior, observing the DOM alone was unreliable.
 
@@ -10296,7 +10296,7 @@ ajax:addToCart
 
 because it directly represents the Magento action we care about.
 
-#### Diagnose missing JavaScript from the source upward
+### Diagnose missing JavaScript from the source upward
 
 The cart quantity regression initially appeared to be a behavioral bug, but the actual cause was simply that:
 
@@ -10320,3 +10320,962 @@ Browser error
 ---
 
 
+# 11. BrewCraft Supply – Login & Account Creation Development Log
+
+### Module / Section
+
+**Customer Login & Account Creation**
+
+### Reference
+
+BrewCraft Supply Figma – **Login & Create Account Flow**
+
+---
+
+## 1. Work Completed
+
+### 1.1 Magento Login Page Structure Reviewed
+
+Reviewed the existing Magento customer login HTML and identified the main components:
+
+* Registered Customers section
+* Email field
+* Password field
+* Show Password checkbox
+* Sign In button
+* Forgot Your Password link
+* New Customers section
+* Create an Account button
+
+The existing Magento login functionality and routes were kept intact.
+
+---
+
+### 1.2 BrewCraft Login Styling Structure Added
+
+The BrewCraft theme's LESS structure was used instead of modifying Magento core CSS.
+
+The main custom stylesheet:
+
+```text
+app/design/frontend/BrewCraft/supply/web/css/source/_extend.less
+```
+
+was already importing:
+
+```less
+@import '_login.less';
+@import '_register.less';
+```
+
+This gives us separate files for login and registration styling.
+
+---
+
+### 1.3 Login Page Styled According to BrewCraft Design
+
+The login area was brought toward the BrewCraft visual style.
+
+The styling direction established was:
+
+* BrewCraft brown as the primary action color
+* White/light content areas
+* Rounded input fields
+* BrewCraft typography
+* Consistent button styling
+* Clean spacing
+* BrewCraft border and shadow treatment
+* Consistent styling with the rest of the website
+
+The goal was to keep Magento's functionality while changing the presentation to match the Figma.
+
+---
+
+## 2. Account Creation Flow Defined
+
+The Figma flow was reviewed and the required customer journey was established.
+
+### Step 1 – Login
+
+```text
+Login Page
+   ↓
+Create an Account
+```
+
+### Step 2 – Account Type Selection
+
+```text
+Create an Account
+       ↓
+ ┌───────────────┐
+ │               │
+Retail Customer  Business Customer
+```
+
+### Step 3A – Retail Customer
+
+Retail registration form containing the customer information required for a retail account.
+
+### Step 3B – Business Customer
+
+Business registration form containing business/customer-specific information.
+
+### Step 4A – Retail Account Created
+
+After successful retail registration:
+
+```text
+Retail Account Created
+        ↓
+Continue Shopping / Homepage
+```
+
+### Step 4B – Business Account Created
+
+After successful business registration:
+
+```text
+Business Account Created
+        ↓
+Business Dashboard
+```
+
+---
+
+## 3. Checkout / Address Popup Styling Work Related to the Current Flow
+
+While working through the customer/checkout experience, the **Shipping Address / New Address popup** was also customized to follow the BrewCraft design.
+
+The popup was changed to use:
+
+* White background
+* Rounded corners
+* BrewCraft shadow
+* BrewCraft brown buttons
+* Custom field styling
+* BrewCraft typography
+* Proper modal spacing
+* Centered modal layout
+
+The relevant checkout LESS section was identified around:
+
+```text
+SAVED ADDRESS AREA
+```
+
+inside:
+
+```text
+app/design/frontend/BrewCraft/supply/web/css/source/_checkout.less
+```
+
+---
+
+## 4. Problems Encountered & Solutions
+
+### Problem 1 – New Address Popup Was Not Centered
+
+### Issue
+
+The modal was initially appearing with incorrect width/positioning.
+
+The following CSS had been commented out:
+
+```less
+.modal-inner-wrap {
+    // width: 760px !important;
+    // max-width: calc(100% - 80px) !important;
+
+    // margin-left: auto !important;
+    // margin-right: auto !important;
+}
+```
+
+### Solution
+
+The modal width and automatic horizontal margins were restored/adjusted so that the popup could use the intended width and remain centered.
+
+The final result matched the intended modal positioning much better.
+
+---
+
+### Problem 2 – Modal Fields Became Misaligned
+
+### Issue
+
+When the modal layout was being changed too aggressively, the form fields became incorrectly positioned.
+
+For example:
+
+* First Name / Last Name widths became too small
+* Fields appeared in unexpected columns
+* Street Address was pushed to the right
+* Labels wrapped unnecessarily
+* Country/City and State/Postal Code became visually cramped
+
+### Solution
+
+Instead of changing Magento's underlying form layout, the styling was restricted primarily to the **visual appearance of the existing fields**.
+
+This was important because the Magento checkout form already has its own UI-component/grid structure.
+
+### Result
+
+The existing field positions were preserved and only the styling was customized.
+
+---
+
+### Problem 3 – Checkbox Used the Wrong Color
+
+### Issue
+
+The **Save in address book** checkbox was appearing in Magento's default blue/orange-style appearance instead of matching BrewCraft.
+
+### Solution
+
+The checkbox styling was overridden so that its appearance followed the BrewCraft design rather than the browser/Magento default.
+
+---
+
+### Problem 4 – "New Address" Button Had Two Plus Signs
+
+### Issue
+
+The New Address button displayed:
+
+```text
++ + New Address
+```
+
+instead of:
+
+```text
++ New Address
+```
+
+This happened because both the existing Magento/generated icon/content and the custom CSS were adding a plus symbol.
+
+### Solution
+
+The duplicate pseudo-element/content was identified and removed so that only one plus icon remains.
+
+### Final expected result
+
+```text
++ New Address
+```
+
+---
+
+### Problem 5 – Popup Styling Initially Looked Too Compressed
+
+### Issue
+
+An earlier version of the popup caused:
+
+* Very narrow fields
+* Wrapped labels
+* Poor spacing
+* Incorrect column distribution
+* Unbalanced visual hierarchy
+
+### Solution
+
+The approach was changed from restructuring the form to styling the existing Magento form.
+
+The modal container was handled separately from the individual field styling.
+
+This allowed the Magento layout to remain functional while the BrewCraft styles were applied on top.
+
+---
+
+### Problem 6 – Scrolling Issue
+
+### Issue
+
+At one stage, scrolling inside/around the modal experience was not working correctly.
+
+### Solution
+
+The modal/overflow styling was adjusted and tested again.
+
+### Result
+
+Scrolling was confirmed to be working.
+
+---
+
+### Problem 7 – Existing Magento Styling Interfering With Custom Styling
+
+### Issue
+
+Some Magento default styles were still affecting the BrewCraft design.
+
+An example was searching generated static CSS for:
+
+```text
+shipping-address-item.selected-item
+```
+
+but no matching result was found in the expected generated CSS location.
+
+### Investigation
+
+The source LESS files were checked directly, including:
+
+```text
+app/design/frontend/BrewCraft/supply/web/css/source/_checkout.less
+```
+
+and:
+
+```text
+app/design/frontend/BrewCraft/supply/web/css/source/_extend.less
+```
+
+The custom checkout stylesheet was confirmed to be imported through:
+
+```less
+@import '_checkout.less';
+```
+
+### Result
+
+The source theme LESS became the main place for maintaining the custom BrewCraft checkout styling instead of editing generated static files.
+
+---
+
+## 5. Important Implementation Lesson
+
+During this work, we established an important rule for the BrewCraft theme:
+
+> **Do not fight Magento's existing UI-component/form layout unnecessarily.**
+
+For Magento forms and checkout modals:
+
+1. Keep Magento's existing HTML/UI-component structure.
+2. Keep Magento's validation and JavaScript behavior.
+3. Customize the container styling.
+4. Customize fields visually.
+5. Only change layout structure when the Figma genuinely requires it.
+6. Avoid editing generated files under `pub/static`.
+7. Keep custom styling inside the BrewCraft theme LESS files.
+
+This prevents visual customization from breaking Magento functionality.
+
+---
+
+## 6. Current Status
+
+### Completed
+
+* [x] Reviewed Magento login page HTML
+* [x] Identified login form structure
+* [x] Established BrewCraft login LESS structure
+* [x] Applied BrewCraft styling direction to login page
+* [x] Reviewed Figma Login & Create Account flow
+* [x] Defined Retail vs Business account flow
+* [x] Defined Retail account-created flow
+* [x] Defined Business account-created flow
+* [x] Styled Shipping Address popup
+* [x] Corrected popup positioning/width
+* [x] Corrected popup field styling
+* [x] Styled Save in Address Book checkbox
+* [x] Removed duplicate plus sign from New Address button
+* [x] Fixed modal scrolling issue
+* [x] Verified custom LESS import structure
+
+---
+
+## 7. What Is Still Left
+
+The **Login & Create Account flow is not completely implemented yet**.
+
+The major remaining work is:
+
+### 7.1 Login Page
+
+Finish comparing the actual Magento login page against the Figma and identify any remaining visual differences.
+
+### 7.2 Account Type Selection
+
+Implement the Figma-style:
+
+```text
+Create an Account
+        ↓
+Retail Customer | Business Customer
+```
+
+This page needs to be connected to the appropriate registration flow.
+
+### 7.3 Retail Registration
+
+Implement the BrewCraft Retail Customer registration page according to the Figma.
+
+Need to verify:
+
+* Field layout
+* Labels
+* Required indicators
+* Password fields
+* Terms & Conditions
+* Privacy Policy
+* Button styling
+* Validation/error presentation
+* Responsive behavior
+
+### 7.4 Business Registration
+
+Implement the Business Customer registration page.
+
+Need to handle the business-specific fields and BrewCraft styling.
+
+### 7.5 Account Creation Success Pages
+
+Implement/design:
+
+* Retail account created page
+* Business account created page
+
+with the appropriate redirect behavior.
+
+### 7.6 End-to-End Flow Testing
+
+After all pages are implemented, test:
+
+```text
+Login
+  ↓
+Create Account
+  ↓
+Choose Account Type
+  ↓
+Retail / Business Registration
+  ↓
+Account Creation
+  ↓
+Correct Redirect
+```
+
+Also test validation, incorrect credentials, existing email, password validation, and responsive layouts.
+
+---
+
+## 8. Current Next Step
+
+The next logical development task is:
+
+**Implement the "Create an Account – Choose Account Type" page from the Figma.**
+
+Once that is completed, we can move sequentially into:
+
+```text
+Choose Account Type
+        ↓
+Retail Registration
+        ↓
+Business Registration
+        ↓
+Account Created / Redirect
+        ↓
+End-to-End Testing
+```
+
+# 12. BrewCraft Supply – Development Log
+
+### Forgot Password Page & Password Functionality
+
+## 1. Forgot Password Page – Styling
+
+The Magento default Forgot Password page was reviewed and customized to match the existing BrewCraft Supply account-creation page design.
+
+### Existing Magento functionality retained
+
+The following Magento functionality was kept unchanged:
+
+* Forgot Password form submission.
+* Email validation.
+* CAPTCHA validation.
+* CAPTCHA image generation.
+* CAPTCHA reload functionality.
+* Password reset workflow.
+* Form validation and Magento error handling.
+* "Go back" navigation to the login page.
+
+The work was focused on **frontend styling**, not changing Magento's underlying password-reset logic.
+
+---
+
+### 2. Forgot Password Page Structure
+
+The page contains:
+
+* Forgot Password page title.
+* Informational message:
+
+  * "Please enter your email address below to receive a password reset link."
+* Email field.
+* CAPTCHA field.
+* CAPTCHA image.
+* CAPTCHA reload button.
+* "Reset My Password" button.
+* "Go back" link.
+
+The form uses Magento's standard:
+
+```text
+form.password.forget
+```
+
+and:
+
+```text
+#form-validate
+```
+
+structure.
+
+---
+
+### 3. Forgot Password Card Styling
+
+The Forgot Password form was converted into a BrewCraft-style centered card.
+
+Implemented:
+
+* Maximum width: **700px**
+* Centered horizontally.
+* BrewCraft cream background.
+* BrewCraft border color.
+* Rounded corners.
+* Consistent internal padding.
+* Removed unnecessary Magento floating behavior.
+
+The styling follows the same structure already established for the customer account creation page.
+
+### Design consistency
+
+The same variables were reused:
+
+```text
+@brewcraft-cream
+@brewcraft-white
+@brewcraft-border
+@brewcraft-charcoal
+@brewcraft-muted
+@brewcraft-espresso
+@brewcraft-coffee
+@bc-space-*
+@bc-radius-sm
+@bc-radius-md
+```
+
+This prevents the Forgot Password page from looking like a separate design from the rest of the account section.
+
+---
+
+### 4. Email Field Styling
+
+The email field was redesigned to match the account creation inputs.
+
+Implemented:
+
+* Full-width input.
+* 44px input height.
+* White background.
+* BrewCraft border.
+* Rounded corners.
+* BrewCraft body font.
+* 14px font size.
+* Consistent horizontal padding.
+* No unnecessary box shadow.
+
+Focus state was also customized:
+
+```text
+border-color: @brewcraft-coffee
+box-shadow: 0 0 0 1px @brewcraft-coffee
+```
+
+This replaces the default Magento focus appearance.
+
+---
+
+### 5. CAPTCHA Styling
+
+The Magento CAPTCHA functionality was preserved, but its appearance was brought into the BrewCraft theme.
+
+Styled:
+
+* CAPTCHA input.
+* CAPTCHA image.
+* CAPTCHA container.
+* Reload button.
+* Spacing between CAPTCHA elements.
+* Border and border-radius.
+
+The CAPTCHA image now visually belongs to the same form instead of appearing as an unstyled Magento component.
+
+The reload button was also styled using the BrewCraft colors.
+
+---
+
+### 6. Action Area Styling
+
+The bottom action area was redesigned to match the customer account creation page.
+
+Actions:
+
+```text
+Reset My Password
+Go back
+```
+
+The action area now has:
+
+* Top border separator.
+* Consistent top padding.
+* Consistent spacing between buttons.
+* Proper horizontal alignment.
+* Magento float behavior removed.
+
+The primary button uses:
+
+```text
+@brewcraft-espresso
+```
+
+with:
+
+```text
+@brewcraft-coffee
+```
+
+on hover.
+
+The button was given:
+
+* 210px minimum width.
+* 46px height.
+* Rounded corners.
+* White text.
+* BrewCraft typography.
+* Proper centered text alignment.
+
+---
+
+### 7. Go Back Link
+
+The Magento "Go back" action was styled as a BrewCraft secondary action.
+
+Implemented:
+
+* BrewCraft espresso text.
+* 14px font.
+* Medium font weight.
+* Underline.
+* Underline offset.
+* Coffee color on hover.
+
+This keeps the secondary action visually lighter than the main Reset Password button.
+
+---
+
+## Password Functionality – Business Registration
+
+The Business Registration page originally contained custom password fields, but the Magento password functionality was not initially working.
+
+The password section contained:
+
+```text
+Password
+Confirm Password
+```
+
+with Magento validation attributes such as:
+
+```text
+validate-customer-password
+equalTo: #password
+```
+
+and password configuration:
+
+```text
+data-password-min-length="8"
+data-password-min-character-sets="3"
+```
+
+---
+
+### 8. Initial Password Problem
+
+Initially, the password field was displayed but:
+
+* Password strength checking was not working.
+* Password strength indicator was not updating.
+* Show Password functionality was not working.
+* The password field behaved like a normal HTML password input.
+
+The issue was not with the HTML input itself.
+
+The Magento JavaScript components responsible for these features had not been correctly initialized.
+
+---
+
+### 9. Password Strength Meter
+
+The Magento password strength indicator was added to the Business Registration form.
+
+The password section was updated to include the Magento strength-meter container:
+
+```text
+#password-strength-meter-container
+```
+
+with:
+
+```text
+data-role="password-strength-meter"
+```
+
+and:
+
+```text
+data-role="password-strength-meter-label"
+```
+
+The existing Magento password requirements were retained:
+
+```text
+data-password-min-length="8"
+data-password-min-character-sets="3"
+```
+
+This means the password follows the configured Magento requirements instead of implementing a separate custom password-strength algorithm.
+
+---
+
+### 10. Magento Password Strength JavaScript Initialization
+
+The Magento password strength component was explicitly initialized using:
+
+```text
+Magento_Customer/js/password-strength-indicator
+```
+
+through Magento's `text/x-magento-init`.
+
+This was important because simply adding the HTML password meter does not make it functional.
+
+After correcting the initialization target and ensuring the JavaScript was attached to the correct Business Registration form, the password strength indicator started working.
+
+---
+
+### 11. Show Password Functionality
+
+Magento's standard Show Password implementation was added to the Business Registration page.
+
+The field uses:
+
+```text
+data-bind="scope: 'showPassword'"
+```
+
+and:
+
+```text
+data-role="show-password"
+```
+
+along with the checkbox:
+
+```text
+name="show-password"
+id="show-password"
+```
+
+This allows Magento's existing password visibility functionality to be reused instead of creating custom JavaScript.
+
+---
+
+### 12. Confirm Password Validation
+
+The Confirm Password field continues to use Magento validation:
+
+```text
+"equalTo": "#password"
+```
+
+Therefore:
+
+* Confirm Password is required.
+* It must match the Password field.
+* Magento's validation framework handles the error state.
+* No custom password comparison JavaScript was required.
+
+---
+
+## 13. Important Debugging / Mistakes Encountered
+
+### Issue 1 – Password meter displayed but did not work
+
+**Problem:**
+
+The password-strength HTML was present, but the strength meter did not react to password input.
+
+**Cause:**
+
+Magento's password-strength JavaScript was not correctly initialized against the actual form.
+
+**Solution:**
+
+Added/ corrected Magento initialization using:
+
+```text
+Magento_Customer/js/password-strength-indicator
+```
+
+and ensured the selector matched the actual Business Registration form.
+
+---
+
+### Issue 2 – Show Password was not working
+
+**Problem:**
+
+The checkbox appeared, but password visibility was not changing.
+
+**Cause:**
+
+Magento's `showPassword` component was not correctly connected to the field.
+
+**Solution:**
+
+Used Magento's existing `showPassword` scope and:
+
+```text
+data-role="show-password"
+```
+
+instead of writing custom JavaScript.
+
+---
+
+### Issue 3 – Incorrect Magento initialization selector
+
+During debugging, the template was checked with:
+
+```bash
+grep -n -E "password|showPassword|magento-init|strength|Customer" \
+app/code/BrewCraft/BusinessAccount/view/frontend/templates/account/create.phtml
+```
+
+This confirmed that the password markup and Magento initialization existed.
+
+The actual form ID was:
+
+```text
+#business-account-form
+```
+
+so the initialization target had to correspond to the real form rather than an outdated/nonexistent selector.
+
+After correcting this, the Magento password functionality worked.
+
+---
+
+### Issue 4 – Forgot Password CSS initially appeared not to apply
+
+The first Forgot Password styling attempt did not visibly affect the page.
+
+The problem was approached by comparing it with the already-working customer account creation CSS rather than creating an unrelated styling structure.
+
+The final styling was then scoped specifically under:
+
+```text
+.customer-account-forgotpassword
+```
+
+and:
+
+```text
+form.form.password.forget
+```
+
+This prevents the Forgot Password styles from unintentionally affecting other Magento forms.
+
+---
+
+## 14. Responsive Behaviour
+
+The Forgot Password page was also given responsive styling.
+
+At widths below 768px:
+
+* Page padding is reduced.
+* Page title becomes smaller.
+* Form card uses the available screen width.
+* Card padding is reduced.
+* Reset button becomes full width.
+* Actions stack vertically.
+* "Go back" becomes centered.
+* CAPTCHA elements can wrap when required.
+
+---
+
+## 15. Current Status
+
+### Completed
+
+* [x] Forgot Password page BrewCraft card styling.
+* [x] Consistent card width and alignment.
+* [x] BrewCraft colors applied.
+* [x] Input styling.
+* [x] Input focus styling.
+* [x] CAPTCHA styling.
+* [x] CAPTCHA image styling.
+* [x] CAPTCHA reload button styling.
+* [x] Reset Password button styling.
+* [x] Go Back link styling.
+* [x] Responsive Forgot Password layout.
+* [x] Business Registration password field.
+* [x] Magento password strength meter.
+* [x] Magento password strength JavaScript initialization.
+* [x] Magento Show Password functionality.
+* [x] Confirm Password validation.
+* [x] Password matching validation.
+* [x] Existing Magento password-reset functionality preserved.
+
+### Verified Working
+
+* [x] Retail registration.
+* [x] Business registration.
+* [x] Account selection.
+* [x] Customer redirect to My Account.
+* [x] Business password strength checking.
+* [x] Show Password functionality.
+* [x] Confirm Password validation.
+* [x] Forgot Password page styling.
+
+---
+
+## 16. Development Approach
+
+For these account pages, the implementation intentionally follows this principle:
+
+> **Magento handles the functionality; BrewCraft theme handles the presentation.**
+
+Therefore:
+
+* Magento validation is reused.
+* Magento password strength logic is reused.
+* Magento Show Password functionality is reused.
+* Magento CAPTCHA functionality is reused.
+* Custom LESS is used for BrewCraft visual styling.
+* Existing BrewCraft spacing and color variables are reused.
+* CSS is scoped to the relevant customer/account page to avoid affecting unrelated Magento components.
+
+This keeps the implementation maintainable and reduces the amount of custom JavaScript required.

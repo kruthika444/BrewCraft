@@ -1,0 +1,67 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+?>
+
+<div class="brewcraft-account-type">
+
+    <div class="account-type-heading">
+        <h1><?= $block->escapeHtml(__('Create an Account')) ?></h1>
+
+        <p>
+            <?= $block->escapeHtml(
+                __('Choose the account type that best fits how you shop with BrewCraft Supply.')
+            ) ?>
+        </p>
+    </div>
+
+    <div class="account-type-options">
+
+        <div class="account-type-card">
+            <div class="account-type-content">
+                <span class="account-type-label">
+                    <?= $block->escapeHtml(__('PERSONAL ACCOUNT')) ?>
+                </span>
+
+                <h2>
+                    <?= $block->escapeHtml(__('Shopping for Yourself?')) ?>
+                </h2>
+
+                <p>
+                    <?= $block->escapeHtml(
+                        __('Create a personal account for faster checkout, saved addresses, order tracking and more.')
+                    ) ?>
+                </p>
+            </div>
+
+            <a class="action primary account-type-action"
+               href="<?= $block->escapeUrl($block->getUrl('customer/account/create')) ?>">
+                <span><?= $block->escapeHtml(__('Create Personal Account')) ?></span>
+            </a>
+        </div>
+
+        <div class="account-type-card">
+            <div class="account-type-content">
+                <span class="account-type-label">
+                    <?= $block->escapeHtml(__('BUSINESS ACCOUNT')) ?>
+                </span>
+
+                <h2>
+                    <?= $block->escapeHtml(__('Registering for Your Business?')) ?>
+                </h2>
+
+                <p>
+                    <?= $block->escapeHtml(
+                        __('Apply for a BrewCraft Supply business account for business purchasing, quotations and additional account services.')
+                    ) ?>
+                </p>
+            </div>
+
+            <a class="action primary account-type-action"
+               href="<?= $block->escapeUrl($block->getUrl('businessaccount/account/create')) ?>">
+                <span><?= $block->escapeHtml(__('Create Business Account')) ?></span>
+            </a>
+        </div>
+
+    </div>
+
+</div>

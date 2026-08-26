@@ -1,0 +1,689 @@
+.businessaccount-account-create {
+    .page-main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: @bc-space-6 @bc-space-3 @bc-space-8;
+    }
+
+    .page-title-wrapper {
+        display: none;
+    }
+
+    .brewcraft-business-account {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    /*
+     * Header
+     */
+    .business-account-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+        gap: @bc-space-4;
+
+        margin-bottom: @bc-space-6;
+    }
+
+    .business-account-header__content {
+        padding: @bc-space-5;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+    }
+
+    .business-account-header__eyebrow {
+        display: block;
+
+        margin-bottom: @bc-space-2;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+    }
+
+    .business-account-header__title {
+        margin: 0 0 @bc-space-2;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 36px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .business-account-header__description {
+        max-width: 600px;
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    /*
+     * Benefits box
+     */
+    .business-account-benefits {
+        padding: @bc-space-4;
+
+        background: @brewcraft-bg-soft;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+    }
+
+    .business-account-benefits__title {
+        margin: 0 0 @bc-space-3;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .business-account-benefits__list {
+        margin: 0;
+        padding-left: 18px;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    /*
+     * Form container
+     */
+    .business-account-form {
+        width: 100%;
+    }
+
+    /*
+     * Sections
+     */
+    .business-account-section {
+        margin: 0 0 @bc-space-4;
+        padding: @bc-space-5;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        box-sizing: border-box;
+    }
+
+    .business-account-section > .legend {
+        display: block;
+
+        width: 100%;
+        margin: 0 0 @bc-space-4;
+        padding: 0 0 @bc-space-2;
+
+        border-bottom: 1px solid @brewcraft-stone;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    /*
+     * Fields
+     */
+    .business-account-form .field {
+        margin-bottom: @bc-space-3;
+    }
+
+    .business-account-form .field > .label {
+        display: block;
+        margin-bottom: @bc-space-1;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .business-account-form .control {
+        width: 100%;
+    }
+
+    .business-account-form input.input-text,
+    .business-account-form select.select,
+    .business-account-form textarea.input-text {
+        width: 100%;
+
+        padding: 0 @bc-space-2;
+
+        background: @brewcraft-white;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+
+        box-shadow: none;
+        box-sizing: border-box;
+
+        &:focus {
+            border-color: @brewcraft-coffee;
+            box-shadow: 0 0 0 1px @brewcraft-coffee;
+            outline: none;
+        }
+    }
+
+    .business-account-form input.input-text,
+    .business-account-form select.select {
+        height: 44px;
+    }
+
+    .business-account-form textarea.input-text {
+        min-height: 96px;
+        padding-top: @bc-space-2;
+        padding-bottom: @bc-space-2;
+        resize: vertical;
+    }
+
+    /*
+     * Put sensible related fields side-by-side
+     */
+    .business-account-section {
+        .company_name,
+        .registration_number,
+        .tax_number,
+        .company_type,
+        .business_years,
+        .contact_firstname,
+        .contact_lastname,
+        .contact_email,
+        .contact_phone,
+        .city,
+        .region,
+        .postcode,
+        .country_id,
+        .password,
+        .password_confirmation {
+            width: calc(50% - (@bc-space-2 / 2));
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .company_name,
+        .tax_number,
+        .contact_firstname,
+        .contact_email,
+        .city,
+        .postcode,
+        .password {
+            margin-right: @bc-space-2;
+        }
+
+        .street,
+        .terms {
+            width: 100%;
+        }
+    }
+
+    /*
+     * Account security note
+     */
+    .business-account-section__note {
+        margin: 0 0 @bc-space-3;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /*
+     * Terms checkbox
+     */
+    .field.terms .control {
+        display: flex;
+        align-items: flex-start;
+        gap: @bc-space-1;
+    }
+
+    .field.terms .checkbox {
+        flex: 0 0 auto;
+        width: 16px;
+        height: 16px;
+        margin: 3px 0 0;
+    }
+
+    .field.terms .label {
+        margin: 0;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    /*
+     * Actions
+     */
+    .business-account-form > .actions-toolbar {
+        display: flex;
+        align-items: center;
+        gap: @bc-space-3;
+
+        margin: @bc-space-5 0 0;
+    }
+
+    .business-account-form > .actions-toolbar::before,
+    .business-account-form > .actions-toolbar::after {
+        content: none;
+        display: none;
+    }
+
+    .business-account-form > .actions-toolbar .primary,
+    .business-account-form > .actions-toolbar .secondary {
+        float: none;
+        margin: 0;
+    }
+
+    .business-account-form .action.submit.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 250px;
+        height: 48px;
+
+        padding: 0 @bc-space-3;
+
+        background: @brewcraft-espresso;
+        border: 1px solid @brewcraft-espresso;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        &:hover {
+            background: @brewcraft-coffee;
+            border-color: @brewcraft-coffee;
+        }
+    }
+
+    .business-account-form .action.back {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 500;
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    /*
+     * Mobile
+     */
+    @media (max-width: 768px) {
+        .page-main {
+            padding: @bc-space-4 @bc-space-2 @bc-space-7;
+        }
+
+        .business-account-header {
+            grid-template-columns: 1fr;
+        }
+
+        .business-account-header__content,
+        .business-account-benefits,
+        .business-account-section {
+            padding: @bc-space-3;
+        }
+
+        .business-account-header__title {
+            font-size: 30px;
+        }
+
+        .business-account-section {
+            .company_name,
+            .registration_number,
+            .tax_number,
+            .company_type,
+            .business_years,
+            .contact_firstname,
+            .contact_lastname,
+            .contact_email,
+            .contact_phone,
+            .city,
+            .region,
+            .postcode,
+            .country_id,
+            .password,
+            .password_confirmation {
+                display: block;
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+
+        .business-account-form > .actions-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .business-account-form .action.submit.primary {
+            width: 100%;
+        }
+
+        .business-account-form .action.back {
+            text-align: center;
+        }
+    }
+}
+
+.businessaccount-account-success {
+    .page-main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: @bc-space-7 @bc-space-3 @bc-space-8;
+    }
+
+    .page-title-wrapper {
+        display: none;
+    }
+
+    .brewcraft-business-success {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .business-success-card {
+        padding: @bc-space-6;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-lg;
+
+        box-sizing: border-box;
+    }
+
+    .business-success-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 56px;
+        height: 56px;
+
+        margin: 0 auto @bc-space-3;
+
+        border-radius: 50%;
+
+        background: @brewcraft-green;
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    .business-success-eyebrow {
+        display: block;
+
+        margin-bottom: @bc-space-2;
+
+        text-align: center;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+    }
+
+    .business-success-title {
+        margin: 0 0 @bc-space-2;
+
+        text-align: center;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 36px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .business-success-description {
+        max-width: 600px;
+
+        margin: 0 auto @bc-space-5;
+
+        text-align: center;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .business-success-status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: @bc-space-5;
+        padding: @bc-space-3;
+
+        background: @brewcraft-bg-soft;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+    }
+
+    .business-success-status__label {
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+    }
+
+    .business-success-status__value {
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .business-success-next {
+        margin-bottom: @bc-space-5;
+
+        h2 {
+            margin: 0 0 @bc-space-3;
+
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-heading;
+            font-size: 22px;
+            font-weight: 600;
+        }
+    }
+
+    .business-success-steps {
+        display: flex;
+        flex-direction: column;
+        gap: @bc-space-3;
+    }
+
+    .business-success-step {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: @bc-space-2;
+
+        align-items: flex-start;
+    }
+
+    .business-success-step__number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 34px;
+        height: 34px;
+
+        border-radius: 50%;
+
+        background: @brewcraft-espresso;
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .business-success-step strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .business-success-step p {
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .business-success-card > .actions-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: @bc-space-3;
+
+        margin: @bc-space-5 0 0;
+        padding-top: @bc-space-4;
+
+        border-top: 1px solid @brewcraft-stone;
+    }
+
+    .business-success-card > .actions-toolbar::before,
+    .business-success-card > .actions-toolbar::after {
+        content: none;
+        display: none;
+    }
+
+    .business-success-card > .actions-toolbar .primary,
+    .business-success-card > .actions-toolbar .secondary {
+        float: none;
+        margin: 0;
+    }
+
+    .business-success-card .action.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 190px;
+        height: 48px;
+
+        padding: 0 @bc-space-3;
+
+        background: @brewcraft-espresso !important;
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        &:hover {
+            background: @brewcraft-coffee !important;
+            border-color: @brewcraft-coffee !important;
+        }
+    }
+
+    .business-success-card .action.secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 170px;
+        height: 48px;
+
+        padding: 0 @bc-space-3;
+
+        background: transparent;
+        border: 1px solid @brewcraft-espresso;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        &:hover {
+            background: @brewcraft-bg-soft;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-main {
+            padding: @bc-space-4 @bc-space-2 @bc-space-7;
+        }
+
+        .business-success-card {
+            padding: @bc-space-4 @bc-space-3;
+        }
+
+        .business-success-title {
+            font-size: 30px;
+        }
+
+        .business-success-status {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: @bc-space-1;
+        }
+
+        .business-success-card > .actions-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .business-success-card .action.primary,
+        .business-success-card .action.secondary {
+            width: 100%;
+        }
+    }
+}

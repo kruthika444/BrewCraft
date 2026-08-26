@@ -437,13 +437,12 @@ $countryOptions = $block->getCountryOptions();
 
                 <div class="field password required">
                     <label class="label" for="password">
-                        <span>
-                            <?= $escaper->escapeHtml(__('Password')) ?>
-                        </span>
+                        <span><?= $escaper->escapeHtml(__('Password')) ?></span>
                     </label>
 
                     <div class="control">
-                        <input type="password"
+                        <input
+                            type="password"
                             name="password"
                             id="password"
                             class="input-text"
@@ -452,9 +451,20 @@ $countryOptions = $block->getCountryOptions();
                             data-password-min-length="8"
                             data-password-min-character-sets="3"
                             data-validate='{
-                                   "required": true,
-                                   "validate-customer-password": true
-                               }' />
+
+                            "required": true,
+                "validate-customer-password": true
+            }' />
+
+                        <!-- Magento password strength meter -->
+                        <div id="password-strength-meter-container" data-role="password-strength-meter">
+                            <div id="password-strength-meter" class="password-strength-meter">
+                                <span id="password-strength-meter-label"
+                                    data-role="password-strength-meter-label">
+                                    <?= $escaper->escapeHtml(__('Password Strength')) ?>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -474,11 +484,23 @@ $countryOptions = $block->getCountryOptions();
                             title="<?= $escaper->escapeHtmlAttr(
                                         __('Confirm Password')
                                     ) ?>"
-                            data-validate='{
-                                   "required": true,
-                                   "equalTo": "#password"
-                               }' />
+                            data-validate=' { "required" : true, "equalTo" : "#password"
+                            }' />
                     </div>
+                </div>
+
+                <div class="field choice password-show">
+                    <input type="checkbox"
+                        name="show-password"
+                        id="show-password"
+                        class="checkbox"
+                        data-role="show-password">
+
+                    <label for="show-password" class="label">
+                        <span>
+                            <?= $escaper->escapeHtml(__('Show Password')) ?>
+                        </span>
+                    </label>
                 </div>
 
             </fieldset>
@@ -562,3 +584,14 @@ $countryOptions = $block->getCountryOptions();
     </form>
 
 </div>
+
+<script type="text/x-magento-init">
+{
+    "#business-account-form": {
+        "Magento_Customer/js/password-strength-indicator": {}
+    },
+    "#show-password": {
+        "BrewCraft_BusinessAccount/js/show-password": {}
+    }
+}
+</script>
