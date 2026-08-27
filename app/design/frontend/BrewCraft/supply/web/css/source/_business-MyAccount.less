@@ -1,0 +1,920 @@
+//
+// Business Account Page
+//
+
+.brewcraft-business-account-dashboard {
+
+    max-width: @bc-container-width;
+    margin: 0 auto;
+    padding: @bc-space-4 @bc-space-4 @bc-space-4;
+
+    color: @brewcraft-charcoal;
+    font-family: @brewcraft-font-body;
+    box-sizing: border-box;
+
+    //
+    // Reset Magento table defaults inside this component
+    //
+
+    table {
+        margin: 0;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Page Header
+    // -----------------------------------------------------
+    //
+
+    .brewcraft-business-account-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: @bc-space-5;
+
+        margin: 0 0 @bc-space-4;
+        padding: 0 0 @bc-space-4;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+    .brewcraft-business-account-header__content {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .brewcraft-business-account-eyebrow {
+        display: block;
+
+        margin: 0 0 @bc-space-1;
+
+        color: @brewcraft-green;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.4;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .brewcraft-business-account-header h1 {
+        margin: 0 0 @bc-space-2;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 1.2;
+
+        word-break: break-word;
+    }
+
+    .brewcraft-business-account-header p {
+        max-width: 720px;
+
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    //
+    // Status block
+    //
+
+    .brewcraft-business-account-status {
+        flex: 0 0 auto;
+
+        min-width: 190px;
+
+        padding: @bc-space-3;
+
+        background: @brewcraft-bg-soft;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        box-sizing: border-box;
+    }
+
+    .brewcraft-business-account-status span {
+        display: block;
+
+        margin: 0 0 @bc-space-1;
+
+        color: @brewcraft-muted;
+
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.4;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .brewcraft-business-account-status strong {
+        display: block;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    //
+    // Pending
+    //
+
+    .brewcraft-business-account-status--pending {
+        border-color: @brewcraft-gold;
+        background: @brewcraft-cream;
+    }
+
+    .brewcraft-business-account-status--pending strong {
+        color: @brewcraft-coffee;
+    }
+
+    //
+    // Approved
+    //
+
+    .brewcraft-business-account-status--approved {
+        border-color: fade(@brewcraft-green, 30%);
+        background: fade(@brewcraft-green, 8%);
+    }
+
+    .brewcraft-business-account-status--approved strong {
+        color: @brewcraft-green;
+    }
+
+    //
+    // Rejected
+    //
+
+    .brewcraft-business-account-status--rejected {
+        border-color: fade(#c43d32, 30%);
+        background: #fff4f2;
+    }
+
+    .brewcraft-business-account-status--rejected strong {
+        color: #a92f27;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Magento Message
+    // -----------------------------------------------------
+    //
+
+    >.message {
+        display: flex;
+        align-items: center;
+
+        margin: 0 0 @bc-space-5;
+        padding: @bc-space-3 @bc-space-4;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        line-height: 1.5;
+
+        box-sizing: border-box;
+    }
+
+    >.message.message-notice {
+        background: @brewcraft-cream;
+        border-color: fade(@brewcraft-gold, 55%);
+        color: @brewcraft-coffee;
+    }
+
+    //
+    // Success / approved message
+    //
+
+    >.message.message-success {
+        background: fade(@brewcraft-green, 8%);
+        border-color: fade(@brewcraft-green, 30%);
+        color: @brewcraft-green;
+    }
+
+    //
+    // Error message
+    //
+
+    >.message.message-error,
+    >.message.message-warning {
+        background: #fff4f2;
+        border-color: #edc8c3;
+        color: #9f3027;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Main Sections
+    // -----------------------------------------------------
+    //
+
+    .brewcraft-business-account-section {
+        margin: 0 0 @bc-space-5;
+        padding: 0;
+    }
+
+    .brewcraft-business-account-section__title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin: 0 0 @bc-space-3;
+        padding: 0 0 @bc-space-2;
+
+        border-bottom: 1px solid @brewcraft-stone;
+    }
+
+    .brewcraft-business-account-section__title h2 {
+        margin: 0;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.35;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Table Card
+    // -----------------------------------------------------
+    //
+
+    .table-wrapper {
+        width: 100%;
+
+        margin: 0;
+
+        background: @brewcraft-white;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .data.table {
+        width: 100%;
+
+        border: 0;
+        border-collapse: collapse;
+
+        background: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+    }
+
+    .data.table tbody tr {
+        background: @brewcraft-white;
+
+        transition: background-color .15s ease;
+    }
+
+    .data.table tbody tr:not(:last-child) {
+        border-bottom: 1px solid @brewcraft-stone;
+    }
+
+    .data.table tbody tr:hover {
+        background: @brewcraft-bg-soft;
+    }
+
+    .data.table th,
+    .data.table td {
+        padding: @bc-space-2 @bc-space-3;
+
+        border: 0;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        line-height: 1.5;
+
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .data.table th {
+        width: 36%;
+
+        color: @brewcraft-espresso;
+
+        font-weight: 600;
+    }
+
+    .data.table td {
+        color: @brewcraft-charcoal;
+
+        font-weight: 400;
+    }
+
+    //
+    // Status value inside table
+    //
+
+    .data.table td:has(+ td),
+    .data.table td {
+        word-break: break-word;
+    }
+
+    //
+    // Application number emphasis
+    //
+
+    .brewcraft-business-account-section:first-of-type .data.table td {
+        color: @brewcraft-espresso;
+        font-weight: 500;
+    }
+
+    //
+    // Optional Business Team Review Feedback
+    //
+    // Used for approved customers when the business team
+    // has provided an optional review/approval message.
+    //
+    // It intentionally uses the same visual language as
+    // the rejected Review Feedback card, but without the
+    // error/red treatment.
+    //
+
+    .brewcraft-business-account-comment {
+        display: block;
+        width: 100%;
+
+        margin: 0 0 @bc-space-5;
+        padding: @bc-space-4;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        box-sizing: border-box;
+    }
+
+    .brewcraft-business-account-comment h2 {
+        margin: 0 0 @bc-space-2;
+        padding: 0 0 @bc-space-2;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso;
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.35;
+    }
+
+    .brewcraft-business-account-comment p {
+        margin: 0;
+
+        color: @brewcraft-muted;
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    //
+    // Approved-state optional feedback can be given a subtle
+    // green indicator without changing the message content.
+    //
+
+    .brewcraft-business-account-status--approved~.brewcraft-business-account-comment {
+        border-color: fade(@brewcraft-green, 28%);
+        background: fade(@brewcraft-green, 5%);
+    }
+
+    .brewcraft-business-account-status--approved~.brewcraft-business-account-comment h2 {
+        border-bottom-color: fade(@brewcraft-green, 20%);
+    }
+
+    //
+    // -----------------------------------------------------
+    // Desktop information layout
+    //
+    // HTML section order:
+    // 1. Business Account Header
+    // 2. Business Team Comment
+    // 3. Application Summary
+    // 4. Company Information
+    // 5. Primary Contact
+    // 6. Business Address
+    //
+    // Desired visual layout:
+    //
+    // Application Summary | Company Information
+    // Primary Contact     | Business Address
+    //
+    // Flexbox is used here instead of applying Grid to the
+    // entire dashboard. This avoids Magento sidebar/layout
+    // interactions and keeps the existing content visible.
+    // -----------------------------------------------------
+    //
+
+    @media (min-width: 1024px) {
+
+        //
+        // Header stays full width
+        //
+
+        .brewcraft-business-account-header {
+            display: flex;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        //
+        // Business team comment stays full width
+        //
+
+        .brewcraft-business-account-comment {
+            display: block;
+            width: 100%;
+            margin: 0 0 @bc-space-5;
+            padding: @bc-space-4;
+
+            background: @brewcraft-cream;
+            border: 1px solid @brewcraft-border;
+            border-radius: @bc-radius-md;
+
+            box-sizing: border-box;
+        }
+
+        .brewcraft-business-account-comment h2 {
+            margin: 0 0 @bc-space-1;
+
+            color: @brewcraft-espresso;
+            font-family: @brewcraft-font-heading;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .brewcraft-business-account-comment p {
+            margin: 0;
+
+            color: @brewcraft-muted;
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        //
+        // Rejected: Review Feedback
+        //
+
+        .brewcraft-business-account-rejection {
+            display: block;
+            width: 100%;
+
+            margin: 0 0 @bc-space-5;
+            padding: @bc-space-4;
+
+            background: #fff8f6;
+            border: 1px solid #e6c9c3;
+            border-radius: @bc-radius-md;
+
+            box-sizing: border-box;
+        }
+
+        .brewcraft-business-account-rejection h2 {
+            margin: 0 0 @bc-space-2;
+            padding: 0 0 @bc-space-2;
+
+            border-bottom: 1px solid #e6c9c3;
+
+            color: @brewcraft-espresso;
+            font-family: @brewcraft-font-heading;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .brewcraft-business-account-rejection__content strong {
+            display: block;
+            margin: 0 0 @bc-space-1;
+
+            color: @brewcraft-charcoal;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .brewcraft-business-account-rejection__content p {
+            margin: 0;
+
+            color: @brewcraft-muted;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        //
+        // Rejected: Need Another Review
+        //
+
+        section.brewcraft-business-account-section:not(:has(.table-wrapper)) {
+            display: block;
+            width: 100%;
+
+            margin: 0 0 @bc-space-5;
+            box-sizing: border-box;
+        }
+
+        section.brewcraft-business-account-section:not(:has(.table-wrapper))>p {
+            max-width: 850px;
+            margin: 0;
+
+            color: @brewcraft-muted;
+            font-family: @brewcraft-font-body;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        //
+        // Four information sections
+        //
+        // Use the class plus section position so only the
+        // four intended sections are affected.
+        //
+
+        section.brewcraft-business-account-section {
+            display: inline-block;
+            vertical-align: top;
+
+            width: calc(47%);
+            margin: 0 0 @bc-space-5;
+
+            box-sizing: border-box;
+        }
+
+        //
+        // Left column
+        //
+
+        section.brewcraft-business-account-section:nth-of-type(3),
+        section.brewcraft-business-account-section:nth-of-type(5) {
+            margin-right: @bc-space-2;
+        }
+
+        //
+        // Right column
+        //
+
+        section.brewcraft-business-account-section:nth-of-type(4),
+        section.brewcraft-business-account-section:nth-of-type(6) {
+            // margin-left: @bc-space-2;
+        }
+
+        //
+        // Keep tables/cards fully inside their columns
+        //
+
+        section.brewcraft-business-account-section .table-wrapper {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        section.brewcraft-business-account-section .data.table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        section.brewcraft-business-account-section .data.table th {
+            width: 42%;
+        }
+
+        //
+        // Action buttons remain below both columns
+        //
+
+        >.actions-toolbar {
+            clear: both;
+            width: 100%;
+            margin-top: 0;
+        }
+    }
+
+    //
+    // Hide the standard Magento success/notice notification.
+    // The Business Team Comment remains visible.
+    //
+
+    >.message.message-notice,
+    >.message.message-success,
+    >.message.message-warning,
+    >.message.message-error {
+        display: none !important;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Action Buttons
+    // -----------------------------------------------------
+    //
+
+    >.actions-toolbar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: @bc-space-2;
+
+        margin: @bc-space-2 0 0;
+        padding: 0;
+    }
+
+    >.actions-toolbar .primary,
+    >.actions-toolbar .secondary {
+        margin: 0;
+    }
+
+    >.actions-toolbar .action {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+
+        padding: 0 @bc-space-4;
+
+        border-radius: @bc-radius-sm;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+
+        text-decoration: none;
+
+        box-sizing: border-box;
+
+        transition:
+            background-color .2s ease,
+            border-color .2s ease,
+            color .2s ease,
+            transform .15s ease;
+    }
+
+    //
+    // Primary CTA
+    //
+
+    >.actions-toolbar .action.primary {
+        background: @brewcraft-espresso;
+        border: 1px solid @brewcraft-espresso;
+        color: @brewcraft-white;
+    }
+
+    >.actions-toolbar .action.primary:hover,
+    >.actions-toolbar .action.primary:focus {
+        background: @brewcraft-coffee;
+        border-color: @brewcraft-coffee;
+        color: @brewcraft-white;
+        text-decoration: none;
+    }
+
+    //
+    // Secondary CTA
+    //
+
+    >.actions-toolbar .action.secondary {
+        background: @brewcraft-white;
+        border: 1px solid @brewcraft-espresso;
+        color: @brewcraft-espresso;
+    }
+
+    >.actions-toolbar .action.secondary:hover,
+    >.actions-toolbar .action.secondary:focus {
+        background: @brewcraft-bg-soft;
+        border-color: @brewcraft-coffee;
+        color: @brewcraft-coffee;
+        text-decoration: none;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Accessibility / Focus
+    // -----------------------------------------------------
+    //
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+        outline: 2px solid @brewcraft-gold;
+        outline-offset: 2px;
+    }
+
+    //
+    // -----------------------------------------------------
+    // Tablet
+    // -----------------------------------------------------
+    //
+
+    @media (max-width: 1023px) {
+
+        padding: @bc-space-5 @bc-space-4 @bc-space-6;
+
+        .brewcraft-business-account-section {
+            display: block;
+            width: 100%;
+            margin: 0 0 @bc-space-4;
+        }
+
+        .brewcraft-business-account-header {
+            gap: @bc-space-4;
+        }
+
+        .brewcraft-business-account-status {
+            min-width: 170px;
+        }
+
+        .data.table th {
+            width: 40%;
+        }
+    }
+
+
+}
+
+
+/*
+ * =========================================================
+ * BrewCraft - Business Account
+ * Empty / Not Yet Applied State
+ *
+ * Add this block to the existing Business Account LESS.
+ * Uses the existing BrewCraft variables.
+ * =========================================================
+ */
+
+.brewcraft-business-account-dashboard {
+
+    //
+    // -----------------------------------------------------
+    // Empty Business Account State
+    // -----------------------------------------------------
+    //
+
+    .brewcraft-business-account-empty {
+        max-width: 820px;
+
+
+        padding: @bc-space-5 @bc-space-4;
+
+        background: @brewcraft-cream;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-lg;
+
+        text-align: center;
+
+        box-sizing: border-box;
+    }
+
+    //
+    // Small BrewCraft label
+    //
+
+    .brewcraft-business-account-empty
+    .brewcraft-business-account-eyebrow {
+        display: block;
+
+        margin: 0 0 @bc-space-2;
+
+        color: @brewcraft-green;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.4;
+
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+    //
+    // Main heading
+    //
+
+    .brewcraft-business-account-empty h1 {
+        max-width: 680px;
+
+        margin: 0 auto @bc-space-3;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    //
+    // Supporting text
+    //
+
+    .brewcraft-business-account-empty > p {
+        max-width: 650px;
+
+        margin: 0 auto @bc-space-2;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.7;
+    }
+
+    //
+    // Add a little more separation before CTA
+    //
+
+    .brewcraft-business-account-empty > .actions-toolbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        margin: @bc-space-5 0 0;
+        padding: 0;
+    }
+
+    .brewcraft-business-account-empty
+    > .actions-toolbar > .primary {
+        margin: 0;
+    }
+
+    //
+    // Primary CTA
+    //
+
+    .brewcraft-business-account-empty
+    .action.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 220px;
+        min-height: 46px;
+
+        padding: 0 @bc-space-4;
+
+        background: @brewcraft-espresso;
+        border: 1px solid @brewcraft-espresso;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+
+        text-decoration: none;
+
+        box-sizing: border-box;
+
+        transition:
+            background-color .2s ease,
+            border-color .2s ease,
+            color .2s ease;
+    }
+
+    .brewcraft-business-account-empty
+    .action.primary:hover,
+    .brewcraft-business-account-empty
+    .action.primary:focus {
+        background: @brewcraft-coffee;
+        border-color: @brewcraft-coffee;
+        color: @brewcraft-white;
+        text-decoration: none;
+    }
+
+    //
+    // Focus
+    //
+
+    .brewcraft-business-account-empty
+    a:focus-visible {
+        outline: 2px solid @brewcraft-gold;
+        outline-offset: 3px;
+    }
+
+
+
+}

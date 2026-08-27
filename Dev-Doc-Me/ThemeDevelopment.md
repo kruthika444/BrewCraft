@@ -11279,3 +11279,818 @@ Therefore:
 * CSS is scoped to the relevant customer/account page to avoid affecting unrelated Magento components.
 
 This keeps the implementation maintainable and reduces the amount of custom JavaScript required.
+# 13.Account Page — Development Log
+
+### Customer Account Section Styling
+
+**Date:** 27 August 2026
+**Area:** Magento 2 Customer Account / My Account
+**Theme:** `BrewCraft/supply`
+**Environment:** Local Magento development environment
+
+---
+
+### 1. Objective
+
+Continued development of the **BrewCraft Supply customer account section**, with the goal of matching the planned Figma design while keeping Magento's existing customer-account functionality and HTML structure intact.
+
+The approach followed during this work was:
+
+* Keep Magento's existing functionality.
+* Avoid unnecessarily overriding Magento templates.
+* Use the existing Magento-generated HTML/classes wherever possible.
+* Apply styling through the BrewCraft theme LESS files.
+* Avoid replacing working Magento components with custom HTML/JavaScript.
+* Defer the account/sidebar icons until a proper Magento icon-font approach is decided.
+
+---
+
+## 2. Customer Account Sidebar
+
+The existing Magento customer account sidebar was inspected using browser developer tools.
+
+The sidebar structure was confirmed as:
+
+```text
+My Account
+│
+├── My Account
+├── My Quote Requests
+├── My Orders
+├── Business Account
+├── My Downloadable Products
+├── My Wish List
+│
+├── Address Book
+├── Account Information
+├── Stored Payment Methods
+│
+├── My Product Reviews
+├── Newsletter Subscriptions
+└── Sign Out
+```
+
+The sidebar is Magento's standard:
+
+```html
+<div class="sidebar sidebar-main">
+    <div class="block block-collapsible-nav">
+```
+
+and the individual navigation items are generated using:
+
+```html
+<li class="nav item">
+```
+
+with the active item represented by:
+
+```html
+<li class="nav item current">
+```
+
+#### Important decision
+
+No new navigation structure was created.
+
+The existing Magento account navigation is being retained so that:
+
+* URLs continue working.
+* Active navigation states continue working.
+* Magento customer-account functionality remains intact.
+* Future account pages automatically inherit the same sidebar styling.
+
+The sidebar styling was adjusted so that it behaves as a **proper narrow account-navigation column**, rather than allowing the sidebar styling to visually occupy too much of the page.
+
+---
+
+## 3. Additional Sidebar
+
+The additional sidebar was inspected separately.
+
+Magento currently generates three relevant blocks:
+
+```text
+Additional Sidebar
+│
+├── Compare Products
+│   └── You have no items to compare.
+│
+├── Recently Ordered
+│   └── hidden when there are no items
+│
+└── My Wish List
+    └── You have no items in your wish list.
+```
+
+The relevant HTML structure was identified as:
+
+```html
+<div class="sidebar sidebar-additional">
+```
+
+with:
+
+```html
+<div class="block block-compare">
+```
+
+```html
+<div class="block block-reorder">
+```
+
+and:
+
+```html
+<div class="block block-wishlist">
+```
+
+---
+
+## 4. Recently Ordered Empty-Block Issue
+
+A visual issue was found with Magento's **Recently Ordered** block.
+
+When the customer had no recently ordered items, Magento correctly applied:
+
+```html
+class="block-title no-display"
+```
+
+and:
+
+```html
+class="block-content no-display"
+```
+
+However, the parent:
+
+```html
+<div class="block block-reorder">
+```
+
+still occupied visual space.
+
+This resulted in an unwanted **empty visible box** in the additional sidebar.
+
+#### Initial solution
+
+A page-specific selector was initially used:
+
+```less
+.customer-account-index {
+    .sidebar-additional {
+        .block.block-reorder {
+            .block-title.no-display+.block-content.no-display {
+                margin: 0 !important;
+                padding: 0 !important;
+                border: 0 !important;
+                min-height: 0 !important;
+            }
+        }
+    }
+}
+```
+
+and:
+
+```less
+.customer-account-index {
+    .sidebar-additional {
+        .block.block-reorder {
+            &:has(.block-title.no-display) {
+                display: none !important;
+            }
+        }
+    }
+}
+```
+
+This successfully removed the empty block on the **My Account dashboard**.
+
+#### Problem discovered
+
+The selector:
+
+```less
+.customer-account-index
+```
+
+only applies to the My Account dashboard.
+
+When navigating to another customer-account page such as:
+
+```text
+My Orders
+```
+
+Magento changes the body/page class, so the CSS no longer matched.
+
+As a result, the empty Recently Ordered block appeared again on other account pages.
+
+---
+
+## 5. Final Recently Ordered Solution
+
+The CSS was simplified to target the common Magento account layout instead of a single account page.
+
+Final implementation:
+
+```less
+/* Hide Recently Ordered block when there are no ordered items */
+.account {
+
+    .sidebar-additional {
+
+        .block.block-reorder:has(.block-title.no-display) {
+            display: none !important;
+        }
+
+    }
+}
+```
+
+#### How it works
+
+Magento itself tells us when the block has no content through:
+
+```html
+.block-title.no-display
+```
+
+Therefore:
+
+```less
+.block.block-reorder:has(.block-title.no-display)
+```
+
+means:
+
+> Hide the entire Recently Ordered block when Magento marks its title as `no-display`.
+
+The parent:
+
+```less
+.account
+```
+
+allows the rule to work across the customer account pages instead of only:
+
+```less
+.customer-account-index
+```
+
+#### Result
+
+The empty Recently Ordered block is now hidden consistently on:
+
+* My Account
+* My Orders
+* My Quote Requests
+* Business Account
+* Other customer account pages using the same account layout
+
+When recently ordered products actually exist, Magento removes the `no-display` state and the block can display normally.
+
+---
+
+## 6. My Account Dashboard — Main Section
+
+The Magento My Account dashboard HTML was inspected.
+
+The main content consists of:
+
+```text
+My Account
+│
+├── Account Information
+│   ├── Contact Information
+│   └── Newsletters
+│
+├── Address Book
+│   ├── Default Billing Address
+│   └── Default Shipping Address
+│
+└── Recent Orders
+```
+
+The existing Magento blocks were retained.
+
+Important classes identified include:
+
+```html
+.block-dashboard-info
+.block-dashboard-addresses
+.block-dashboard-orders
+```
+
+and the individual cards use:
+
+```html
+.box
+```
+
+with specific classes such as:
+
+```html
+.box-information
+.box-newsletter
+.box-billing-address
+.box-shipping-address
+```
+
+The styling work was performed against these existing Magento classes rather than creating replacement markup.
+
+---
+
+## 7. Account Information Section
+
+The Account Information block was styled while preserving Magento's existing structure.
+
+Magento provides:
+
+```html
+<div class="block block-dashboard-info">
+```
+
+containing:
+
+```html
+<div class="box box-information">
+```
+
+and:
+
+```html
+<div class="box box-newsletter">
+```
+
+The existing functionality remains unchanged:
+
+#### Contact Information
+
+Displays:
+
+* Customer name
+* Email address
+* Edit
+* Change Password
+
+#### Newsletter
+
+Displays:
+
+* Subscription status
+* Edit link
+
+No custom controller or template was required for this styling work.
+
+---
+
+## 8. Address Book Section
+
+The Address Book area was also retained using Magento's existing structure:
+
+```html
+<div class="block block-dashboard-addresses">
+```
+
+with:
+
+```html
+.box-billing-address
+.box-shipping-address
+```
+
+The existing functionality remains:
+
+* Manage Addresses
+* Default Billing Address
+* Default Shipping Address
+* Edit Address
+
+The visual treatment was applied through the theme styling without modifying Magento's address rendering logic.
+
+---
+
+## 9. Recent Orders — My Account Dashboard
+
+The Recent Orders section was inspected.
+
+Magento already limits the dashboard's recent orders display, so no custom limitation or scrolling behavior was introduced.
+
+The existing table includes:
+
+```html
+<table class="data table table-order-items recent"
+       id="my-orders-table">
+```
+
+with:
+
+```text
+Order #
+Date
+Ship To
+Order Total
+Status
+Action
+```
+
+#### Decision
+
+Initially there was discussion about making the recent-orders area scrollable.
+
+This was later rejected because Magento already provides the desired recent-order behavior.
+
+Therefore:
+
+**No custom scrollable recent-orders container was added.**
+
+Magento's existing behavior is being retained.
+
+---
+
+## 10. My Orders Page
+
+The full **My Orders** page was inspected.
+
+The page contains:
+
+```html
+<div class="table-wrapper orders-history">
+```
+
+and:
+
+```html
+<table class="data table table-order-items history"
+       id="my-orders-table">
+```
+
+Magento provides:
+
+```text
+Order #
+Date
+Order Total
+Status
+Action
+```
+
+with actions such as:
+
+```text
+View Order
+Reorder
+```
+
+The existing Magento order-history functionality remains untouched.
+
+---
+
+## 11. Order Pagination
+
+The My Orders page contains Magento's standard bottom toolbar:
+
+```html
+<div class="order-products-toolbar toolbar bottom">
+```
+
+Inside it Magento generates:
+
+```text
+Items 1 to 10 of 26 total
+
+Previous
+1
+2
+3
+Next
+
+Show 10 per page
+```
+
+The pagination HTML was inspected to confirm that the links were already functional.
+
+For example:
+
+```html
+<a href=".../sales/order/history/">
+```
+
+```html
+<a href=".../sales/order/history/?p=2">
+```
+
+and:
+
+```html
+<a href=".../sales/order/history/?p=3">
+```
+
+#### Important decision
+
+The pagination functionality was **not recreated**.
+
+No custom JavaScript was added.
+
+No custom page-number links were added.
+
+No custom next/previous logic was added.
+
+Only visual styling was applied.
+
+This preserves Magento's:
+
+* Page navigation
+* Previous/Next behavior
+* Current-page state
+* Page URL generation
+* `limit` handling
+* Accessibility labels
+
+---
+
+## 12. Pagination Styling Issue
+
+During styling, an issue occurred where the pagination elements visually overlapped.
+
+The cause was excessive CSS modification of Magento's existing pagination layout.
+
+The approach was corrected by removing the custom positioning/layout rules and keeping the Magento pagination structure intact.
+
+The final styling only changes visual properties such as:
+
+* Colors
+* Borders
+* Background
+* Hover state
+* Current-page appearance
+* Limiter appearance
+
+The underlying Magento pagination layout and functionality remain unchanged.
+
+#### Result
+
+Pagination continues to work normally while matching the BrewCraft visual design more closely.
+
+---
+
+## 13. Account Sidebar Icons
+
+The Figma design includes icons beside the account-sidebar navigation items and icons inside some account cards.
+
+An attempt was initially made to create the icons through custom CSS/content.
+
+This approach was rejected.
+
+#### Final decision
+
+**Icons are currently deferred.**
+
+Instead, the Magento project was inspected to identify the existing icon resources before implementing them properly.
+
+The following Magento icon definitions were found in:
+
+```text
+lib/web/css/source/lib/variables/_icons.less
+```
+
+including:
+
+```text
+@icon-wishlist-full
+@icon-wishlist-empty
+@icon-warning
+@icon-update
+@icon-trash
+@icon-star
+@icon-settings
+@icon-menu
+@icon-location
+@icon-list
+@icon-info
+@icon-grid
+@icon-comment
+@icon-cart
+@icon-calendar
+@icon-search
+@icon-envelope
+@icon-compare-full
+@icon-compare-empty
+@icon-account
+```
+
+The available icon fonts were also identified:
+
+```text
+lib/web/fonts/Blank-Theme-Icons/
+lib/web/fonts/MUI-Icons/
+lib/web/fonts/UX-Icons/
+```
+
+and Magento Luma's:
+
+```text
+vendor/magento/theme-frontend-luma/web/fonts/Luma-Icons.woff2
+vendor/magento/theme-frontend-luma/web/fonts/Luma-Icons.woff
+vendor/magento/theme-frontend-luma/web/fonts/Luma-Icons.ttf
+```
+
+#### Current status
+
+Icons are **not part of the current implementation**.
+
+They will be revisited later using Magento's existing icon/font system rather than manually generated text characters.
+
+---
+
+## 14. Sign Out Functionality Verification
+
+The Magento Sign Out functionality was also verified.
+
+The account sidebar contains:
+
+```html
+<a href="https://project1.test/customer/account/logout/">
+    <span>Sign Out</span>
+</a>
+```
+
+Magento's logout-success page was inspected.
+
+The default Magento template:
+
+```text
+vendor/magento/module-customer/view/frontend/templates/logout.phtml
+```
+
+contains the existing logout-success message and redirect initialization.
+
+Magento's layout file:
+
+```text
+vendor/magento/module-customer/view/frontend/layout/customer_account_logoutsuccess.xml
+```
+
+was also checked and confirmed to reference:
+
+```text
+Magento_Customer::logout.phtml
+```
+
+The Sign Out flow is working correctly.
+
+#### Important decision
+
+No custom logout controller or logout template was created.
+
+Magento's default logout functionality is being retained.
+
+---
+
+## 15. Theme LESS Files Used / Investigated
+
+The BrewCraft theme currently contains several dedicated LESS files:
+
+```text
+app/design/frontend/BrewCraft/supply/web/css/source/
+```
+
+including:
+
+```text
+_account-type-selection.less
+_brewcraft-footer.less
+_brewcraft-variables.less
+_business-account-create.less
+_cart.less
+_checkout.less
+_extend.less
+_header.less
+_homepage.less
+_login.less
+_minicart.less
+_pdp.less
+_plp.less
+_register.less
+_request-quote.less
+```
+
+Account-related styling is being integrated through the existing theme LESS structure rather than modifying Magento vendor files.
+
+---
+
+## 16. Magento Vendor Files Were Not Modified
+
+During this work, Magento core/vendor files were inspected for understanding, but the implementation is being kept inside:
+
+```text
+app/design/frontend/BrewCraft/supply/
+```
+
+This is important because modifying:
+
+```text
+vendor/magento/
+```
+
+would make the customization difficult to maintain and could be lost during upgrades.
+
+---
+
+## 17. Current Implementation Status
+
+#### Completed
+
+* [x] Customer account sidebar styling
+* [x] Sidebar width/layout correction
+* [x] Additional sidebar styling
+* [x] Compare Products block styling
+* [x] My Wish List block styling
+* [x] Recently Ordered empty-block issue fixed
+* [x] Recently Ordered fix made global across account pages
+* [x] My Account main section styling
+* [x] Account Information styling
+* [x] Address Book styling
+* [x] Recent Orders styling
+* [x] Confirmed Magento's default recent-order limit is sufficient
+* [x] My Orders table styling
+* [x] My Orders pagination styling
+* [x] Pagination functionality preserved
+* [x] Previous/Next/page links preserved
+* [x] Sign Out functionality verified
+* [x] Magento logout template/layout inspected
+
+#### Deferred
+
+* [ ] Account sidebar icons
+* [ ] Account Information card icons
+* [ ] Address Book card icons
+* [ ] Final icon-font implementation using Magento's existing icon resources
+
+---
+
+## 18. Technical Principle Followed
+
+The main principle established during this work is:
+
+> **Style Magento's existing customer-account components instead of rebuilding them.**
+
+Where Magento already provides:
+
+* HTML structure
+* URLs
+* navigation
+* active states
+* pagination
+* order limits
+* conditional visibility
+* logout behavior
+* accessibility markup
+
+those features should remain untouched.
+
+The BrewCraft theme should primarily control the:
+
+```text
+Visual layer
+├── Typography
+├── Spacing
+├── Borders
+├── Backgrounds
+├── Colors
+├── Hover states
+├── Active states
+└── Responsive presentation
+```
+
+while Magento continues controlling the:
+
+```text
+Functional layer
+├── Customer navigation
+├── Orders
+├── Pagination
+├── Account data
+├── Address data
+├── Wishlist
+├── Compare
+├── Recently Ordered
+└── Logout
+```
+
+This keeps the customization maintainable and Magento-compatible.
+
+---
+
+### 19. Current Next Step
+
+The **My Account / Customer Account page styling is progressing section by section**.
+
+The account-sidebar and main My Account/Orders areas covered in this session are now in a stable state.
+
+The icon implementation is intentionally postponed.
+
+The next customer-account feature can therefore be started without changing the completed functionality.

@@ -1,0 +1,1126 @@
+//
+// BrewCraft - My Account Sidebar
+// Styling only — Magento controls the layout.
+//
+
+.account {
+
+    //
+    // Sidebar navigation container
+    //
+    .block-collapsible-nav-content {
+        padding: 0;
+
+        background: @brewcraft-cream;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        overflow: hidden;
+    }
+
+    //
+    // Navigation list
+    //
+    .block-collapsible-nav .nav.items {
+        margin: 0;
+        padding: @bc-space-2 0;
+
+        list-style: none;
+    }
+
+    //
+    // Individual navigation items
+    //
+    .block-collapsible-nav .nav.item {
+        margin: 0;
+        padding: 0;
+    }
+
+    //
+    // Links + current item
+    //
+    .block-collapsible-nav .nav.item>a,
+    .block-collapsible-nav .nav.item>strong {
+        display: block;
+
+        margin: 0;
+        padding: 11px @bc-space-3;
+
+        background: transparent;
+
+        border: 0;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.4;
+
+        text-decoration: none;
+
+        transition:
+            background-color .2s ease,
+            color .2s ease;
+    }
+
+    //
+    // Hover
+    //
+    .block-collapsible-nav .nav.item>a:hover {
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+    }
+
+    //
+    // Active page
+    //
+    .block-collapsible-nav .nav.item.current>strong {
+        position: relative;
+
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-espresso;
+
+        font-weight: 600;
+    }
+
+    //
+    // BrewCraft active indicator
+    //
+    .block-collapsible-nav .nav.item.current>strong::before {
+        content: '';
+
+        position: absolute;
+
+        top: 0;
+        bottom: 0;
+        left: 0;
+
+        width: 3px;
+
+        background: @brewcraft-coffee;
+    }
+
+    //
+    // Magento delimiter
+    //
+    .block-collapsible-nav .nav.item>.delimiter {
+        display: block;
+
+        height: 1px;
+
+        margin: @bc-space-2 @bc-space-3;
+
+        background: @brewcraft-border;
+    }
+
+    //
+    // Sign Out
+    //
+    .block-collapsible-nav .nav.item:last-child>a {
+        color: @brewcraft-espresso;
+
+        font-weight: 500;
+    }
+
+    .block-collapsible-nav .nav.item:last-child>a:hover {
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-coffee;
+    }
+
+    //
+    // Mobile title
+    //
+    .block-collapsible-nav-title {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-weight: 600;
+    }
+}
+
+//
+// Account Additional Sidebar
+//
+
+.account {
+    .sidebar-additional {
+
+        .block {
+            margin: 0 0 @bc-space-4;
+            padding: @bc-space-3;
+
+            background: @brewcraft-cream;
+            border: 1px solid @brewcraft-border;
+            border-radius: @bc-radius-md;
+            box-sizing: border-box;
+        }
+
+        .block-title {
+            margin: 0 0 @bc-space-2;
+            padding: 0 0 @bc-space-2;
+
+            border-bottom: 1px solid @brewcraft-stone;
+
+            strong {
+                color: @brewcraft-espresso;
+                font-family: @brewcraft-font-heading;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+        }
+
+        .block-content {
+            padding: 0;
+        }
+
+        .empty {
+            margin: 0;
+
+            color: @brewcraft-muted;
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        //
+        // Recently Ordered
+        //
+
+        .block-reorder {
+
+            .subtitle {
+                display: block;
+
+                margin: 0 0 @bc-space-2;
+
+                color: @brewcraft-charcoal;
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .product-items {
+                margin: 0;
+                padding: 0;
+
+                list-style: none;
+            }
+
+            .product-item {
+                margin: 0;
+                padding: @bc-space-2 0;
+
+                border-bottom: 1px solid @brewcraft-stone;
+
+                &:last-child {
+                    border-bottom: 0;
+                }
+            }
+
+            .product-item-name {
+                display: block;
+
+                margin-top: @bc-space-1;
+
+                .product-item-link {
+                    color: @brewcraft-charcoal;
+                    font-family: @brewcraft-font-body;
+                    font-size: 13px;
+                    font-weight: 500;
+                    line-height: 1.4;
+
+                    text-decoration: none;
+
+                    &:hover {
+                        color: @brewcraft-coffee;
+                    }
+                }
+            }
+
+            .field.item.choice {
+                display: flex;
+                align-items: center;
+
+                margin: 0 0 @bc-space-1;
+
+                .label {
+                    order: 2;
+
+                    margin: 0 0 0 @bc-space-1;
+
+                    color: @brewcraft-muted;
+                    font-size: 12px;
+                }
+
+                .control {
+                    order: 1;
+                }
+
+                input.checkbox {
+                    width: 16px;
+                    height: 16px;
+                    margin: 0;
+                    accent-color: @brewcraft-espresso;
+                }
+            }
+
+            .actions-toolbar {
+                margin-top: @bc-space-3;
+            }
+
+            .action.view {
+                color: @brewcraft-espresso;
+                font-size: 13px;
+                font-weight: 500;
+
+                text-decoration: underline;
+                text-underline-offset: 3px;
+
+                &:hover {
+                    color: @brewcraft-coffee;
+                }
+            }
+        }
+
+        //
+        // Wishlist
+        //
+
+        .block-wishlist {
+
+            .subtitle {
+                display: block;
+
+                margin: 0 0 @bc-space-2;
+
+                color: @brewcraft-charcoal;
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .empty {
+                padding: 0;
+            }
+        }
+    }
+}
+
+/* Hide Recently Ordered block when there are no ordered items */
+.account {
+
+    .sidebar-additional {
+
+        .block.block-reorder:has(.block-title.no-display) {
+            display: none !important;
+        }
+
+    }
+}
+
+//
+// BrewCraft - My Account Dashboard
+//
+
+.customer-account-index {
+
+    //
+    // Account Information
+    //
+
+    .block-dashboard-info {
+
+        .block-title {
+            margin: 0 0 @bc-space-3;
+            padding: 0 0 @bc-space-2;
+
+            border-bottom: 1px solid @brewcraft-stone;
+
+            strong {
+                color: @brewcraft-espresso;
+                font-family: @brewcraft-font-heading;
+                font-size: 24px;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+        }
+
+        //
+        // Individual cards
+        //
+
+        .box {
+            margin: 0;
+            padding: @bc-space-4;
+
+            border: 1px solid @brewcraft-gold;
+            border-radius: @bc-radius-md;
+
+            box-shadow: 0 5px 5px fade(@brewcraft-espresso, 5%);
+
+            box-sizing: border-box;
+        }
+
+        //
+        // Card title
+        //
+
+        .box-title {
+            display: block;
+
+            margin: 0 0 @bc-space-2;
+
+            color: @brewcraft-espresso;
+            font-family: @brewcraft-font-heading;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        //
+        // Card content
+        //
+
+        .box-content {
+            margin: 0;
+
+            color: @brewcraft-charcoal;
+            font-family: @brewcraft-font-body;
+            font-size: 14px;
+            line-height: 1.6;
+
+            p {
+                margin: 0;
+            }
+        }
+
+        //
+        // Contact information
+        //
+
+        .box-information {
+
+            .box-content {
+                p {
+                    color: @brewcraft-charcoal;
+                }
+            }
+        }
+
+        //
+        // Newsletter
+        //
+
+        .box-newsletter {
+
+            .box-content {
+                color: @brewcraft-muted;
+            }
+        }
+
+        //
+        // Card actions
+        //
+
+        .box-actions {
+            display: flex;
+            align-items: center;
+            gap: @bc-space-3;
+
+            margin-top: @bc-space-3;
+            padding-top: @bc-space-2;
+
+            border-top: 1px solid @brewcraft-stone;
+        }
+
+        .box-actions .action {
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            &:hover {
+                color: @brewcraft-coffee;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+        }
+
+        //
+        // Change password link
+        //
+
+        .box-actions .change-password {
+            color: @brewcraft-coffee;
+        }
+    }
+
+}
+
+//
+// Address Book
+//
+
+.customer-account-index {
+
+    .block-dashboard-addresses {
+
+        .block-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin: @bc-space-6 0 @bc-space-3;
+            padding: 0 0 @bc-space-2;
+
+            border-bottom: 1px solid @brewcraft-stone;
+
+            strong {
+                color: @brewcraft-espresso;
+                font-family: @brewcraft-font-heading;
+                font-size: 24px;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+
+            .action.edit {
+                color: @brewcraft-espresso;
+
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 600;
+
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-coffee;
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
+            }
+        }
+
+        //
+        // Address cards
+        //
+
+        .box {
+            margin: 0;
+            padding: @bc-space-4;
+
+            border: 1px solid @brewcraft-gold;
+            border-radius: @bc-radius-md;
+
+            box-shadow: 0 5px 5px fade(@brewcraft-espresso, 5%);
+
+            box-sizing: border-box;
+        }
+
+        .box-title {
+            display: block;
+
+            margin: 0 0 @bc-space-2;
+
+            color: @brewcraft-espresso;
+            font-family: @brewcraft-font-heading;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .box-content {
+            color: @brewcraft-charcoal;
+            font-family: @brewcraft-font-body;
+            font-size: 14px;
+            line-height: 1.7;
+
+            address {
+                margin: 0;
+                font-style: normal;
+            }
+
+            a {
+                color: @brewcraft-charcoal;
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-coffee;
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        //
+        // Edit Address
+        //
+
+        .box-actions {
+            margin-top: @bc-space-3;
+            padding-top: @bc-space-2;
+
+            border-top: 1px solid @brewcraft-stone;
+        }
+
+        .box-actions .action {
+            color: @brewcraft-espresso;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            &:hover {
+                color: @brewcraft-coffee;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+        }
+    }
+}
+
+//
+// Recent Orders
+//
+
+.customer-account-index {
+
+    .block-dashboard-orders {
+
+        //
+        // Section heading
+        //
+
+        .block-title.order {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin: @bc-space-6 0 @bc-space-3;
+            padding: 0 0 @bc-space-2;
+
+            border-bottom: 1px solid @brewcraft-stone;
+
+            strong {
+                color: @brewcraft-espresso;
+                font-family: @brewcraft-font-heading;
+                font-size: 24px;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+
+            .action.view {
+                color: @brewcraft-espresso;
+
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 600;
+
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-coffee;
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
+            }
+        }
+
+
+        //
+        // Table wrapper
+        //
+
+        .orders-recent {
+            width: 100%;
+
+            margin: 0;
+            padding: 0;
+
+            border: 1px solid @brewcraft-gold;
+            border-radius: @bc-radius-md;
+
+            box-shadow: 0 5px 5px fade(@brewcraft-espresso, 5%);
+
+            overflow: hidden;
+        }
+
+
+        //
+        // Table
+        //
+
+        table#my-orders-table {
+            width: 100%;
+
+            margin: 0;
+
+            border: 0;
+            border-collapse: collapse;
+
+            font-family: @brewcraft-font-body;
+        }
+
+
+        //
+        // Table header
+        //
+
+        #my-orders-table thead {
+
+            th {
+                padding: @bc-space-2 @bc-space-2;
+
+                background: @brewcraft-bg-soft;
+                border: 0;
+                border-bottom: 1px solid @brewcraft-border;
+
+                color: @brewcraft-espresso;
+
+                font-family: @brewcraft-font-body;
+                font-size: 12px;
+                font-weight: 700;
+                line-height: 1.4;
+
+                text-align: left;
+                text-transform: uppercase;
+                letter-spacing: .04em;
+            }
+        }
+
+
+        //
+        // Table body
+        //
+
+        #my-orders-table tbody {
+
+            tr {
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid @brewcraft-stone;
+                }
+
+                &:hover {
+                    background: @brewcraft-bg-soft;
+                }
+            }
+
+            td {
+                padding: @bc-space-2 @bc-space-2;
+
+                border: 0;
+
+                color: @brewcraft-charcoal;
+
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                line-height: 1.5;
+
+                vertical-align: middle;
+            }
+        }
+
+
+        //
+        // Order number
+        //
+
+        #my-orders-table .col.id {
+            font-weight: 600;
+            color: @brewcraft-espresso;
+        }
+
+
+        //
+        // Price
+        //
+
+        #my-orders-table .col.total {
+
+            .price {
+                color: @brewcraft-espresso;
+                font-weight: 600;
+            }
+        }
+
+
+        //
+        // Status
+        //
+
+        #my-orders-table .col.status {
+            font-weight: 600;
+        }
+
+
+        //
+        // Actions
+        //
+
+        #my-orders-table .col.actions {
+
+            .action {
+                display: inline-block;
+
+                margin-right: @bc-space-2;
+
+                color: @brewcraft-espresso;
+
+                font-size: 12px;
+                font-weight: 600;
+
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-coffee;
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+
+
+
+    }
+}
+
+
+
+
+
+
+/* =========================================================
+ * BrewCraft - My Orders / Order History
+ * ========================================================= */
+
+.customer-account-index,
+.sales-order-history {
+
+    /*
+     * Page title
+     */
+    .page-title-wrapper {
+        margin: 0 0 @bc-space-5;
+    }
+
+    .page-title {
+        margin: 0;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-heading;
+        font-size: 36px;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+}
+
+
+/* =========================================================
+ * Full Order History
+ * ========================================================= */
+
+.sales-order-history {
+
+    .orders-history {
+        width: 100%;
+        margin: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+        background: @brewcraft-white;
+
+        overflow: hidden;
+    }
+
+
+    /*
+     * Order table
+     */
+    #my-orders-table {
+        width: 100%;
+        margin: 0;
+
+        border: 0;
+        border-collapse: collapse;
+
+        background: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+    }
+
+
+    /*
+     * Hide Magento's accessibility caption visually.
+     */
+    #my-orders-table .table-caption {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        margin: -1px;
+        padding: 0;
+
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+
+        border: 0;
+    }
+
+
+    /*
+     * Table heading
+     */
+    #my-orders-table thead {
+        background: @brewcraft-bg-soft;
+    }
+
+    #my-orders-table thead th {
+        padding: @bc-space-2 @bc-space-2;
+
+        border: 0;
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+
+        text-align: left;
+        white-space: nowrap;
+    }
+
+
+    /*
+     * Table rows
+     */
+    #my-orders-table tbody tr {
+        background: @brewcraft-white;
+
+        transition: background-color 0.15s ease;
+    }
+
+    #my-orders-table tbody tr+tr {
+        border-top: 1px solid @brewcraft-stone;
+    }
+
+    #my-orders-table tbody tr:hover {
+        background: @brewcraft-bg-soft;
+    }
+
+
+    /*
+     * Table cells
+     */
+    #my-orders-table tbody td {
+        padding: @bc-space-2;
+
+        border: 0;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.5;
+
+        vertical-align: middle;
+    }
+
+
+    /*
+     * Order number
+     */
+    #my-orders-table .col.id {
+        color: @brewcraft-espresso;
+        font-weight: 600;
+    }
+
+
+    /*
+     * Date
+     */
+    #my-orders-table .col.date {
+        color: @brewcraft-muted;
+        white-space: nowrap;
+    }
+
+
+    /*
+     * Order total
+     */
+    #my-orders-table .col.total {
+        color: @brewcraft-espresso;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+
+    /*
+     * Status
+     */
+    #my-orders-table .col.status {
+        font-weight: 500;
+    }
+
+
+    /*
+     * Status text
+     *
+     * Keep Magento's status text/functionality.
+     * Just give it a subtle visual treatment.
+     */
+    #my-orders-table .col.status {
+        color: @brewcraft-coffee;
+    }
+
+
+    /*
+     * Action column
+     */
+    #my-orders-table .col.actions {
+        white-space: nowrap;
+    }
+
+    #my-orders-table .col.actions .action {
+        display: inline-block;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        &:hover {
+            color: @brewcraft-coffee;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    #my-orders-table .col.actions .action:last-child {
+        margin-right: 0;
+    }
+
+    /* =========================================================
+ * BrewCraft - My Orders Pagination
+ * Visual styling only
+ * ========================================================= */
+
+    .order-products-toolbar {
+        padding: 20px 24px;
+
+        border: 1px solid @brewcraft-border;
+        border-top: 0;
+
+        background: @brewcraft-bg-soft;
+        padding: @bc-space-2 @bc-space-2;
+
+    }
+
+
+    /* Item count */
+
+    .order-products-toolbar .toolbar-amount {
+        color: @brewcraft-muted;
+        font-size: 13px;
+    }
+
+    .order-products-toolbar .toolbar-number {
+        color: @brewcraft-charcoal;
+        font-weight: 500;
+    }
+
+
+    /* Page numbers */
+
+    .order-products-toolbar .pages-items .page {
+        border-radius: 50%;
+
+        color: @brewcraft-charcoal;
+
+        font-size: 13px;
+        font-weight: 500;
+
+        text-decoration: none;
+    }
+
+    .order-products-toolbar .pages-items .page:hover {
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-espresso;
+    }
+
+
+    /* Current page */
+
+    .order-products-toolbar .pages-items .current .page {
+        border-radius: 50%;
+        background: @brewcraft-espresso;
+        color: @brewcraft-white;
+        font-weight: 600;
+        padding: 0px 10px;
+    }
+
+
+    /* Previous / Next */
+
+    .order-products-toolbar .pages-items .pages-item-previous .action,
+
+    .order-products-toolbar .pages-items .pages-item-next .action {
+        text-decoration: none;
+        border-radius: 50%;
+        background: @brewcraft-white;
+        color: @brewcraft-espresso;
+
+    }
+
+    .order-products-toolbar .pages-items .pages-item-previous .action:hover,
+    .order-products-toolbar .pages-items .pages-item-next .action:hover {
+        color: @brewcraft-coffee;
+        background-color: @brewcraft-cream;
+    }
+
+
+    /* Show per page */
+
+    .order-products-toolbar .limiter .limiter-label {
+        color: @brewcraft-muted;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .order-products-toolbar .limiter .limiter-options {
+        border: 1px solid @brewcraft-border;
+        border-radius: 4px;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-size: 13px;
+    }
+
+    .order-products-toolbar .limiter .limiter-text {
+        color: @brewcraft-muted;
+        font-size: 13px;
+    }
+}
