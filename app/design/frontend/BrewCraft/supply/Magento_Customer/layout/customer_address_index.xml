@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+
+        <referenceContainer name="page.main.title">
+            <container name="brewcraft.address.page.actions"
+                       htmlTag="div"
+                       htmlClass="brewcraft-address-page-actions"
+                       after="-">
+
+                <block class="Magento\Framework\View\Element\Template"
+                       name="brewcraft.add.address"
+                       template="Magento_Customer::address/add-button.phtml"/>
+            </container>
+        </referenceContainer>
+
+    </body>
+</page>

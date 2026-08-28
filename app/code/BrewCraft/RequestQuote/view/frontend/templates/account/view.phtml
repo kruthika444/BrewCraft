@@ -282,65 +282,72 @@ $quoteItems = $block->getQuoteItems();
 
         </section>
 
-        <?php if (
-            trim(
-                (string)$quoteRequest->getData(
-                    'customer_message'
-                )
-            ) !== ''
-        ): ?>
+        <?php
+        $customerMessage = trim(
+            (string)$quoteRequest->getData(
+                'customer_message'
+            )
+        );
 
-            <section class="brewcraft-quote-account-view__message">
+        $adminComment = trim(
+            (string)$quoteRequest->getData(
+                'admin_comment'
+            )
+        );
+        ?>
 
-                <h2>
-                    <?= $escaper->escapeHtml(
-                        __('Your Message')
-                    ) ?>
-                </h2>
+        <?php if ($customerMessage !== '' || $adminComment !== ''): ?>
 
-                <p>
-                    <?= nl2br(
-                        $escaper->escapeHtml(
-                            (string)$quoteRequest->getData(
-                                'customer_message'
-                            )
-                        )
-                    ) ?>
-                </p>
+            <div class="brewcraft-quote-account-view__messages">
 
-            </section>
+                <?php if ($customerMessage !== ''): ?>
+
+                    <section class="brewcraft-quote-account-view__message">
+
+                        <h2>
+                            <?= $escaper->escapeHtml(
+                                __('Your Message')
+                            ) ?>
+                        </h2>
+
+                        <p>
+                            <?= nl2br(
+                                $escaper->escapeHtml(
+                                    $customerMessage
+                                )
+                            ) ?>
+                        </p>
+
+                    </section>
+
+                <?php endif; ?>
+
+                <?php if ($adminComment !== ''): ?>
+
+                    <section class="brewcraft-quote-account-view__admin-comment">
+
+                        <h2>
+                            <?= $escaper->escapeHtml(
+                                __('Message from BrewCraft')
+                            ) ?>
+                        </h2>
+
+                        <p>
+                            <?= nl2br(
+                                $escaper->escapeHtml(
+                                    $adminComment
+                                )
+                            ) ?>
+                        </p>
+
+                    </section>
+
+                <?php endif; ?>
+
+            </div>
 
         <?php endif; ?>
 
-        <?php if (
-            trim(
-                (string)$quoteRequest->getData(
-                    'admin_comment'
-                )
-            ) !== ''
-        ): ?>
-
-            <section class="brewcraft-quote-account-view__admin-comment">
-
-                <h2>
-                    <?= $escaper->escapeHtml(
-                        __('Message from BrewCraft')
-                    ) ?>
-                </h2>
-
-                <p>
-                    <?= nl2br(
-                        $escaper->escapeHtml(
-                            (string)$quoteRequest->getData(
-                                'admin_comment'
-                            )
-                        )
-                    ) ?>
-                </p>
-
-            </section>
-
-        <?php endif; ?>
 
         <section class="brewcraft-quote-account-view__items">
 
@@ -682,7 +689,7 @@ $quoteItems = $block->getQuoteItems();
                 <div class="actions-toolbar">
                     <div class="primary">
                         <a class="action primary"
-                           href="<?= $escaper->escapeUrl($block->getOrderViewUrl()) ?>">
+                            href="<?= $escaper->escapeUrl($block->getOrderViewUrl()) ?>">
                             <span><?= $escaper->escapeHtml(__('View Order')) ?></span>
                         </a>
                     </div>
@@ -704,22 +711,22 @@ $quoteItems = $block->getQuoteItems();
                 </div>
 
                 <form method="post"
-                      action="<?= $escaper->escapeUrl(
-                          $block->getConvertToCartUrl()
-                      ) ?>">
+                    action="<?= $escaper->escapeUrl(
+                                $block->getConvertToCartUrl()
+                            ) ?>">
 
                     <?= $block->getBlockHtml('formkey') ?>
 
                     <div class="actions-toolbar">
                         <div class="primary">
                             <button type="submit"
-                                    class="action primary"
-                                    onclick="return confirm(
+                                class="action primary"
+                                onclick="return confirm(
                                         '<?= $escaper->escapeJs(
-                                            __(
-                                                'Your current shopping cart will be replaced with the products, quantities and negotiated prices from this accepted quote. Continue?'
-                                            )
-                                        ) ?>'
+                                                __(
+                                                    'Your current shopping cart will be replaced with the products, quantities and negotiated prices from this accepted quote. Continue?'
+                                                )
+                                            ) ?>'
                                     );">
                                 <span>
                                     <?= $escaper->escapeHtml(

@@ -11279,6 +11279,7 @@ Therefore:
 * CSS is scoped to the relevant customer/account page to avoid affecting unrelated Magento components.
 
 This keeps the implementation maintainable and reduces the amount of custom JavaScript required.
+
 # 13.Account Page — Development Log
 
 ### Customer Account Section Styling
@@ -12094,3 +12095,1647 @@ The account-sidebar and main My Account/Orders areas covered in this session are
 The icon implementation is intentionally postponed.
 
 The next customer-account feature can therefore be started without changing the completed functionality.
+
+# 14. BrewCraft Supply – Customer Address Pages Development Log
+
+### 1. Feature / Section
+
+**Magento 2 Customer Account → Address Book**
+
+Pages covered:
+
+1. Add New Address
+2. Address Book / Manage Addresses
+3. Default Billing Address
+4. Default Shipping Address
+5. Additional Address Entries
+6. Address Book pagination / toolbar
+7. Add New Address button placement and styling
+
+The work was done as part of the BrewCraft Supply customer account frontend customization.
+
+---
+
+## 2. Design / Theme Requirements
+
+There was **no Figma design available for the Address Book pages**, so the styling was designed to remain consistent with the existing BrewCraft customer-account theme.
+
+The following existing BrewCraft design variables were used:
+
+#### Colors
+
+* `@brewcraft-espresso: #2e1e14`
+* `@brewcraft-coffee: #5c3a21`
+* `@brewcraft-cream: #f6f1e8`
+* `@brewcraft-stone: #e6ded3`
+* `@brewcraft-charcoal: #1f1f1f`
+* `@brewcraft-green: #1f6845`
+* `@brewcraft-gold: #c8a66a`
+* `@brewcraft-white: #ffffff`
+* `@brewcraft-muted: #777572`
+* `@brewcraft-border: #ded7ce`
+* `@brewcraft-bg-soft: #faf8f4`
+* `@brewcraft-bg-dark: #181512`
+
+#### Typography
+
+* Heading: `Poppins`
+* Body: `Inter`
+
+#### Spacing
+
+The existing BrewCraft spacing variables were reused:
+
+* `@bc-space-1: 8px`
+* `@bc-space-2: 16px`
+* `@bc-space-3: 24px`
+* `@bc-space-4: 32px`
+* `@bc-space-5: 40px`
+* `@bc-space-6: 48px`
+* `@bc-space-7: 64px`
+* `@bc-space-8: 72px`
+
+#### Border Radius
+
+* Small: `4px`
+* Medium: `8px`
+* Large: `12px`
+
+---
+
+## 3. Add New Address Page
+
+### Initial State
+
+Magento's default customer address form was displayed using the standard Magento Customer module template.
+
+The goal was to make the form visually consistent with BrewCraft rather than changing Magento's underlying address functionality.
+
+### Work Completed
+
+The Add New Address page was styled using the BrewCraft theme.
+
+The following areas were customized:
+
+* Page title
+* Form field appearance
+* Labels
+* Text inputs
+* Select/dropdown fields
+* Checkboxes
+* Form spacing
+* Buttons
+* Primary/secondary actions
+* Address form layout
+* Overall typography
+* Borders and border radius
+* BrewCraft color palette
+
+The existing Magento form structure and functionality were retained.
+
+#### Important principle
+
+We did **not** replace Magento's address-saving logic.
+
+Only the presentation layer was customized.
+
+This keeps Magento's existing:
+
+* customer address validation
+* address save action
+* default billing handling
+* default shipping handling
+* country/state handling
+* form validation
+
+intact.
+
+---
+
+## 4. Address Book Page
+
+The next page handled was:
+
+**Customer Account → Address Book**
+
+Magento's default Address Book contains:
+
+1. Default Addresses
+2. Additional Address Entries
+3. Pagination / toolbar
+4. Add New Address button
+5. Back button
+
+The default Magento layout was retained functionally and redesigned visually.
+
+Magento's customer address model contains the customer's billing/shipping address information and supports default billing/default shipping relationships.
+
+---
+
+## 5. Default Billing + Default Shipping Addresses
+
+### Requirement
+
+Magento normally displays:
+
+* Default Billing Address
+* Default Shipping Address
+
+as separate address boxes.
+
+The requirement was to keep these **side by side**, matching Magento's normal desktop behavior while applying the BrewCraft design.
+
+### Final Layout
+
+The default address section was converted into a two-column layout:
+
+```text
+Default Addresses
+────────────────────────────────────────────────────
+
+┌──────────────────────────┐   ┌──────────────────────────┐
+│ Default Billing Address  │   │ Default Shipping Address │
+│                          │   │                          │
+│ Customer Name             │   │ Customer Name             │
+│ Company                   │   │ Street Address            │
+│ Street                    │   │ City, State, ZIP          │
+│ City, State, ZIP          │   │ Country                   │
+│ Country                   │   │ Phone                     │
+│ Phone                     │   │                          │
+│ Change Billing Address    │   │ Change Shipping Address   │
+└──────────────────────────┘   └──────────────────────────┘
+```
+
+### CSS Approach
+
+The parent `.block-content` was changed to:
+
+```less
+display: flex;
+gap: @bc-space-3;
+```
+
+The billing and shipping boxes were given:
+
+```less
+flex: 1 1 0;
+min-width: 0;
+```
+
+This allows both boxes to share the available width evenly.
+
+On mobile, the layout changes back to a vertical arrangement.
+
+---
+
+## 6. Address Card Styling
+
+Both address cards were given a BrewCraft card appearance.
+
+Applied styling included:
+
+* White background
+* BrewCraft border color
+* Medium border radius
+* Internal spacing
+* Consistent typography
+* Proper address line height
+* Styled telephone links
+* Green action links
+
+The address content itself remains generated by Magento.
+
+Only its presentation was changed.
+
+---
+
+## 7. Change Billing / Shipping Address Links
+
+Magento provides:
+
+* `Change Billing Address`
+* `Change Shipping Address`
+
+These links were retained.
+
+They were styled using the BrewCraft green:
+
+```less
+color: @brewcraft-green;
+```
+
+Hover state uses the darker BrewCraft espresso color.
+
+This keeps action links visually distinct from normal address text.
+
+---
+
+## 8. Additional Address Entries
+
+Magento displays additional saved customer addresses in a table.
+
+The existing Magento table was retained rather than replacing it with a custom data structure.
+
+The table was styled to match the BrewCraft theme.
+
+### Table areas styled
+
+#### Header
+
+* Soft BrewCraft background
+* BrewCraft coffee-colored text
+* Smaller heading typography
+* Bottom border
+
+#### Body
+
+* Consistent padding
+* BrewCraft border colors
+* Inter font
+* Proper vertical alignment
+* Row separators
+
+#### Actions
+
+Existing Magento actions were retained:
+
+* Edit
+* Delete
+
+The actions were styled as BrewCraft links.
+
+Delete was given a more muted appearance so it doesn't visually compete with the primary Edit action.
+
+---
+
+## 9. Empty Additional Address State
+
+Magento already provides an empty state:
+
+```text
+You have no other address entries in your address book.
+```
+
+This functionality was preserved.
+
+No custom fake address data or frontend-only placeholder was introduced.
+
+This is important because the page should automatically switch between:
+
+```text
+Additional addresses table
+```
+
+and:
+
+```text
+You have no other address entries in your address book.
+```
+
+depending on the customer's actual address data.
+
+---
+
+## 10. Additional Address Pagination
+
+Magento's existing pagination/toolbar was preserved.
+
+The following Magento functionality remains controlled by Magento:
+
+* Current page
+* Previous page
+* Next page
+* Page number
+* Items per page
+* Total number of addresses
+
+The styling was customized without replacing the pagination logic.
+
+This approach was also used previously for the **My Orders** page: style Magento's existing pagination rather than rebuilding the functionality.
+
+---
+
+## 11. Main Problem – Add New Address Button
+
+### Initial Magento Behavior
+
+Magento's default Address Book template places the:
+
+```text
+Add New Address
+```
+
+button inside the bottom `.actions-toolbar`.
+
+This caused the button to appear too far down the page.
+
+The desired BrewCraft design was:
+
+```text
+Address Book                         Add New Address
+```
+
+with the title on the left and the button on the right.
+
+---
+
+## 12. Template Override Investigation
+
+The Magento Customer module templates were inspected.
+
+Relevant templates included:
+
+```text
+vendor/magento/module-customer/view/frontend/templates/address/book.phtml
+vendor/magento/module-customer/view/frontend/templates/address/edit.phtml
+vendor/magento/module-customer/view/frontend/templates/address/grid.phtml
+```
+
+The important discovery was that the **Additional Address Entries table and Add New Address functionality are associated with Magento's address grid template**.
+
+The existing Magento JavaScript initialization also had to remain intact:
+
+```javascript
+"addAddress": "button[role='add-address']",
+"addAddressLocation": "..."
+```
+
+Therefore, the button could not simply be deleted from the page.
+
+---
+
+## 13. Moving the Add New Address Button
+
+Instead of creating a completely new button without Magento's expected attributes, the existing Magento button structure was preserved.
+
+The button retained:
+
+```html
+role="add-address"
+```
+
+and:
+
+```html
+class="action primary add"
+```
+
+This is important because Magento's frontend initialization uses the button's role selector to attach the Add Address behavior.
+
+The button was moved visually into a custom wrapper:
+
+```html
+<div class="brewcraft-address-page-actions">
+    <button
+        type="button"
+        role="add-address"
+        title="Add New Address"
+        class="action primary add">
+        <span>Add New Address</span>
+    </button>
+</div>
+```
+
+The wrapper was placed inside the page title area:
+
+```html
+<div class="page-title-wrapper">
+    <h1 class="page-title">
+        <span class="base">Address Book</span>
+    </h1>
+
+    <div class="brewcraft-address-page-actions">
+        ...
+    </div>
+</div>
+```
+
+This allowed the button to visually belong to the page header instead of remaining in the bottom action area.
+
+---
+
+## 14. Problem Encountered – Page Title Alignment
+
+The first CSS approach used:
+
+```less
+display: flex;
+justify-content: space-between;
+```
+
+on `.page-title-wrapper`.
+
+However, Magento's existing page layout styles were also affecting the title wrapper.
+
+This caused unexpected spacing and positioning.
+
+The result was that the title and button were not behaving as expected.
+
+---
+
+## 15. Solution – Override Magento Page Title Layout
+
+The final solution was to target the Magento page-main title wrapper more specifically:
+
+```less
+.customer-address-index {
+    .page-main {
+        > .page-title-wrapper {
+            position: relative;
+            width: 100%;
+            float: none;
+            clear: both;
+            text-align: left;
+        }
+    }
+}
+```
+
+The page title itself was kept as a normal inline element:
+
+```less
+.page-title {
+    display: inline-block;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+```
+
+The Add Address button wrapper was then positioned relative to the title wrapper:
+
+```less
+.brewcraft-address-page-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+}
+```
+
+This avoided relying on Magento's inherited flex behavior.
+
+#### Final result
+
+```text
+Address Book                              [Add New Address]
+```
+
+The title remains on the left and the button stays at the far right of the same header row.
+
+---
+
+## 16. Why `position: absolute` Was Used
+
+The problem was not the button itself.
+
+Magento's `.page-title-wrapper` already had theme/layout rules affecting its width, floating, alignment and spacing.
+
+Using:
+
+```less
+justify-content: space-between;
+```
+
+was therefore unreliable in this particular page context.
+
+Instead:
+
+```less
+.page-title-wrapper {
+    position: relative;
+}
+
+.brewcraft-address-page-actions {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+```
+
+creates a predictable relationship:
+
+* Title stays naturally positioned.
+* Button is anchored to the right edge.
+* No extra flex spacing is introduced.
+* Magento's existing title layout does not determine the gap between the two elements.
+
+This was the final working solution.
+
+---
+
+## 17. Add New Address Button Theme Styling
+
+The button was changed from the generic Magento appearance to BrewCraft's primary button style.
+
+Primary colors:
+
+```less
+background: @brewcraft-espresso;
+border-color: @brewcraft-espresso;
+color: @brewcraft-white;
+```
+
+Hover:
+
+```less
+background: @brewcraft-coffee;
+border-color: @brewcraft-coffee;
+```
+
+Other styling:
+
+* 44px minimum height
+* BrewCraft border radius
+* Inter font
+* 14px font size
+* 600 font weight
+* BrewCraft spacing
+
+This makes the button consistent with the rest of the customer-account theme.
+
+---
+
+## 18. Responsive Behavior
+
+Desktop:
+
+```text
+Address Book                         [Add New Address]
+
+Default Addresses
+
+[ Billing Address ]    [ Shipping Address ]
+```
+
+Mobile:
+
+```text
+Address Book
+
+[ Add New Address ]
+
+Default Addresses
+
+[ Billing Address ]
+
+[ Shipping Address ]
+```
+
+The default billing/shipping cards switch from two columns to one column below the mobile breakpoint.
+
+The page title and Add New Address action also switch to a vertical layout on smaller screens.
+
+---
+
+## 19. Important Magento Functionality Preserved
+
+Throughout the customization, Magento's underlying customer address functionality was intentionally preserved.
+
+The following were **not rewritten**:
+
+* Address save process
+* Address edit process
+* Address delete process
+* Default billing assignment
+* Default shipping assignment
+* Country selection
+* Region/state selection
+* Telephone validation
+* Customer address validation
+* Additional address collection
+* Address pagination
+* Magento's address JavaScript behavior
+
+This keeps the customization limited primarily to the presentation/template layer.
+
+Magento's customer address data includes fields such as street, city, region, postcode, country and telephone, along with default billing/shipping information.
+
+---
+
+## 20. Problems Encountered and Solutions
+
+| Problem                                                    | Cause                                                            | Solution                                                                |
+| ---------------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Add Address button appeared in the middle/bottom           | Magento default `.actions-toolbar` placement                     | Move the existing Add Address button into the page-title area           |
+| Button stopped behaving correctly when recreated           | Magento JS expects `role="add-address"`                          | Preserve Magento's original button attributes                           |
+| Title and button were not aligned                          | Magento's existing page-title styles conflicted with flex layout | Target `.page-main > .page-title-wrapper` specifically                  |
+| `justify-content: space-between` produced unwanted spacing | Existing Magento layout rules affected the wrapper               | Stop relying on flex positioning                                        |
+| Button and title appeared on separate lines                | Magento title wrapper inherited width/float/layout behavior      | Use `position: relative` on wrapper and absolute positioning for button |
+| Billing and shipping addresses appeared vertically         | Default layout / inherited Magento styles                        | Use flex layout on `.block-addresses-default .block-content`            |
+| Address cards did not match BrewCraft                      | Default Magento styling                                          | Apply BrewCraft colors, spacing, borders and typography                 |
+| Additional address table looked generic                    | Magento default table styling                                    | Customize table header, body, borders and action links                  |
+| Delete/Edit actions looked inconsistent                    | Default Magento action styling                                   | Apply BrewCraft action colors                                           |
+| Mobile layout could become cramped                         | Desktop two-column layout                                        | Switch address cards to a vertical layout below 767px                   |
+
+---
+
+## 21. Final Address Book Structure
+
+The completed page now follows this structure:
+
+```text
+┌───────────────────────────────────────────────────────────────┐
+│ Address Book                           [Add New Address]      │
+│                                                               │
+│ Default Addresses                                             │
+│ ────────────────────────────────────────────────────────────  │
+│                                                               │
+│ ┌────────────────────────┐  ┌──────────────────────────────┐ │
+│ │ Default Billing        │  │ Default Shipping             │ │
+│ │ Address                │  │ Address                      │ │
+│ │                        │  │                              │ │
+│ │ Address information   │  │ Address information           │ │
+│ │                        │  │                              │ │
+│ │ Change Billing Address│  │ Change Shipping Address       │ │
+│ └────────────────────────┘  └──────────────────────────────┘ │
+│                                                               │
+│ Additional Address Entries                                    │
+│ ────────────────────────────────────────────────────────────  │
+│                                                               │
+│ ┌───────────────────────────────────────────────────────────┐ │
+│ │ First │ Last │ Street │ City │ Country │ State │ Actions │ │
+│ ├───────────────────────────────────────────────────────────┤ │
+│ │ ...                                                       │ │
+│ └───────────────────────────────────────────────────────────┘ │
+│                                                               │
+│ Pagination / Items per page                                   │
+│                                                               │
+│ Back                                                           │
+└───────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 22. Files / Areas Customized
+
+The work involved the Magento Customer frontend address templates and the BrewCraft theme styling.
+
+Relevant Magento source templates investigated:
+
+```text
+vendor/magento/module-customer/view/frontend/templates/address/book.phtml
+vendor/magento/module-customer/view/frontend/templates/address/edit.phtml
+vendor/magento/module-customer/view/frontend/templates/address/grid.phtml
+```
+
+The BrewCraft theme override should be maintained under:
+
+```text
+app/design/frontend/BrewCraft/supply/
+```
+
+rather than modifying Magento files directly under:
+
+```text
+vendor/magento/
+```
+
+This keeps the customization upgrade-safe.
+
+---
+
+## 23. Current Status
+
+#### Completed
+
+* [x] Add New Address page styling
+* [x] Address Book page styling
+* [x] Default Billing Address card
+* [x] Default Shipping Address card
+* [x] Billing/Shipping side-by-side layout
+* [x] Additional Address Entries table
+* [x] Edit/Delete address actions styling
+* [x] Address pagination/toolbar styling
+* [x] BrewCraft colors applied
+* [x] BrewCraft typography applied
+* [x] BrewCraft spacing variables reused
+* [x] BrewCraft border radius reused
+* [x] Add New Address button moved to page header
+* [x] Add New Address button styled with BrewCraft theme
+* [x] Magento Add Address JavaScript behavior preserved
+* [x] Desktop layout fixed
+* [x] Mobile layout handled
+* [x] Final title/button alignment resolved
+
+#### Deferred
+
+* Sidebar icons
+* Account-section icons
+* Any future Figma-specific Address Book refinements
+
+Those can be handled separately later without affecting the current Address Book implementation.
+
+---
+
+## 24. Key Lesson for Future Maintenance
+
+The biggest issue encountered on this page was **Magento's existing CSS affecting the page title wrapper**.
+
+When a Magento element does not respond to apparently correct CSS, first inspect:
+
+```text
+.page-main
+.page-title-wrapper
+.page-title
+```
+
+and check Magento's inherited:
+
+* `float`
+* `width`
+* `display`
+* `position`
+* `margin`
+* `text-align`
+
+before adding more flex rules.
+
+For this page, the reliable solution was to establish our own positioning context:
+
+```less
+.page-title-wrapper {
+    position: relative;
+}
+
+.brewcraft-address-page-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+```
+
+rather than fighting Magento's existing flex/spacing behavior.
+
+This is worth remembering when customizing other Magento customer-account pages because Magento's Blank/Luma layout styles can continue to affect seemingly simple elements even after custom styles are added.
+
+# 15. BrewCraft Supply -- Request Quote Page Development Log
+
+**Project:** BrewCraft Supply Magento B2B / Business Account\
+**Page:** My Quote Requests / Request Quote / Quote Detail\
+**Date:** August 27, 2026\
+**Technology:** Magento 2, PHTML, LESS/CSS\
+**Design Reference:** BrewCraft Figma/design screenshots and existing
+BrewCraft design system
+
+------------------------------------------------------------------------
+
+## 1. Objective
+
+The objective of today's work was to style the **Request Quote flow** in
+the BrewCraft Supply Magento project so that it matches the approved
+BrewCraft visual design.
+
+The work covered:
+
+1.  My Quote Requests listing page.
+2.  Quote status badges.
+3.  Quote table styling.
+4.  Pagination and "Show per page" controls.
+5.  Quote detail page opened through the **View** action.
+6.  Quote detail header and quote information.
+7.  Requested Products table.
+8.  Customer message and BrewCraft/admin feedback sections.
+9.  Status-dependent result messages such as Converted, Rejected and
+    Expired.
+10. Quote action buttons.
+11. Responsive behavior.
+12. Final PHTML structural adjustment for the two optional message
+    sections.
+
+------------------------------------------------------------------------
+
+## 2. Design System Used
+
+The Request Quote pages follow the BrewCraft design variables already
+established for the project.
+
+### Colors
+
+``` less
+@brewcraft-espresso: #2e1e14;
+@brewcraft-coffee: #5c3a21;
+@brewcraft-cream: #f6f1e8;
+@brewcraft-stone: #e6ded3;
+@brewcraft-charcoal: #1f1f1f;
+@brewcraft-green: #1f6845;
+@brewcraft-gold: #c8a66a;
+@brewcraft-white: #ffffff;
+@brewcraft-muted: #777572;
+@brewcraft-border: #ded7ce;
+@brewcraft-bg-soft: #faf8f4;
+@brewcraft-bg-dark: #181512;
+```
+
+### Typography
+
+``` less
+@brewcraft-font-heading: 'Poppins', sans-serif;
+@brewcraft-font-body: 'Inter', sans-serif;
+```
+
+### Spacing
+
+``` less
+@bc-space-1: 8px;
+@bc-space-2: 16px;
+@bc-space-3: 24px;
+@bc-space-4: 32px;
+@bc-space-5: 40px;
+@bc-space-6: 48px;
+@bc-space-7: 64px;
+@bc-space-8: 72px;
+```
+
+### Other design values
+
+``` less
+@bc-container-width: 1440px;
+@bc-radius-sm: 4px;
+@bc-radius-md: 8px;
+@bc-radius-lg: 12px;
+```
+
+The existing Magento functionality was retained. The implementation
+focused on presentation and layout rather than changing the quote
+workflow itself.
+
+------------------------------------------------------------------------
+
+## 3. My Quote Requests Page
+
+### 3.1 Initial state
+
+The original Magento quote-request listing page had the required quote
+information, but the default Magento styling did not match the BrewCraft
+design.
+
+The page needed:
+
+-   BrewCraft typography.
+-   BrewCraft colors.
+-   Proper table borders.
+-   Better spacing.
+-   Status badges.
+-   Styled action links.
+-   Pagination.
+-   Per-page selector.
+-   Consistent card/table appearance.
+-   Removal of the duplicated page title.
+
+------------------------------------------------------------------------
+
+## 4. Quote Table Styling
+
+The quote listing table was styled using the same approach already used
+for the Sales Order History table.
+
+The existing order-history LESS established the pattern:
+
+-   Full-width table.
+-   BrewCraft border.
+-   Rounded outer container.
+-   Soft background for the table header.
+-   Clean horizontal row separators.
+-   BrewCraft typography.
+-   Hover treatment.
+-   Styled action links.
+
+This same visual language was applied to the quote table so the customer
+account pages remain consistent.
+
+### Table columns
+
+The quote table contains:
+
+-   Quote Number
+-   Quote Name
+-   Status
+-   Original Total
+-   Proposed Total
+-   Submitted
+-   Action
+
+The table was given:
+
+``` less
+border: 1px solid @brewcraft-border;
+border-radius: @bc-radius-md;
+background: @brewcraft-white;
+overflow: hidden;
+```
+
+The table header uses:
+
+``` less
+background: @brewcraft-bg-soft;
+border-bottom: 1px solid @brewcraft-border;
+```
+
+Table rows use the BrewCraft border color for separation and a subtle
+soft-background hover state.
+
+------------------------------------------------------------------------
+
+## 5. Quote Statuses
+
+One issue identified during implementation was that the quote list does
+not contain only one or two statuses.
+
+The final design needs to support statuses such as:
+
+-   Pending
+-   Quoted
+-   Rejected
+-   Under Review
+-   Converted
+-   Expired
+
+The status treatment was therefore designed as reusable badges rather
+than styling only the original sample statuses.
+
+### Visual approach
+
+-   **Pending** -- warm/gold treatment.
+-   **Quoted** -- neutral BrewCraft treatment.
+-   **Under Review** -- neutral/information treatment.
+-   **Converted** -- green success treatment.
+-   **Rejected** -- red/error treatment.
+-   **Expired** -- warning treatment.
+
+The Magento status/functionality remains unchanged; only the visual
+presentation is customized.
+
+------------------------------------------------------------------------
+
+## 6. Pagination
+
+Pagination was initially missing from the first visual implementation.
+
+The actual page contains:
+
+-   Item count.
+-   Page numbers.
+-   Current-page indicator.
+-   Previous/next controls.
+-   "Show" selector.
+-   Per-page text.
+
+The pagination styling was based on the existing order-history toolbar
+pattern.
+
+The following visual behavior was retained:
+
+``` less
+.order-products-toolbar .pages-items .page
+```
+
+for page numbers, with:
+
+-   BrewCraft text color.
+-   Rounded page controls.
+-   Hover state.
+-   Distinct current-page state.
+-   Styled previous/next controls.
+-   BrewCraft border on the per-page selector.
+
+The pagination therefore matches the rest of the customer account area
+instead of looking like unstyled Magento controls.
+
+------------------------------------------------------------------------
+
+## 7. Duplicate Page Title Issue
+
+The Quote Requests page initially displayed two title-like headings:
+
+``` text
+My Quote Requests
+My Quote Requests
+```
+
+This was visually incorrect and did not match the Figma.
+
+The solution was to keep only one visible page title and use the
+appropriate heading hierarchy for the content underneath.
+
+The final visual hierarchy is:
+
+``` text
+My Quote Requests
+
+Review your submitted business quote requests and track their current status.
+
+[Quote table]
+```
+
+This makes the page title clear without unnecessary duplication.
+
+------------------------------------------------------------------------
+
+# 8. Quote Detail Page
+
+After completing the listing page, the work moved to the page opened
+through the **View** action.
+
+This page contains quote-specific information and is shared by all quote
+statuses.
+
+The common portion of the page contains:
+
+-   Quote header.
+-   Quote summary.
+-   Customer message, when provided.
+-   BrewCraft/admin feedback, when provided.
+-   Requested Products.
+-   Status-dependent result.
+-   Action buttons.
+
+The important requirement was that the page layout should remain stable
+regardless of the quote status.
+
+------------------------------------------------------------------------
+
+# 9. Quote Detail Page -- Common Layout
+
+The detail page was designed so that the main sections follow a
+predictable vertical flow:
+
+``` text
+Quote Header
+       ↓
+Quote Summary
+       ↓
+Customer / BrewCraft Messages
+       ↓
+Requested Products
+       ↓
+Status Result
+       ↓
+Actions
+```
+
+This was important because the content below Requested Products changes
+depending on the quote state.
+
+For example:
+
+-   Converted quotes can display an order conversion message and a View
+    Order button.
+-   Rejected quotes can display rejection feedback.
+-   Expired quotes can display an expiration message.
+-   Other states can have different actions.
+
+The common page structure should not move unexpectedly when one of these
+blocks appears or disappears.
+
+------------------------------------------------------------------------
+
+# 10. Quote Detail Title / Header
+
+The original title presentation made the quote number and quote name
+compete visually.
+
+A long quote number such as:
+
+``` text
+BCQ-20260827-80125750
+```
+
+should not visually behave like the main page heading.
+
+The hierarchy was therefore adjusted so that:
+
+-   Quote name is easier to read as the main quote identity.
+-   Quote number is treated as a supporting identifier.
+-   Status is visually separated from the title.
+-   The "BrewCraft Business Quote" label acts as supporting context.
+
+This gives the header a cleaner hierarchy and avoids making long
+generated quote numbers dominate the page.
+
+------------------------------------------------------------------------
+
+# 11. Customer Message and BrewCraft Message
+
+## 11.1 Original problem
+
+The PHTML originally rendered the two optional sections independently:
+
+``` text
+Your Message
+```
+
+and
+
+``` text
+Message from BrewCraft
+```
+
+as separate sibling sections.
+
+Initially, the layout was attempted entirely with CSS by applying a grid
+to the larger quote-detail container.
+
+This caused a major layout problem.
+
+Because the two message blocks were siblings of:
+
+-   Requested Products
+-   Status message
+-   Action toolbar
+
+the grid also affected those sections.
+
+This resulted in problems such as:
+
+-   Requested Products being squeezed into a column.
+-   Headings becoming compressed.
+-   Text wrapping vertically one character at a time.
+-   Status messages moving into incorrect positions.
+-   Large empty areas appearing.
+-   The page becoming visually broken.
+
+This was the most important layout issue encountered during today's
+work.
+
+------------------------------------------------------------------------
+
+# 12. Root Cause
+
+The problem was not the two-column concept itself.
+
+The problem was the **HTML structure**.
+
+The DOM effectively looked like:
+
+``` text
+Quote Detail
+├── Header
+├── Summary
+├── Your Message
+├── Message from BrewCraft
+├── Requested Products
+├── Status Message
+└── Actions
+```
+
+Applying a grid to the entire parent meant all of these children became
+grid items.
+
+Therefore CSS had to know the exact row and column position of every
+section.
+
+That approach was fragile and unnecessarily complicated.
+
+------------------------------------------------------------------------
+
+# 13. Final Solution -- PHTML Wrapper
+
+Instead of forcing the complete quote-detail container into a grid, the
+PHTML was changed slightly.
+
+A new wrapper was introduced around only the two optional message
+sections:
+
+``` text
+Quote Detail
+├── Header
+├── Summary
+├── Messages
+│   ├── Your Message
+│   └── Message from BrewCraft
+├── Requested Products
+├── Status Message
+└── Actions
+```
+
+The wrapper is:
+
+``` html
+<div class="brewcraft-quote-account-view__messages">
+```
+
+The existing conditional sections remain inside it.
+
+------------------------------------------------------------------------
+
+# 14. Why the Wrapper Solution Is Better
+
+The wrapper gives CSS a clear semantic target.
+
+Instead of saying:
+
+> Make the entire quote detail page a grid and manually position
+> everything.
+
+the implementation now says:
+
+> These two sections belong together. Arrange them side by side.
+
+This makes the layout much safer.
+
+The Requested Products section remains completely outside the grid.
+
+The status message remains completely outside the grid.
+
+The buttons remain completely outside the grid.
+
+Therefore, styling the messages cannot accidentally break the rest of
+the page.
+
+------------------------------------------------------------------------
+
+# 15. Message Layout Rules
+
+When both messages exist:
+
+``` text
+┌─────────────────────────┐  ┌─────────────────────────┐
+│ Your Message            │  │ Message from BrewCraft  │
+│                         │  │                         │
+│ Customer message...     │  │ Admin feedback...       │
+└─────────────────────────┘  └─────────────────────────┘
+```
+
+The wrapper uses:
+
+``` less
+&__messages {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: @bc-space-3;
+}
+```
+
+When only one message exists, the single child uses the complete
+available width:
+
+``` less
+&__messages > :only-child {
+    grid-column: 1 / -1;
+}
+```
+
+This supports both cases without requiring complicated selectors.
+
+------------------------------------------------------------------------
+
+# 16. Optional Message Behavior
+
+Both messages are optional.
+
+### Case 1 -- Both exist
+
+``` text
+Your Message        | Message from BrewCraft
+```
+
+### Case 2 -- Only customer message exists
+
+``` text
+Your Message
+(full width)
+```
+
+### Case 3 -- Only BrewCraft feedback exists
+
+``` text
+Message from BrewCraft
+(full width)
+```
+
+### Case 4 -- Neither exists
+
+The wrapper is not rendered.
+
+The page proceeds directly to:
+
+``` text
+Requested Products
+```
+
+This prevents empty message containers from creating unnecessary
+spacing.
+
+------------------------------------------------------------------------
+
+# 17. Message Card Styling
+
+The two message blocks use the BrewCraft card language.
+
+### Customer message
+
+Uses the standard soft BrewCraft background:
+
+``` less
+background: @brewcraft-bg-soft;
+border: 1px solid @brewcraft-border;
+border-radius: @bc-radius-md;
+```
+
+### BrewCraft feedback
+
+Uses the warmer cream background:
+
+``` less
+background: @brewcraft-cream;
+border: 1px solid @brewcraft-stone;
+border-radius: @bc-radius-md;
+```
+
+The headings use BrewCraft typography and a divider below the heading.
+
+This produces a clear distinction between:
+
+-   The message submitted by the customer.
+-   The feedback provided by the BrewCraft team.
+
+------------------------------------------------------------------------
+
+# 18. Responsive Message Layout
+
+On desktop:
+
+``` text
+Your Message | BrewCraft Message
+```
+
+On smaller screens:
+
+``` text
+Your Message
+─────────────
+
+BrewCraft Message
+──────────────────
+```
+
+The message wrapper changes to one column at the mobile breakpoint:
+
+``` less
+&__messages {
+    grid-template-columns: 1fr;
+}
+```
+
+This prevents narrow message cards and excessive text wrapping.
+
+------------------------------------------------------------------------
+
+# 19. Requested Products Table
+
+The Requested Products section contains a relatively wide data table.
+
+Columns include information such as:
+
+-   Product
+-   SKU
+-   Quantity
+-   Original Unit Price
+-   Expected Unit Price
+-   Proposed Unit Price
+-   Original Total
+-   Expected/Proposed Total
+
+Because the table can exceed the available content width, horizontal
+scrolling is retained.
+
+This is preferable to shrinking every column until the product
+information becomes unreadable.
+
+The table follows the same BrewCraft table treatment used on the
+quote-list page:
+
+-   White background.
+-   Soft header.
+-   BrewCraft borders.
+-   Consistent typography.
+-   Proper cell padding.
+-   Rounded outer container.
+-   Horizontal overflow where required.
+
+------------------------------------------------------------------------
+
+# 20. Status Result Messages
+
+Another requirement was to handle the different results shown after the
+Requested Products section.
+
+The visual treatment needs to distinguish between different outcomes.
+
+### Converted
+
+``` text
+✓ This quotation was converted to order #000000051.
+```
+
+The converted state uses the BrewCraft green:
+
+``` less
+@brewcraft-green
+```
+
+with a soft green background.
+
+### Rejected
+
+Rejected messages use a soft red/error treatment so the customer can
+immediately understand that the quote was not accepted.
+
+### Expired
+
+Expired messages use a warning/gold treatment.
+
+The status message remains a separate block below Requested Products and
+is not part of the two-column message layout.
+
+------------------------------------------------------------------------
+
+# 21. Problem With Default Magento Message Icon
+
+The default Magento message styling could introduce a large/default icon
+and positioning that did not match the BrewCraft design.
+
+This created alignment problems where the icon and message text did not
+look like a single component.
+
+The styling therefore needed to normalize:
+
+-   Icon size.
+-   Icon position.
+-   Text padding.
+-   Vertical alignment.
+-   Background.
+-   Border.
+-   Border radius.
+
+The result is a compact BrewCraft status component rather than the
+default Magento notification appearance.
+
+------------------------------------------------------------------------
+
+# 22. Important Implementation Decision
+
+A key lesson from the implementation was:
+
+> **Do not use the main quote-detail container as the grid for the
+> optional messages.**
+
+The correct level for the two-column layout is:
+
+``` text
+brewcraft-quote-account-view__messages
+```
+
+not:
+
+``` text
+brewcraft-quote-account-view
+```
+
+This keeps the CSS responsibility limited to the actual components that
+need the layout.
+
+------------------------------------------------------------------------
+
+# 23. What Was Not Changed
+
+The following functionality was intentionally left untouched:
+
+-   Quote creation.
+-   Quote submission.
+-   Quote status calculation.
+-   Quote conversion.
+-   Admin feedback logic.
+-   Customer message storage.
+-   Requested product data.
+-   Magento pagination functionality.
+-   View quote routing.
+-   Order conversion behavior.
+-   Status-dependent business logic.
+
+The changes were primarily presentation/layout changes, with one small
+PHTML structural improvement to provide a proper wrapper for the two
+optional message components.
+
+------------------------------------------------------------------------
+
+# 24. Final Request Quote Page Structure
+
+The final intended structure is:
+
+``` text
+My Quote Requests
+│
+├── Quote listing table
+│   ├── Quote Number
+│   ├── Quote Name
+│   ├── Status
+│   ├── Original Total
+│   ├── Proposed Total
+│   ├── Submitted
+│   └── View
+│
+└── Pagination
+```
+
+For an individual quote:
+
+``` text
+Quote Header
+│
+├── Quote Name
+├── Quote Number
+└── Status
+│
+├── Quote Summary
+│
+├── Messages
+│   ├── Your Message       ┐
+│   └── BrewCraft Message  ┘ side-by-side when both exist
+│
+├── Requested Products
+│
+├── Status Result
+│
+└── Actions
+    ├── View Order (when applicable)
+    ├── Back to My Quote Requests
+    └── Continue Shopping
+```
+
+------------------------------------------------------------------------
+
+# 25. Testing / Scenarios Considered
+
+  Scenario                            Expected Result
+  ----------------------------------- ---------------------------------------------------
+  Pending quote                       Pending status styling
+  Quoted quote                        Quoted status styling
+  Under Review quote                  Review status styling
+  Converted quote                     Green converted message + applicable order action
+  Rejected quote                      Rejected/error result styling
+  Expired quote                       Warning/expired result styling
+  Customer message + admin feedback   Two message cards side-by-side
+  Customer message only               Full-width customer message
+  Admin feedback only                 Full-width BrewCraft message
+  No messages                         No empty message wrapper
+  Wide product table                  Horizontal scrolling instead of broken columns
+  Multiple quote pages                Pagination remains available
+  Mobile                              Message cards stack vertically
+
+------------------------------------------------------------------------
+
+# 26. Final Outcome
+
+The Request Quote area now follows the BrewCraft design language instead
+of the default Magento presentation.
+
+The major improvements completed today were:
+
+-   BrewCraft styling applied to the Quote Requests page.
+-   Quote table aligned with the existing Order History table pattern.
+-   All relevant quote statuses accounted for.
+-   Pagination styled.
+-   Duplicate page title removed.
+-   Quote detail page styled.
+-   Quote title hierarchy improved.
+-   Requested Products section preserved as a stable full-width section.
+-   Status-dependent result messages styled.
+-   Customer and BrewCraft messages separated visually.
+-   Customer/BrewCraft messages made side-by-side when both exist.
+-   Single message automatically uses full width.
+-   Responsive behavior added for the message layout.
+-   HTML/PHTML structure improved by introducing a dedicated message
+    wrapper.
+-   Avoided using a page-wide grid that could interfere with other
+    quote-detail sections.
+
+------------------------------------------------------------------------
+
+# 27. Key Technical Takeaway
+
+The most important technical change was not simply a CSS change.
+
+The final implementation uses a small amount of structural markup to
+represent the actual relationship between the two message components:
+
+``` html
+<div class="brewcraft-quote-account-view__messages">
+
+    <!-- Your Message -->
+
+    <!-- Message from BrewCraft -->
+
+</div>
+```
+
+This allows LESS to remain simple, predictable and maintainable.
+
+The final principle used for the page is:
+
+> **Use PHTML structure to define component relationships, and use LESS
+> to define how those components look and respond.**
+
+This prevents layout rules for one component from unintentionally
+affecting unrelated Magento components.

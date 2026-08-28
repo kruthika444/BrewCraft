@@ -1,0 +1,1113 @@
+/*
+ * =========================================================
+ * BrewCraft - My Quote Requests
+ * =========================================================
+ *
+ * Page scope:
+ * .brewcraft-quote-account-list
+ *
+ * Design reference:
+ * BrewCraft My Quote Requests / Request Quote Figma
+ *
+ * Uses the existing BrewCraft design variables.
+ * =========================================================
+ */
+
+.brewcraft-quote-account-list {
+
+    width: 100%;
+    box-sizing: border-box;
+
+
+    /*
+     * -----------------------------------------------------
+     * Page title
+     *
+     * Magento renders "My Quote Requests" once in the
+     * global .page-title-wrapper and once inside this
+     * BrewCraft quote block.
+     *
+     * Keep the BrewCraft title below and hide only the
+     * Magento duplicate on pages containing this block.
+     * -----------------------------------------------------
+     */
+    /*
+     * -----------------------------------------------------
+     * Quote page header
+     * -----------------------------------------------------
+     */
+
+    &__header {
+        margin: 0 0 @bc-space-4;
+        padding: 0;
+    }
+
+    &__header h1 {
+        margin: 0 0 @bc-space-2;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+    }
+
+    &__header p {
+        max-width: 720px;
+
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Quote table wrapper
+     * -----------------------------------------------------
+     */
+
+    .orders-history {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        box-sizing: border-box;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Quote table
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table {
+        width: 100%;
+        min-width: 820px;
+
+        margin: 0;
+
+        border: 0;
+        border-collapse: collapse;
+
+        background: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+    }
+
+
+    /*
+     * Hide Magento accessibility caption visually.
+     */
+
+    #my-quote-requests-table .table-caption {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        margin: -1px;
+        padding: 0;
+
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+
+        border: 0;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Table header
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table thead {
+        background: @brewcraft-bg-soft;
+    }
+
+    #my-quote-requests-table thead th {
+        padding: @bc-space-3 @bc-space-2;
+
+        border: 0;
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+
+        text-align: left;
+        vertical-align: middle;
+
+        white-space: nowrap;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Column proportions
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table .col.quote-number {
+        width: 17%;
+    }
+
+    #my-quote-requests-table .col.quote-name {
+        width: 16%;
+    }
+
+    #my-quote-requests-table .col.status {
+        width: 13%;
+    }
+
+    #my-quote-requests-table .col.original-total {
+        width: 13%;
+    }
+
+    #my-quote-requests-table .col.proposed-total {
+        width: 14%;
+    }
+
+    #my-quote-requests-table .col.created-at {
+        width: 17%;
+    }
+
+    #my-quote-requests-table .col.actions {
+        width: 10%;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Table rows
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table tbody tr {
+        background: @brewcraft-white;
+
+        transition: background-color 0.15s ease;
+    }
+
+    #my-quote-requests-table tbody tr + tr {
+        border-top: 1px solid @brewcraft-stone;
+    }
+
+    #my-quote-requests-table tbody tr:hover {
+        background: @brewcraft-bg-soft;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Table cells
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table tbody td {
+        padding: @bc-space-3 @bc-space-2;
+
+        border: 0;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.5;
+
+        vertical-align: middle;
+    }
+
+
+    /*
+     * Quote number
+     */
+
+    #my-quote-requests-table .col.quote-number {
+        color: @brewcraft-espresso;
+        font-weight: 600;
+    }
+
+
+    /*
+     * Quote name
+     */
+
+    #my-quote-requests-table .col.quote-name {
+        color: @brewcraft-charcoal;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Status
+     *
+     * The status span is already generated by Magento with
+     * classes such as:
+     *
+     * .brewcraft-quote-status--pending
+     * .brewcraft-quote-status--converted
+     * .brewcraft-quote-status--expired
+     *
+     * For Quoted / Rejected / Under Review, the template
+     * should use the same modifier naming convention.
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table .col.status {
+        color: @brewcraft-charcoal;
+        font-weight: 500;
+    }
+
+    .brewcraft-quote-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 24px;
+
+        padding: 3px 10px;
+
+        border-radius: @bc-radius-sm;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.3;
+
+        white-space: nowrap;
+
+        box-sizing: border-box;
+    }
+
+
+    /*
+     * Quoted
+     */
+
+    .brewcraft-quote-status--quoted {
+        background: #e8f1e8;
+        color: @brewcraft-green;
+    }
+
+
+    /*
+     * Pending
+     */
+
+    .brewcraft-quote-status--pending {
+        background: #fff1d6;
+        color: #765315;
+    }
+
+
+    /*
+     * Under Review
+     */
+
+    .brewcraft-quote-status--under-review,
+    .brewcraft-quote-status--under_review,
+    .brewcraft-quote-status--underreview {
+        background: @brewcraft-bg-soft;
+        color: @brewcraft-coffee;
+    }
+
+
+    /*
+     * Rejected
+     */
+
+    .brewcraft-quote-status--rejected {
+        background: #fbe1dc;
+        color: #a53d2e;
+    }
+
+
+    /*
+     * Converted
+     */
+
+    .brewcraft-quote-status--converted {
+        background: #e4f2df;
+        color: #276333;
+    }
+
+
+    /*
+     * Expired
+     */
+
+    .brewcraft-quote-status--expired {
+        background: #fbe1dc;
+        color: #a53d2e;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Totals
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table .col.original-total {
+        color: @brewcraft-espresso;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    #my-quote-requests-table .col.proposed-total {
+        color: @brewcraft-charcoal;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+
+    /*
+     * "Not yet available"
+     */
+
+    #my-quote-requests-table .col.proposed-total:has(> *) {
+        color: @brewcraft-charcoal;
+    }
+
+
+    /*
+     * Submitted date
+     */
+
+    #my-quote-requests-table .col.created-at {
+        color: @brewcraft-muted;
+        white-space: nowrap;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Action column
+     * -----------------------------------------------------
+     */
+
+    #my-quote-requests-table .col.actions {
+        white-space: nowrap;
+    }
+
+    #my-quote-requests-table .col.actions .action {
+        display: inline-flex;
+        align-items: center;
+        gap: @bc-space-1;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition:
+            color 0.15s ease,
+            gap 0.15s ease;
+    }
+
+    #my-quote-requests-table .col.actions .action::after {
+        content: "›";
+
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    #my-quote-requests-table .col.actions .action:hover {
+        gap: 10px;
+
+        color: @brewcraft-coffee;
+
+        text-decoration: none;
+    }
+
+    #my-quote-requests-table .col.actions .action:focus-visible {
+        outline: 2px solid @brewcraft-gold;
+        outline-offset: 3px;
+
+        border-radius: @bc-radius-sm;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Pagination / bottom toolbar
+     *
+     * Uses the same styling pattern as the supplied
+     * .order-products-toolbar.
+     *
+     * Supports both:
+     *
+     * .order-products-toolbar
+     * .toolbar.bottom
+     *
+     * The current quote HTML uses .toolbar.bottom.
+     * -----------------------------------------------------
+     */
+
+    .order-products-toolbar,
+    .toolbar.bottom {
+        width: 100%;
+
+        margin: 0;
+
+        padding: @bc-space-2 @bc-space-2;
+
+        border: 1px solid @brewcraft-border;
+        border-top: 0;
+
+        border-radius: 0 0 @bc-radius-md @bc-radius-md;
+
+        background: @brewcraft-bg-soft;
+
+        box-sizing: border-box;
+    }
+
+
+    /*
+     * Toolbar layout
+     *
+     * Left   = item count
+     * Center = pagination
+     * Right  = show per page
+     */
+
+    .order-products-toolbar .pager,
+    .toolbar.bottom .pager {
+        display: grid;
+
+        grid-template-columns: 1fr auto 1fr;
+
+        align-items: center;
+
+        width: 100%;
+
+        margin: 0;
+    }
+
+
+    /*
+     * Item count
+     */
+
+    .order-products-toolbar .toolbar-amount,
+    .toolbar.bottom .toolbar-amount {
+        grid-column: 1;
+
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    .order-products-toolbar .toolbar-number,
+    .toolbar.bottom .toolbar-number {
+        color: @brewcraft-charcoal;
+        font-weight: 500;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Page numbers
+     * -----------------------------------------------------
+     */
+
+    .order-products-toolbar .pages,
+    .toolbar.bottom .pages {
+        grid-column: 2;
+
+        margin: 0;
+    }
+
+    .order-products-toolbar .pages-items,
+    .toolbar.bottom .pages-items {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: @bc-space-1;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .order-products-toolbar .pages-items .item,
+    .toolbar.bottom .pages-items .item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0;
+        padding: 0;
+    }
+
+
+    /*
+     * Page number
+     */
+
+    .order-products-toolbar .pages-items .page,
+    .toolbar.bottom .pages-items .page {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 32px;
+        height: 32px;
+
+        padding: 0 10px;
+
+        border-radius: 50%;
+
+        background: transparent;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+
+        text-decoration: none;
+
+        box-sizing: border-box;
+    }
+
+    .order-products-toolbar .pages-items .page:hover,
+    .toolbar.bottom .pages-items .page:hover {
+        background: @brewcraft-cream;
+
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+    }
+
+
+    /*
+     * Current page
+     */
+
+    .order-products-toolbar .pages-items .current .page,
+    .toolbar.bottom .pages-items .current .page {
+        background: @brewcraft-espresso;
+
+        color: @brewcraft-white;
+
+        font-weight: 600;
+    }
+
+
+    /*
+     * Previous / Next
+     */
+
+    .order-products-toolbar .pages-items .pages-item-previous .action,
+    .order-products-toolbar .pages-items .pages-item-next .action,
+    .toolbar.bottom .pages-items .pages-item-previous .action,
+    .toolbar.bottom .pages-items .pages-item-next .action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 36px;
+        height: 36px;
+
+        padding: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 50%;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+
+        box-sizing: border-box;
+    }
+
+    .order-products-toolbar .pages-items .pages-item-previous .action:hover,
+    .order-products-toolbar .pages-items .pages-item-next .action:hover,
+    .toolbar.bottom .pages-items .pages-item-previous .action:hover,
+    .toolbar.bottom .pages-items .pages-item-next .action:hover {
+        background: @brewcraft-cream;
+
+        color: @brewcraft-coffee;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Show per page
+     * -----------------------------------------------------
+     */
+
+    .order-products-toolbar .limiter,
+    .toolbar.bottom .limiter {
+        grid-column: 3;
+
+        justify-self: end;
+
+        display: flex;
+        align-items: center;
+
+        margin: 0;
+    }
+
+    .order-products-toolbar .limiter .limiter-label,
+    .toolbar.bottom .limiter .limiter-label {
+        margin-right: @bc-space-1;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .order-products-toolbar .limiter .limiter-options,
+    .toolbar.bottom .limiter .limiter-options {
+        width: auto;
+        min-width: 48px;
+        height: 36px;
+
+        padding: 0 @bc-space-2;
+
+        background: @brewcraft-white;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+
+        box-sizing: border-box;
+    }
+
+    .order-products-toolbar .limiter .limiter-options:hover,
+    .toolbar.bottom .limiter .limiter-options:hover {
+        border-color: @brewcraft-coffee;
+    }
+
+    .order-products-toolbar .limiter .limiter-options:focus,
+    .toolbar.bottom .limiter .limiter-options:focus {
+        border-color: @brewcraft-coffee;
+
+        outline: 2px solid fade(@brewcraft-gold, 45%);
+        outline-offset: 1px;
+    }
+
+    .order-products-toolbar .limiter .limiter-text,
+    .toolbar.bottom .limiter .limiter-text {
+        margin-left: @bc-space-1;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Empty state
+     * -----------------------------------------------------
+     */
+
+    .message.info {
+        margin: 0 0 @bc-space-4;
+        padding: @bc-space-3;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Tablet
+     * -----------------------------------------------------
+     */
+
+    @media (max-width: 1023px) {
+
+        &__header h1 {
+            font-size: 28px;
+        }
+
+        #my-quote-requests-table {
+            min-width: 760px;
+        }
+
+        #my-quote-requests-table thead th,
+        #my-quote-requests-table tbody td {
+            padding: @bc-space-2;
+        }
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Mobile
+     * -----------------------------------------------------
+     */
+
+    @media (max-width: 767px) {
+
+        &__header {
+            margin-bottom: @bc-space-3;
+        }
+
+        &__header h1 {
+            font-size: 26px;
+        }
+
+        &__header p {
+            font-size: 13px;
+        }
+
+        .orders-history {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #my-quote-requests-table {
+            min-width: 760px;
+        }
+
+        #my-quote-requests-table thead th {
+            font-size: 12px;
+        }
+
+        #my-quote-requests-table tbody td {
+            font-size: 13px;
+        }
+
+        .order-products-toolbar,
+        .toolbar.bottom {
+            padding: @bc-space-2;
+        }
+
+        .order-products-toolbar .pager,
+        .toolbar.bottom .pager {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: @bc-space-2;
+        }
+
+        .order-products-toolbar .pages,
+        .toolbar.bottom .pages {
+            order: 3;
+
+            width: 100%;
+        }
+
+        .order-products-toolbar .toolbar-amount,
+        .toolbar.bottom .toolbar-amount {
+            order: 1;
+
+            font-size: 12px;
+        }
+
+        .order-products-toolbar .limiter,
+        .toolbar.bottom .limiter {
+            order: 2;
+
+            margin-left: auto;
+        }
+
+        .order-products-toolbar .pages-items,
+        .toolbar.bottom .pages-items {
+            justify-content: center;
+        }
+
+        .brewcraft-quote-status {
+            font-size: 11px;
+        }
+    }
+}
+
+
+/*
+ * =========================================================
+ * Hide the duplicate Magento page title ONLY when the
+ * BrewCraft Quote Requests component exists.
+ *
+ * This is outside the component because .page-title-wrapper
+ * is a sibling that appears before the component in Magento.
+ * =========================================================
+ */
+
+body:has(.brewcraft-quote-account-list) .page-title-wrapper {
+    display: none;
+}
+
+
+/*
+ * =====================================================
+ * BrewCraft - My Quote Requests
+ * Empty State
+ * =====================================================
+ */
+
+.brewcraft-quote-account-list {
+
+    width: 100%;
+    max-width: @bc-container-width;
+
+    margin: 0 auto;
+    padding: 0;
+
+
+    /*
+     * -------------------------------------------------
+     * Page header
+     * -------------------------------------------------
+     */
+
+    &__header {
+        margin: 0 0 @bc-space-4;
+    }
+
+    &__header h1 {
+        margin: 0 0 @bc-space-1;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 28px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    &__header p {
+        max-width: 720px;
+
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    /*
+     * -------------------------------------------------
+     * Empty quote message
+     * -------------------------------------------------
+     *
+     * Magento adds:
+     *
+     * .message.info.empty
+     *
+     * Keep Magento's message functionality but replace
+     * its default visual appearance.
+     */
+
+    > .message.info.empty {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+
+        width: 100%;
+        min-height: 56px;
+
+        margin: 0 0 @bc-space-4;
+        padding: @bc-space-2 @bc-space-3 @bc-space-2 52px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-coffee;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+
+    /*
+     * Remove Magento's default message icon/background.
+     */
+
+    > .message.info.empty::before {
+        position: absolute;
+
+        left: @bc-space-2;
+        top: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 28px;
+        height: 28px;
+
+        margin-top: -14px;
+
+        border-radius: 50%;
+
+        background: @brewcraft-coffee;
+        background-image: none;
+
+        color: @brewcraft-white;
+
+        content: "i";
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+
+    > .message.info.empty > span {
+        display: block;
+
+        margin: 0;
+    }
+
+
+    /*
+     * -------------------------------------------------
+     * Empty-state action
+     * -------------------------------------------------
+     */
+
+    > .actions-toolbar {
+        display: flex;
+        align-items: center;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    > .actions-toolbar .primary {
+        margin: 0;
+    }
+
+    > .actions-toolbar .action.primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+
+        margin: 0;
+        padding: 0 @bc-space-3;
+
+        border: 1px solid @brewcraft-espresso;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-espresso;
+        color: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1;
+
+        text-decoration: none;
+
+        transition:
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            color 0.15s ease;
+    }
+
+    > .actions-toolbar .action.primary:hover {
+        border-color: @brewcraft-coffee;
+        background: @brewcraft-coffee;
+
+        color: @brewcraft-white;
+
+        text-decoration: none;
+    }
+
+    > .actions-toolbar .action.primary:focus {
+        outline: 2px solid @brewcraft-gold;
+        outline-offset: 2px;
+    }
+
+
+    /*
+     * -------------------------------------------------
+     * Mobile
+     * -------------------------------------------------
+     */
+
+    @media (max-width: 767px) {
+
+        &__header h1 {
+            font-size: 24px;
+        }
+
+        &__header p {
+            font-size: 14px;
+        }
+
+        > .message.info.empty {
+            min-height: 52px;
+
+            padding-left: 48px;
+        }
+
+        > .actions-toolbar .action.primary {
+            width: 100%;
+        }
+
+        > .actions-toolbar .primary {
+            width: 100%;
+        }
+    }
+}

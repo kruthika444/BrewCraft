@@ -1,0 +1,756 @@
+/* ==========================================================
+   BREWCRAFT - ADDRESS BOOK
+   ========================================================== */
+
+.customer-address-index {
+
+    /* ------------------------------------------------------
+   PAGE TITLE
+   ------------------------------------------------------ */
+
+    .page-title-wrapper {
+        position: relative !important;
+
+        display: block !important;
+
+        width: 100% !important;
+        min-height: 52px;
+
+        margin: 0 0 @bc-space-5 !important;
+        padding: 0 !important;
+
+        float: none !important;
+        clear: both !important;
+
+        direction: ltr !important;
+    }
+
+    .page-title {
+        position: static !important;
+
+        display: block !important;
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        text-align: left !important;
+
+        .base {
+            display: block;
+
+            font-family: @brewcraft-font-heading;
+            font-size: 30px;
+            font-weight: 600;
+            line-height: 52px;
+
+            color: @brewcraft-espresso;
+
+            text-align: left;
+        }
+    }
+
+
+    /* ------------------------------------------------------
+   ADD NEW ADDRESS
+   ------------------------------------------------------ */
+
+    .brewcraft-address-page-actions {
+        position: absolute !important;
+
+        top: 0 !important;
+        right: 0 !important;
+        left: auto !important;
+
+        display: block !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        float: none !important;
+
+        direction: ltr !important;
+
+        .action.add,
+        .action.primary.add {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 44px;
+
+            margin: 0 !important;
+            padding: 0 @bc-space-3;
+
+            border: 1px solid @brewcraft-espresso;
+            border-radius: @bc-radius-sm;
+
+            background: @brewcraft-espresso;
+            color: @brewcraft-white;
+
+            font-family: @brewcraft-font-body;
+            font-size: 14px;
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease;
+
+            &:hover {
+                border-color: @brewcraft-coffee;
+                background: @brewcraft-coffee;
+            }
+        }
+    }
+
+
+
+    /* ------------------------------------------------------
+       DEFAULT ADDRESSES
+       ------------------------------------------------------ */
+
+    .block-addresses-default {
+
+        margin-bottom: @bc-space-6;
+
+        .block-title {
+            margin-bottom: @bc-space-3;
+
+            strong {
+                font-family: @brewcraft-font-heading;
+                font-size: 20px;
+                font-weight: 600;
+                color: @brewcraft-espresso;
+            }
+        }
+
+        .block-content {
+            display: flex;
+            align-items: stretch;
+            gap: @bc-space-3;
+        }
+
+
+        /* Billing + Shipping cards */
+
+        .box-address-billing,
+        .box-address-shipping {
+            display: flex;
+            flex-direction: column;
+
+            flex: 1 1 0;
+            min-width: 0;
+
+            margin: 0;
+            padding: @bc-space-3;
+
+            border: 1px solid @brewcraft-border;
+            border-radius: @bc-radius-md;
+
+            background: @brewcraft-white;
+        }
+
+
+        .box-title {
+            display: block;
+
+            margin-bottom: @bc-space-2;
+
+            span {
+                font-family: @brewcraft-font-heading;
+                font-size: 15px;
+                font-weight: 600;
+                color: @brewcraft-coffee;
+            }
+        }
+
+
+        .box-content {
+
+            margin-bottom: @bc-space-3;
+
+            address {
+                margin: 0;
+
+                font-family: @brewcraft-font-body;
+                font-size: 14px;
+                line-height: 1.7;
+                font-style: normal;
+
+                color: @brewcraft-charcoal;
+
+                a {
+                    color: @brewcraft-coffee;
+                    text-decoration: none;
+
+                    &:hover {
+                        color: @brewcraft-espresso;
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+
+
+        .box-actions {
+            margin-top: auto;
+
+            .action {
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 600;
+
+                color: @brewcraft-green;
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-espresso;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+
+    /* ------------------------------------------------------
+       ADDITIONAL ADDRESSES
+       ------------------------------------------------------ */
+
+    .block-addresses-list {
+
+        margin-top: @bc-space-6;
+
+        .block-title {
+            margin-bottom: @bc-space-3;
+
+            strong {
+                font-family: @brewcraft-font-heading;
+                font-size: 20px;
+                font-weight: 600;
+                color: @brewcraft-espresso;
+            }
+        }
+
+
+        .additional-addresses {
+            margin: 0;
+
+            border: 1px solid @brewcraft-border;
+            border-radius: @bc-radius-md;
+
+            background: @brewcraft-white;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+        }
+
+
+        thead {
+
+            th {
+                padding: @bc-space-2;
+
+                background: @brewcraft-bg-soft;
+                border-bottom: 1px solid @brewcraft-border;
+
+                font-family: @brewcraft-font-body;
+                font-size: 12px;
+                font-weight: 600;
+
+                color: @brewcraft-coffee;
+            }
+        }
+
+
+        tbody {
+
+            td {
+                padding: @bc-space-2;
+
+                border-bottom: 1px solid @brewcraft-stone;
+
+                font-family: @brewcraft-font-body;
+                font-size: 14px;
+
+                color: @brewcraft-charcoal;
+                vertical-align: middle;
+            }
+
+            tr:last-child td {
+                border-bottom: 0;
+            }
+        }
+
+
+        .col.actions {
+
+            white-space: nowrap;
+
+            .action {
+                margin-right: @bc-space-2;
+
+                font-size: 13px;
+                font-weight: 600;
+
+                color: @brewcraft-green;
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-espresso;
+                    text-decoration: underline;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+
+            .action.delete {
+                color: @brewcraft-muted;
+
+                &:hover {
+                    color: @brewcraft-espresso;
+                }
+            }
+        }
+    }
+
+
+    /* ------------------------------------------------------
+       ADDRESS LIST TOOLBAR
+       ------------------------------------------------------ */
+
+    .customer-addresses-toolbar {
+
+        margin-top: @bc-space-3;
+
+        .pager {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: @bc-space-3;
+        }
+
+
+        .toolbar-amount {
+            margin: 0;
+
+            font-family: @brewcraft-font-body;
+            font-size: 13px;
+
+            color: @brewcraft-muted;
+        }
+
+
+        .limiter {
+            display: flex;
+            align-items: center;
+            gap: @bc-space-1;
+
+            .limiter-label,
+            .limiter-text {
+                font-size: 13px;
+                color: @brewcraft-muted;
+            }
+
+
+            .limiter-options {
+                min-width: 70px;
+                height: 36px;
+
+                border: 1px solid @brewcraft-border;
+                border-radius: @bc-radius-sm;
+
+                background: @brewcraft-white;
+
+                color: @brewcraft-charcoal;
+            }
+        }
+    }
+
+
+    /* ------------------------------------------------------
+       BACK BUTTON
+       ------------------------------------------------------ */
+
+    >.actions-toolbar {
+
+        margin-top: @bc-space-5;
+
+        .secondary {
+            margin: 0;
+        }
+
+        .action.back {
+            font-family: @brewcraft-font-body;
+            font-size: 14px;
+            font-weight: 600;
+
+            color: @brewcraft-coffee;
+            text-decoration: none;
+
+            &:hover {
+                color: @brewcraft-espresso;
+                text-decoration: underline;
+            }
+        }
+    }
+
+
+    /* ------------------------------------------------------
+       MOBILE
+       ------------------------------------------------------ */
+
+    @media (max-width: 767px) {
+
+        .page-title-wrapper {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: @bc-space-2;
+        }
+
+        .block-addresses-default {
+
+            .block-content {
+                flex-direction: column;
+            }
+
+            .box-address-billing,
+            .box-address-shipping {
+                width: 100%;
+            }
+        }
+
+        .customer-addresses-toolbar {
+
+            .pager {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    }
+}
+
+
+//
+// BrewCraft - Customer Address
+//
+
+.customer-address-form,
+.customer-address-index {
+    .column.main {
+        .page-title-wrapper {
+            margin-bottom: 30px;
+
+            .page-title {
+                margin: 0;
+
+                .base {
+                    font-size: 34px;
+                    font-weight: 400;
+                    line-height: 1.2;
+                    letter-spacing: -0.3px;
+                }
+            }
+        }
+    }
+}
+
+
+//
+// Address form
+//
+
+.form-address-edit {
+    max-width: 900px;
+
+    .fieldset {
+        margin-bottom: 30px;
+
+        .legend {
+            display: block;
+            width: 100%;
+            margin: 0 0 20px;
+            padding: 0 0 12px;
+
+            border-bottom: 1px solid #ddd;
+
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+    }
+
+    .field {
+        margin-bottom: 20px;
+
+        .label {
+            display: block;
+            margin-bottom: 7px;
+
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .control {
+            width: 100%;
+        }
+
+        .input-text,
+        select,
+        textarea {
+            width: 100%;
+            min-height: 46px;
+
+            padding: 10px 13px;
+
+            border: 1px solid #d8d2cc;
+            border-radius: 2px;
+
+            background: #fff;
+
+            font-size: 14px;
+            color: #222;
+
+            box-sizing: border-box;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .input-text:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #8b6b55;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(139, 107, 85, .10);
+        }
+
+        &.required {
+            .label:after {
+                margin-left: 3px;
+                color: #c0392b;
+                content: '*';
+            }
+        }
+
+        .mage-error {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+    }
+
+
+    //
+    // Two-column fields
+    //
+
+    .field-name-firstname,
+    .field-name-lastname,
+    .field-company,
+    .field-telephone {
+        width: calc(50% - 10px);
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .field-name-firstname,
+    .field-company {
+        margin-right: 16px;
+    }
+
+
+    //
+    // Street
+    //
+
+    .field.street {
+        .control {
+            .field {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+
+    //
+    // Country / region / postcode
+    //
+
+    .field.country,
+    .field.region,
+    .field.zip {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .field.country {
+        width: 32%;
+        margin-right: 2%;
+    }
+
+    .field.region {
+        width: 32%;
+        margin-right: 2%;
+    }
+
+    .field.zip {
+        width: 32%;
+    }
+
+
+    //
+    // Default address checkboxes
+    //
+
+    .field.choice {
+        margin-bottom: 12px;
+
+        .control {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type='checkbox'] {
+            margin: 0 8px 0 0;
+        }
+
+        .label {
+            display: inline-block;
+            margin: 0;
+
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+    }
+
+
+    //
+    // Buttons
+    //
+
+    .actions-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        margin-top: 30px;
+        padding-top: 20px;
+
+        border-top: 1px solid #ddd;
+
+        .primary {
+            margin: 0;
+        }
+
+        .action.primary {
+            min-width: 160px;
+            min-height: 46px;
+
+            padding: 12px 24px;
+
+            border: 1px solid #3b2418;
+            border-radius: 2px;
+
+            background: #3b2418;
+            color: #fff;
+
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease;
+        }
+
+        .action.primary:hover {
+            border-color: #5a3827;
+            background: #5a3827;
+        }
+
+        .action.back {
+            min-height: 46px;
+
+            padding: 12px 20px;
+
+            color: #3b2418;
+
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .action.back:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+
+//
+// Responsive
+//
+
+@media (max-width: 767px) {
+
+    .customer-address-form,
+    .customer-address-index {
+
+        .column.main {
+
+            .page-title-wrapper {
+                margin-bottom: 20px;
+
+                .page-title .base {
+                    font-size: 28px;
+                }
+            }
+        }
+    }
+
+    .form-address-edit {
+
+        .field-name-firstname,
+        .field-name-lastname,
+        .field-company,
+        .field-telephone,
+        .field.country,
+        .field.region,
+        .field.zip {
+            width: 100%;
+            margin-right: 0;
+        }
+
+        .actions-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+
+            .action.primary,
+            .action.back {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    }
+}
