@@ -13132,7 +13132,7 @@ This makes the page title clear without unnecessary duplication.
 
 ------------------------------------------------------------------------
 
-# 8. Quote Detail Page
+## 8. Quote Detail Page
 
 After completing the listing page, the work moved to the page opened
 through the **View** action.
@@ -13155,7 +13155,7 @@ regardless of the quote status.
 
 ------------------------------------------------------------------------
 
-# 9. Quote Detail Page -- Common Layout
+## 9. Quote Detail Page -- Common Layout
 
 The detail page was designed so that the main sections follow a
 predictable vertical flow:
@@ -13190,7 +13190,7 @@ blocks appears or disappears.
 
 ------------------------------------------------------------------------
 
-# 10. Quote Detail Title / Header
+## 10. Quote Detail Title / Header
 
 The original title presentation made the quote number and quote name
 compete visually.
@@ -13215,7 +13215,7 @@ generated quote numbers dominate the page.
 
 ------------------------------------------------------------------------
 
-# 11. Customer Message and BrewCraft Message
+## 11. Customer Message and BrewCraft Message
 
 ## 11.1 Original problem
 
@@ -13260,7 +13260,7 @@ work.
 
 ------------------------------------------------------------------------
 
-# 12. Root Cause
+## 12. Root Cause
 
 The problem was not the two-column concept itself.
 
@@ -13289,7 +13289,7 @@ That approach was fragile and unnecessarily complicated.
 
 ------------------------------------------------------------------------
 
-# 13. Final Solution -- PHTML Wrapper
+## 13. Final Solution -- PHTML Wrapper
 
 Instead of forcing the complete quote-detail container into a grid, the
 PHTML was changed slightly.
@@ -13319,7 +13319,7 @@ The existing conditional sections remain inside it.
 
 ------------------------------------------------------------------------
 
-# 14. Why the Wrapper Solution Is Better
+## 14. Why the Wrapper Solution Is Better
 
 The wrapper gives CSS a clear semantic target.
 
@@ -13345,7 +13345,7 @@ the page.
 
 ------------------------------------------------------------------------
 
-# 15. Message Layout Rules
+## 15. Message Layout Rules
 
 When both messages exist:
 
@@ -13380,11 +13380,11 @@ This supports both cases without requiring complicated selectors.
 
 ------------------------------------------------------------------------
 
-# 16. Optional Message Behavior
+## 16. Optional Message Behavior
 
 Both messages are optional.
 
-### Case 1 -- Both exist
+#### Case 1 -- Both exist
 
 ``` text
 Your Message        | Message from BrewCraft
@@ -13419,7 +13419,7 @@ spacing.
 
 ------------------------------------------------------------------------
 
-# 17. Message Card Styling
+## 17. Message Card Styling
 
 The two message blocks use the BrewCraft card language.
 
@@ -13433,7 +13433,7 @@ border: 1px solid @brewcraft-border;
 border-radius: @bc-radius-md;
 ```
 
-### BrewCraft feedback
+#### BrewCraft feedback
 
 Uses the warmer cream background:
 
@@ -13452,7 +13452,7 @@ This produces a clear distinction between:
 
 ------------------------------------------------------------------------
 
-# 18. Responsive Message Layout
+## 18. Responsive Message Layout
 
 On desktop:
 
@@ -13482,7 +13482,7 @@ This prevents narrow message cards and excessive text wrapping.
 
 ------------------------------------------------------------------------
 
-# 19. Requested Products Table
+## 19. Requested Products Table
 
 The Requested Products section contains a relatively wide data table.
 
@@ -13516,7 +13516,7 @@ quote-list page:
 
 ------------------------------------------------------------------------
 
-# 20. Status Result Messages
+## 20. Status Result Messages
 
 Another requirement was to handle the different results shown after the
 Requested Products section.
@@ -13551,7 +13551,7 @@ is not part of the two-column message layout.
 
 ------------------------------------------------------------------------
 
-# 21. Problem With Default Magento Message Icon
+## 21. Problem With Default Magento Message Icon
 
 The default Magento message styling could introduce a large/default icon
 and positioning that did not match the BrewCraft design.
@@ -13574,7 +13574,7 @@ default Magento notification appearance.
 
 ------------------------------------------------------------------------
 
-# 22. Important Implementation Decision
+## 22. Important Implementation Decision
 
 A key lesson from the implementation was:
 
@@ -13598,7 +13598,7 @@ need the layout.
 
 ------------------------------------------------------------------------
 
-# 23. What Was Not Changed
+## 23. What Was Not Changed
 
 The following functionality was intentionally left untouched:
 
@@ -13620,7 +13620,7 @@ optional message components.
 
 ------------------------------------------------------------------------
 
-# 24. Final Request Quote Page Structure
+## 24. Final Request Quote Page Structure
 
 The final intended structure is:
 
@@ -13666,7 +13666,7 @@ Quote Header
 
 ------------------------------------------------------------------------
 
-# 25. Testing / Scenarios Considered
+## 25. Testing / Scenarios Considered
 
   Scenario                            Expected Result
   ----------------------------------- ---------------------------------------------------
@@ -13686,7 +13686,7 @@ Quote Header
 
 ------------------------------------------------------------------------
 
-# 26. Final Outcome
+## 26. Final Outcome
 
 The Request Quote area now follows the BrewCraft design language instead
 of the default Magento presentation.
@@ -13713,7 +13713,7 @@ The major improvements completed today were:
 
 ------------------------------------------------------------------------
 
-# 27. Key Technical Takeaway
+## 27. Key Technical Takeaway
 
 The most important technical change was not simply a CSS change.
 
@@ -13739,3 +13739,555 @@ The final principle used for the page is:
 
 This prevents layout rules for one component from unintentionally
 affecting unrelated Magento components.
+
+# 16. BrewCraft Supply — Development Log
+
+## Feature: Wishlist Page UI & Product Image Styling
+
+- **Status:** Completed
+- **Platform:** Magento 2
+- **Area:** Customer Wishlist / Frontend Theme
+
+---
+
+## 1. Magento Wishlist Structure Reviewed
+
+Magento's default Wishlist implementation was reviewed to understand the actual rendering structure before applying the styling.
+
+**Core Magento files inspected:**
+
+- `vendor/magento/module-wishlist/view/frontend/layout/wishlist_index_index.xml`
+- `vendor/magento/module-wishlist/view/frontend/templates/item/list.phtml`
+- `vendor/magento/module-wishlist/view/frontend/templates/item/column/cart.phtml`
+- `vendor/magento/module-wishlist/view/frontend/templates/item/column/edit.phtml`
+- `vendor/magento/module-wishlist/view/frontend/templates/item/column/actions.phtml`
+
+> **Important**
+> These Magento `vendor/` files were **not modified directly**.
+
+They were inspected to understand:
+
+- Wishlist product grid structure
+- Product image rendering
+- Product information
+- Quantity field
+- Add to Cart button
+- Edit action
+- Remove action
+- Wishlist control buttons
+- Wishlist pagination toolbar
+- Hover details panel
+
+This keeps Magento core files untouched and allows the customization to remain theme-level.
+
+---
+
+## 2. Product Image Configuration
+
+Magento product image rendering was customized through the theme's:
+
+```
+app/design/frontend/<Vendor>/<Theme>/Magento_Catalog/etc/view.xml
+```
+
+The image configurations were adjusted for the required product-image behavior.
+
+### PDP image configuration
+
+Added/updated:
+
+```xml
+<image id="product_page_image_medium" type="image">
+    <width>700</width>
+    <height>700</height>
+    <constrain>false</constrain>
+    <aspect_ratio>true</aspect_ratio>
+    <frame>false</frame>
+    <transparency>true</transparency>
+</image>
+
+<image id="product_page_image_large" type="image">
+    <width>1200</width>
+    <height>1200</height>
+    <constrain>false</constrain>
+    <aspect_ratio>true</aspect_ratio>
+    <frame>false</frame>
+    <transparency>true</transparency>
+</image>
+```
+
+### Related product image
+
+Configured:
+
+```xml
+<image id="related_products_list" type="small_image">
+    <width>320</width>
+    <height>320</height>
+    <constrain>false</constrain>
+    <aspect_ratio>true</aspect_ratio>
+    <frame>false</frame>
+    <transparency>true</transparency>
+</image>
+```
+
+### Additional configuration
+
+```xml
+<var name="product_image_white_borders">0</var>
+```
+
+This was used to prevent Magento's image processing from adding unwanted white borders around product images.
+
+---
+
+## 3. Wishlist Product Grid
+
+The Wishlist was changed from the default Magento layout into a structured 4-column product grid.
+
+**Main LESS customization:**
+
+```
+app/design/frontend/<Vendor>/<Theme>/web/css/source/_module.less
+```
+
+The Wishlist styles were scoped to the Wishlist page rather than applying globally.
+
+**Main structure:**
+
+```less
+.customer-wishlist-index {
+
+    .products-grid.wishlist {
+
+        .product-items {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            column-gap: 24px;
+            row-gap: 40px;
+        }
+    }
+}
+```
+
+**Result**
+
+- 4 products per row on desktop
+- Consistent column spacing
+- Consistent row spacing
+- Product items no longer affected by Magento's default grid widths
+- Improved alignment across different product images
+
+---
+
+## 4. Product Card Styling
+
+Each Wishlist product was converted into a BrewCraft-style card.
+
+The styling included:
+
+- White card background
+- BrewCraft border color
+- Rounded corners
+- Consistent spacing
+- Hover elevation
+- Smooth transition
+- Proper z-index handling
+
+The card remains `overflow: visible` because Magento's additional Wishlist actions need to appear outside the normal card content.
+
+---
+
+## 5. Product Image Normalization
+
+One of the main problems was that product images had different original dimensions.
+
+For example:
+
+- Square product image
+- Landscape image
+- Portrait image
+
+Instead of modifying the original uploaded images, the Wishlist image container was normalized.
+
+The important styling was:
+
+```css
+.product-item-photo {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+.product-image-container {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+.product-image-wrapper {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 100% !important;
+    height: 300px !important;
+}
+
+.product-image-photo {
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: contain !important;
+    object-position: center center;
+
+    background: transparent !important;
+}
+```
+
+**Why `contain` was used**
+
+The original product image should remain completely visible.
+
+So:
+
+```css
+object-fit: contain;
+```
+
+was preferred instead of `cover`. This prevents products from being unnecessarily cropped.
+
+---
+
+## 6. Product Information Styling
+
+Product names and prices were customized to follow the BrewCraft design system.
+
+**Product name**
+
+Configured:
+
+- BrewCraft body font
+- Espresso text color
+- Consistent font size
+- Two-line limit
+- Consistent minimum height
+
+**Price**
+
+Configured:
+
+- BrewCraft espresso color
+- Stronger font weight for current price
+- Muted styling for regular/old price
+- Consistent spacing
+
+---
+
+## 7. Wishlist Hover Details Panel
+
+The biggest UI issue was the Magento hover area appearing as a separate white block/card underneath the product.
+
+The solution was to treat:
+
+```
+.product-item-info
+        +
+.product-item-inner
+```
+
+as one visual component.
+
+The hover panel was positioned relative to the product card:
+
+```css
+.product-item-info {
+    position: relative;
+    overflow: visible;
+}
+```
+
+and:
+
+```css
+.product-item-inner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+}
+```
+
+The panel was then styled to visually continue the same BrewCraft card rather than looking like an unrelated popup.
+
+**Hover behavior**
+
+```css
+.product-item-info:hover {
+    .product-item-inner {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+```
+
+with:
+
+```css
+visibility: hidden;
+opacity: 0;
+transform: translateY(10px);
+```
+
+as the initial state.
+
+---
+
+## 8. Quantity Field
+
+The Wishlist quantity field was redesigned.
+
+Changes included:
+
+- Consistent width
+- Fixed height
+- BrewCraft border
+- Rounded corners
+- Centered quantity
+- Focus state
+- Consistent spacing with Add to Cart
+
+Example:
+
+```css
+input.qty {
+    width: 58px;
+    height: 42px;
+    padding: 0 8px;
+    text-align: center;
+
+    border: 1px solid #d8c8bb;
+    border-radius: 7px;
+    background: #fff;
+}
+```
+
+---
+
+## 9. Add to Cart Button
+
+The Magento default Add to Cart appearance was replaced with the BrewCraft-style button.
+
+**Normal state**
+
+- Espresso background
+- White text
+- Rounded corners
+- Stronger font weight
+- Proper button height
+- Centered content
+
+**Hover state**
+
+- Lighter coffee brown
+- Slight upward movement
+- Subtle shadow
+
+```css
+.action.tocart.primary {
+    min-width: 150px;
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #352117;
+    border: 1px solid #352117;
+    border-radius: 7px;
+
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.action.tocart.primary:hover {
+    background: #4b2d1e;
+    border-color: #4b2d1e;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px rgba(53, 33, 23, .18);
+}
+```
+
+---
+
+## 10. Edit / Remove Actions
+
+The bottom action area of each Wishlist product was also redesigned.
+
+Magento's default text actions were converted visually into icon-style actions.
+
+**Styled:**
+
+- Edit
+- Remove
+
+with:
+
+- Consistent icon size
+- BrewCraft muted color
+- Hover background
+- Hover color change
+- Proper spacing
+- Divider above the action area
+
+The action area was deliberately kept separate from the Add to Cart button so the two different Magento `.product-item-actions` sections would not interfere with each other.
+
+---
+
+## 11. Wishlist Control Buttons
+
+The buttons below the product grid were styled:
+
+- Update Wish List
+- Share Wish List
+- Add All to Cart
+
+They received:
+
+- BrewCraft borders
+- Rounded corners
+- Consistent height
+- Proper padding
+- Espresso hover state
+- White hover text
+- Smooth transitions
+
+---
+
+## 12. Wishlist Pagination Toolbar
+
+The bottom Wishlist toolbar was customized.
+
+It contains:
+
+- `Items 1 to 10 of 11 total`
+- `1   2   >`
+- `Show [10] per page`
+
+Styling was added for:
+
+- Item count
+- Page numbers
+- Current page
+- Next button
+- "Show" label
+- Per-page select box
+- Toolbar spacing
+- Top border
+
+The current page uses the BrewCraft espresso treatment:
+
+```
+[ 1 ]
+```
+
+while inactive pages remain light.
+
+---
+
+## 13. Top Toolbar Handling
+
+The Wishlist contains more than one toolbar in Magento's default structure.
+
+The requirement was to:
+
+> Remove only the unnecessary top toolbar while keeping the bottom pagination toolbar.
+
+Therefore, the selector was based on the actual Magento DOM relationship rather than simply hiding every `.wishlist-toolbar`.
+
+The bottom toolbar remains available for:
+
+- Pagination
+- Item count
+- Items-per-page selection
+
+---
+
+## 14. Final Styling Approach
+
+The important part of this implementation is that we did not modify Magento's vendor files.
+
+The approach was:
+
+```
+Magento core
+    ↓
+Inspect actual Wishlist structure
+    ↓
+Theme-level Magento_Catalog image configuration
+    ↓
+Theme-level Wishlist LESS/CSS
+    ↓
+Scoped selectors
+    ↓
+BrewCraft styling
+```
+
+This means the Magento core Wishlist functionality remains intact while the visual presentation is controlled by the BrewCraft theme.
+
+---
+
+## Files / Areas Changed
+
+| Area | File / Location | Purpose |
+|---|---|---|
+| Product image configuration | `Magento_Catalog/etc/view.xml` | Image dimensions, transparency, white-border handling |
+| Wishlist styling | `web/css/source/_module.less` | Wishlist grid, cards, hover panel, buttons, actions, toolbar |
+| Wishlist layout | Magento Wishlist layout structure | Inspected to understand actual block hierarchy |
+| Wishlist templates | Magento Wishlist templates | Inspected to identify actual HTML/action hierarchy |
+| Magento vendor files | `vendor/magento/module-wishlist/...` | Inspected only — not modified |
+
+### Core Wishlist files inspected
+
+- `Magento_Wishlist/view/frontend/layout/wishlist_index_index.xml`
+- `Magento_Wishlist/view/frontend/templates/item/list.phtml`
+- `Magento_Wishlist/view/frontend/templates/item/column/cart.phtml`
+- `Magento_Wishlist/view/frontend/templates/item/column/edit.phtml`
+- `Magento_Wishlist/view/frontend/templates/item/column/actions.phtml`
+
+---
+
+## Final Result
+
+The Wishlist page now has:
+
+- ✅ BrewCraft 4-column product grid
+- ✅ Consistent product-card dimensions
+- ✅ Consistent image area
+- ✅ Transparent product-image handling
+- ✅ No unwanted Magento white image borders
+- ✅ Product names/prices styled
+- ✅ BrewCraft hover effect
+- ✅ Hover details visually connected to the same product card
+- ✅ Styled quantity field
+- ✅ Styled Add to Cart button
+- ✅ Styled Edit/Remove actions
+- ✅ Styled Wishlist control buttons
+- ✅ Styled pagination
+- ✅ Styled items-per-page selector
+- ✅ Top unnecessary toolbar hidden
+- ✅ Bottom pagination toolbar retained
+- ✅ Magento core/vendor files left untouched
+
+**Status:** Wishlist UI customization completed.

@@ -45,11 +45,23 @@
 
             </image>
 
+            <!-- Wishlist -->
+            <image id="wishlist_thumbnail" type="small_image">
+                <width>300</width>
+                <height>300</height>
+                <constrain>false</constrain>
+                <aspect_ratio>true</aspect_ratio>
+                <frame>false</frame>
+                <transparency>true</transparency>
+            </image>
+
         </images>
 
     </media>
 
     <vars module="Magento_Catalog">
+
+        <var name="product_image_white_borders">0</var>
 
         <var name="gallery">
 
