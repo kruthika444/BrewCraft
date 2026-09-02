@@ -1,0 +1,718 @@
+/*
+ * =========================================================
+ * BrewCraft Supply
+ * Edit Account Information
+ * =========================================================
+ *
+ * Styling only.
+ *
+ * Magento controls the existing desktop layout/positioning.
+ * This file does not change the placement of the fieldsets.
+ * =========================================================
+ */
+
+.column.main {
+
+    /*
+     * -----------------------------------------------------
+     * Account form
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account {
+        width: 100%;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Fieldset cards
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account > .fieldset {
+        margin: 0 0 @bc-space-4;
+        padding: @bc-space-4;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        box-sizing: border-box;
+    }
+
+
+    /*
+     * Fieldset legends
+     */
+
+    form.form-edit-account > .fieldset > .legend {
+        display: block;
+
+        width: 100%;
+
+        margin: 0 0 @bc-space-3;
+        padding: 0 0 @bc-space-2;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+
+    /*
+     * Magento adds a <br> after legends.
+     */
+
+    form.form-edit-account > .fieldset > br {
+        display: none;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Form fields
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account .field {
+        margin-bottom: @bc-space-3;
+    }
+
+    form.form-edit-account .field:last-child {
+        margin-bottom: 0;
+    }
+
+
+    /*
+     * Labels
+     */
+
+    form.form-edit-account .field > .label {
+        display: block;
+
+        margin: 0 0 @bc-space-1;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+
+    /*
+     * Required marker
+     */
+
+    form.form-edit-account .field.required > .label::after {
+        margin-left: 3px;
+
+        color: @brewcraft-coffee;
+
+        content: "*";
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Text / email / password inputs
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account .input-text {
+        width: 100%;
+        min-height: 44px;
+
+        margin: 0;
+        padding: 10px 12px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.5;
+
+        box-shadow: none;
+
+        transition:
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+
+    form.form-edit-account .input-text:hover {
+        border-color: @brewcraft-stone;
+    }
+
+
+    form.form-edit-account .input-text:focus {
+        border-color: @brewcraft-coffee;
+
+        outline: none;
+
+        box-shadow: 0 0 0 2px fade(@brewcraft-coffee, 12%);
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Choice fields / checkboxes
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account .field.choice {
+        display: flex;
+        align-items: center;
+
+        min-height: 24px;
+
+        margin-bottom: @bc-space-2;
+    }
+
+
+    form.form-edit-account .field.choice:last-child {
+        margin-bottom: 0;
+    }
+
+
+    form.form-edit-account .field.choice input[type="checkbox"] {
+        flex: 0 0 auto;
+
+        width: 18px;
+        height: 18px;
+
+        margin: 0 @bc-space-2 0 0;
+
+        accent-color: @brewcraft-espresso;
+
+        cursor: pointer;
+    }
+
+
+    form.form-edit-account .field.choice > .label {
+        display: inline-block;
+
+        margin: 0;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+
+        cursor: pointer;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Remote shopping assistance
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account
+    #assistance_allowed_checkbox
+    + .label {
+        padding-right: @bc-space-1;
+    }
+
+
+    form.form-edit-account .field-tooltip.toggle {
+        position: relative;
+
+        display: inline-flex;
+        align-items: center;
+
+        margin-left: @bc-space-1;
+    }
+
+
+    form.form-edit-account .field-tooltip.toggle > .label {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        margin: -1px;
+        padding: 0;
+
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+
+        border: 0;
+    }
+
+
+    form.form-edit-account .field-tooltip-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 18px;
+        height: 18px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 50%;
+
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-muted;
+
+        cursor: pointer;
+    }
+
+
+    form.form-edit-account .field-tooltip-action::before {
+        display: block;
+
+        color: @brewcraft-muted;
+
+        content: "?";
+
+        font-family: @brewcraft-font-body;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+
+    form.form-edit-account .field-tooltip-action:hover {
+        border-color: @brewcraft-coffee;
+
+        background: @brewcraft-cream;
+
+        color: @brewcraft-coffee;
+    }
+
+
+    /*
+     * Tooltip content
+     */
+
+    form.form-edit-account .field-tooltip-content {
+        z-index: 10;
+
+        max-width: 320px;
+
+        padding: @bc-space-2;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-white;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        line-height: 1.5;
+
+        box-shadow: 0 4px 14px fade(@brewcraft-charcoal, 10%);
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Password strength
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account #password-strength-meter-container {
+        width: 100%;
+
+        margin: @bc-space-1 0 0;
+    }
+
+
+    form.form-edit-account #password-strength-meter {
+        min-height: 30px;
+
+        padding: 7px 10px;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-bg-soft;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+
+    form.form-edit-account
+    #password-strength-meter-label {
+        color: @brewcraft-charcoal;
+
+        font-weight: 600;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Show password
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account
+    .field[data-bind*="showPassword"] {
+        margin-top: @bc-space-2;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Actions
+     * -----------------------------------------------------
+     */
+
+    form.form-edit-account > .actions-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+
+        width: 100%;
+
+        margin: @bc-space-3 0 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box;
+
+        text-align: initial !important;
+    }
+
+
+    /*
+     * Reset Magento action wrappers
+     */
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .primary,
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary {
+
+        float: none !important;
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+
+    /*
+     * Save
+     */
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .primary
+    > button.action.save {
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: auto !important;
+        min-width: 100px;
+        min-height: 42px;
+
+        margin: 0 !important;
+        padding: 0 @bc-space-3 !important;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: @bc-radius-sm !important;
+
+        background: @brewcraft-espresso !important;
+        background-image: none !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+
+        box-shadow: none !important;
+
+        cursor: pointer;
+    }
+
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .primary
+    > button.action.save span {
+
+        color: @brewcraft-white !important;
+
+        font-weight: 600;
+    }
+
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .primary
+    > button.action.save:hover {
+
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+
+        color: @brewcraft-white !important;
+    }
+
+
+    /*
+     * Go back
+     */
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary
+    > a.action.back {
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: auto !important;
+        min-width: 100px;
+        min-height: 42px;
+
+        margin: 0 !important;
+        padding: 0 @bc-space-3 !important;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: @bc-radius-sm !important;
+
+        background: @brewcraft-white !important;
+        background-image: none !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+
+        text-decoration: none !important;
+
+        box-shadow: none !important;
+    }
+
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary
+    > a.action.back span {
+
+        color: @brewcraft-espresso !important;
+
+        font-weight: 600;
+    }
+
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary
+    > a.action.back:hover {
+
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-coffee !important;
+    }
+
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary
+    > a.action.back:hover span {
+
+        color: @brewcraft-coffee !important;
+    }
+
+
+    /*
+     * Remove Magento back-arrow decoration.
+     */
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary
+    > a.action.back::before,
+
+    form.form-edit-account
+    > .actions-toolbar
+    > .secondary
+    > a.action.back::after {
+
+        display: none !important;
+
+        content: none !important;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Mobile
+     * -----------------------------------------------------
+     */
+
+    @media (max-width: 767px) {
+
+        form.form-edit-account > .fieldset {
+            padding: @bc-space-3;
+        }
+
+        form.form-edit-account > .fieldset > .legend {
+            font-size: 18px;
+        }
+
+        form.form-edit-account > .actions-toolbar {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            justify-content: flex-start !important;
+
+            gap: @bc-space-2;
+        }
+
+        form.form-edit-account
+        > .actions-toolbar
+        > .primary,
+
+        form.form-edit-account
+        > .actions-toolbar
+        > .secondary {
+
+            width: 100% !important;
+        }
+
+        form.form-edit-account
+        > .actions-toolbar
+        > .primary
+        > button.action.save,
+
+        form.form-edit-account
+        > .actions-toolbar
+        > .secondary
+        > a.action.back {
+
+            width: 100% !important;
+        }
+    }
+}
+
+/* Hide Magento's empty additional information fieldset */
+.column.main form.form-edit-account fieldset.additional_info {
+    display: none !important;
+}
+
+/* =========================================================
+ * Account form actions
+ * ========================================================= */
+
+.column.main form.form-edit-account > .actions-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    width: 100% !important;
+
+    margin: @bc-space-3 0 0 !important;
+    padding: 0 !important;
+
+    gap: @bc-space-2 !important;
+
+    text-align: left !important;
+}
+
+
+/* Reset Magento's default floating action columns */
+.column.main form.form-edit-account
+> .actions-toolbar
+> .primary,
+
+.column.main form.form-edit-account
+> .actions-toolbar
+> .secondary {
+
+    display: block !important;
+
+    float: none !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* Make sure Magento does not push secondary to the right */
+.column.main form.form-edit-account
+> .actions-toolbar
+> .secondary {
+
+    margin-left: 0 !important;
+}
+
+
+/* Save button */
+.column.main form.form-edit-account
+> .actions-toolbar
+> .primary
+> button.action.save {
+
+    display: inline-flex !important;
+
+    float: none !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+}
+
+
+/* Go back button */
+.column.main form.form-edit-account
+> .actions-toolbar
+> .secondary
+> a.action.back {
+
+    display: inline-flex !important;
+
+    float: none !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+}

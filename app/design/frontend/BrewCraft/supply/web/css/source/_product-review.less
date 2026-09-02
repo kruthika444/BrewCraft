@@ -1,0 +1,1306 @@
+/*
+ * BrewCraft Supply
+ * My Product Reviews
+ *
+ * Reuses the same BrewCraft table and toolbar language
+ * used for Order History and My Quote Requests.
+ */
+
+.column.main:has(#my-reviews-table) {
+
+    /*
+     * Reviews table
+     */
+
+    .table-wrapper.reviews {
+        width: 100%;
+        margin: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #my-reviews-table {
+        width: 100%;
+        min-width: 900px;
+
+        margin: 0;
+
+        border: 0;
+        border-collapse: collapse;
+
+        background: @brewcraft-white;
+
+        font-family: @brewcraft-font-body;
+    }
+
+    #my-reviews-table .table-caption {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        margin: -1px;
+        padding: 0;
+
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+
+        border: 0;
+    }
+
+    /*
+     * Table heading
+     */
+
+    #my-reviews-table thead {
+        background: @brewcraft-bg-soft;
+    }
+
+    #my-reviews-table thead th {
+        padding: @bc-space-2;
+
+        border: 0;
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+
+        text-align: left;
+        vertical-align: middle;
+
+        white-space: nowrap;
+    }
+
+    /*
+     * Rows
+     */
+
+    #my-reviews-table tbody tr {
+        background: @brewcraft-white;
+
+        transition: background-color 0.15s ease;
+    }
+
+    #my-reviews-table tbody tr+tr {
+        border-top: 1px solid @brewcraft-stone;
+    }
+
+    #my-reviews-table tbody tr:hover {
+        background: @brewcraft-bg-soft;
+    }
+
+    /*
+     * Cells
+     */
+
+    #my-reviews-table tbody td {
+        padding: @bc-space-2;
+
+        border: 0;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        line-height: 1.5;
+
+        vertical-align: middle;
+    }
+
+    /*
+     * Date
+     */
+
+    #my-reviews-table .col.date {
+        width: 110px;
+
+        color: @brewcraft-muted;
+
+        white-space: nowrap;
+    }
+
+    /*
+     * Product
+     */
+
+    #my-reviews-table .col.item {
+        width: 28%;
+    }
+
+    #my-reviews-table .product-name {
+        display: block;
+        margin: 0;
+    }
+
+    #my-reviews-table .product-name a {
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.5;
+
+        text-decoration: none;
+    }
+
+    #my-reviews-table .product-name a:hover {
+        color: @brewcraft-coffee;
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    /*
+     * Rating
+     *
+     * Magento's rating-result keeps its existing width value.
+     * Only the visual star treatment is changed.
+     */
+
+    #my-reviews-table .col.summary {
+        width: 160px;
+    }
+
+    #my-reviews-table .rating-summary {
+        display: flex;
+        align-items: center;
+
+        margin: 0;
+    }
+
+    #my-reviews-table .rating-summary .label {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        margin: -1px;
+        padding: 0;
+
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+
+        border: 0;
+    }
+
+    #my-reviews-table .rating-result {
+        position: relative;
+
+        width: 90px;
+        height: 18px;
+
+        margin: 0;
+
+        font-size: 0;
+        line-height: 18px;
+    }
+
+    #my-reviews-table .rating-result::before {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 90px;
+        height: 18px;
+
+        color: @brewcraft-stone;
+
+        content: "★★★★★";
+
+        font-family: Arial, sans-serif;
+        font-size: 17px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        line-height: 18px;
+    }
+
+    #my-reviews-table .rating-result>span {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        display: block;
+
+        height: 18px;
+
+        overflow: hidden;
+
+        font-size: 0;
+        line-height: 18px;
+    }
+
+    #my-reviews-table .rating-result>span::before {
+        display: block;
+
+        color: @brewcraft-gold;
+
+        content: "★★★★★";
+
+        font-family: Arial, sans-serif;
+        font-size: 17px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        line-height: 18px;
+    }
+
+    /*
+     * Review
+     */
+
+    #my-reviews-table .col.description {
+        width: 35%;
+
+        color: @brewcraft-charcoal;
+
+        overflow-wrap: anywhere;
+    }
+
+    /*
+     * Action
+     */
+
+    #my-reviews-table .col.actions {
+        width: 110px;
+
+        white-space: nowrap;
+    }
+
+    #my-reviews-table .col.actions .action {
+        display: inline-block;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+    #my-reviews-table .col.actions .action:hover {
+        color: @brewcraft-coffee;
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Reviews toolbar / pagination
+     * -----------------------------------------------------
+     */
+
+    .products-reviews-toolbar {
+        width: 100%;
+
+        margin: 0;
+        padding: @bc-space-2;
+
+        border: 1px solid @brewcraft-border;
+        border-top: 0;
+
+        border-radius: 0 0 @bc-radius-md @bc-radius-md;
+
+        background: @brewcraft-bg-soft;
+
+        box-sizing: border-box;
+    }
+
+    .products-reviews-toolbar .pager {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+
+        margin: 0;
+    }
+
+    /*
+     * Item count
+     */
+
+    .products-reviews-toolbar .toolbar-amount {
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .products-reviews-toolbar .toolbar-number {
+        color: @brewcraft-charcoal;
+        font-weight: 500;
+    }
+
+    /*
+     * Page numbers
+     */
+
+    .products-reviews-toolbar .pages {
+        margin: 0 auto;
+    }
+
+    .products-reviews-toolbar .pages-items {
+        display: flex;
+        align-items: center;
+
+        gap: 4px;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .products-reviews-toolbar .pages-items .item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .products-reviews-toolbar .pages-items .page {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 32px;
+        height: 32px;
+
+        padding: 0 8px;
+
+        border-radius: 50%;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 500;
+
+        line-height: 1;
+
+        text-decoration: none;
+    }
+
+    .products-reviews-toolbar .pages-items .page:hover {
+        background: @brewcraft-cream;
+        color: @brewcraft-espresso;
+    }
+
+    /*
+     * Current page
+     */
+
+    .products-reviews-toolbar .pages-items .current .page {
+        min-width: 32px;
+        height: 32px;
+
+        padding: 0 9px;
+
+        border-radius: 50%;
+
+        background: @brewcraft-espresso;
+        color: @brewcraft-white;
+
+        font-weight: 600;
+    }
+
+    /*
+     * Previous / next
+     */
+
+    .products-reviews-toolbar .pages-items .pages-item-previous .action,
+    .products-reviews-toolbar .pages-items .pages-item-next .action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        padding: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: 50%;
+
+        background: @brewcraft-white;
+        color: @brewcraft-espresso;
+
+        text-decoration: none;
+    }
+
+    .products-reviews-toolbar .pages-items .pages-item-previous .action:hover,
+    .products-reviews-toolbar .pages-items .pages-item-next .action:hover {
+        border-color: @brewcraft-stone;
+
+        background: @brewcraft-cream;
+        color: @brewcraft-coffee;
+    }
+
+    /*
+     * Show per page
+     */
+
+    .products-reviews-toolbar .limiter {
+        display: flex;
+        align-items: center;
+
+        gap: @bc-space-1;
+
+        margin: 0;
+    }
+
+    .products-reviews-toolbar .limiter .limiter-label {
+        margin: 0;
+
+        color: @brewcraft-muted;
+
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .products-reviews-toolbar .limiter .limiter-options {
+        min-width: 58px;
+        height: 34px;
+
+        padding: 0 24px 0 10px;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-white;
+        color: @brewcraft-charcoal;
+
+        font-size: 13px;
+
+        cursor: pointer;
+    }
+
+    .products-reviews-toolbar .limiter .limiter-text {
+        color: @brewcraft-muted;
+
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Back button
+     * -----------------------------------------------------
+     */
+
+    >.actions-toolbar {
+        margin: @bc-space-3 0 0;
+        padding: 0;
+    }
+
+    >.actions-toolbar .secondary {
+        margin: 0;
+    }
+
+    >.actions-toolbar .action.back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 42px;
+
+        padding: 0 @bc-space-3;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-white;
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+    >.actions-toolbar .action.back:hover {
+        border-color: @brewcraft-coffee;
+
+        background: @brewcraft-cream;
+        color: @brewcraft-coffee;
+
+        text-decoration: none;
+    }
+
+
+
+}
+
+
+/*
+ * =========================================================
+ * BrewCraft Supply
+ * Customer Product Review - Review Details
+ * =========================================================
+ */
+
+.column.main:has(.customer-review.view) {
+
+    /*
+     * -----------------------------------------------------
+     * Main review layout
+     * -----------------------------------------------------
+     *
+     * Left  = Product
+     * Right = Customer Review
+     */
+
+    .customer-review.view {
+        display: grid;
+
+        grid-template-columns:
+            minmax(280px, 360px) minmax(0, 1fr);
+
+        gap: @bc-space-6;
+
+        width: 100%;
+        margin: 0;
+
+        color: @brewcraft-charcoal;
+        font-family: @brewcraft-font-body;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Product section
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view .product-details {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        margin: 0;
+        padding: 0;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+
+        overflow: hidden;
+    }
+
+
+    /*
+     * Product image
+     */
+
+    .customer-review.view .product-media {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        max-width: none;
+
+        background: @brewcraft-bg-soft;
+    }
+
+    .customer-review.view .product-photo {
+        display: block;
+
+        width: 100%;
+        margin: 0;
+        padding: 0;
+
+        text-decoration: none;
+    }
+
+    .customer-review.view .product-image-container,
+    .customer-review.view .product-image-wrapper {
+        display: block;
+
+        width: 100%;
+    }
+
+    .customer-review.view .product-image-photo {
+        display: block;
+
+        width: 100%;
+        height: auto;
+
+        aspect-ratio: 1 / 1;
+
+        object-fit: cover;
+    }
+
+
+    /*
+     * Product information
+     */
+
+    .customer-review.view .product-info {
+        width: 100%;
+
+        margin: 0;
+        padding: @bc-space-3;
+
+        box-sizing: border-box;
+    }
+
+    .customer-review.view .product-name {
+        margin: 0;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    /*
+     * Average rating label
+     *
+     * Keep it subtle if Magento provides it.
+     */
+
+    .customer-review.view .rating-average-label {
+        display: block;
+
+        margin-top: @bc-space-1;
+
+        color: @brewcraft-muted;
+
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Review section
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view .review-details {
+        width: 100%;
+        margin: 0;
+        padding: @bc-space-4;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+    }
+
+
+    /*
+     * Review heading
+     */
+
+    .customer-review.view .review-details .title {
+        margin: 0 0 @bc-space-3;
+        padding: 0 0 @bc-space-2;
+
+        border-bottom: 1px solid @brewcraft-border;
+    }
+
+    .customer-review.view .review-details .title strong {
+        display: block;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.35;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Rating
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view .customer-review-rating {
+        margin: 0 0 @bc-space-4;
+    }
+
+    .customer-review.view .customer-review-rating .rating-summary {
+        display: flex;
+        align-items: center;
+
+        margin: 0;
+    }
+
+    .customer-review.view .customer-review-rating .rating-label {
+        margin-right: @bc-space-2;
+
+        color: @brewcraft-muted;
+
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .customer-review.view .customer-review-rating .rating-result {
+        position: relative;
+
+        display: inline-block;
+
+        width: 100px;
+        height: 24px;
+
+        margin: 0;
+
+        overflow: hidden;
+
+        font-size: 0;
+        line-height: 24px;
+    }
+
+    /*
+     * Empty stars
+     */
+
+    .customer-review.view .customer-review-rating .rating-result::before {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100px;
+        height: 24px;
+
+        color: @brewcraft-stone;
+        content: "★★★★★";
+
+        font-family: Arial, sans-serif;
+        font-size: 23px;
+        font-weight: 400;
+        letter-spacing: 2px;
+        line-height: 24px;
+    }
+
+    /*
+     * Filled stars
+     *
+     * Magento's existing inline width is preserved.
+     */
+
+    .customer-review.view .customer-review-rating .rating-result>span {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        display: block;
+
+        height: 24px;
+        line-height: 24px;
+
+        overflow: hidden;
+
+        font-size: 0;
+    }
+
+    .customer-review.view .customer-review-rating .rating-result>span::before {
+        display: block;
+
+        color: @brewcraft-gold;
+
+        content: "★★★★★";
+
+        font-family: Arial, sans-serif;
+        font-size: 23px;
+        font-weight: 400;
+        letter-spacing: 2px;
+        line-height: 24px;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Review title
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view .review-title {
+        margin: 0 0 @bc-space-2;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Review content
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view .review-content {
+        margin: 0 0 @bc-space-4;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Review date
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view .review-date {
+        margin: 0;
+        padding-top: @bc-space-3;
+
+        border-top: 1px solid @brewcraft-border;
+
+        color: @brewcraft-muted;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .customer-review.view .review-date .date {
+        color: @brewcraft-charcoal;
+        font-weight: 500;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Back button
+     * -----------------------------------------------------
+     */
+
+    .customer-review.view+.actions-toolbar {
+        margin: @bc-space-4 0 0;
+    }
+
+    .customer-review.view+.actions-toolbar .action.back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 42px;
+
+        padding: 0 @bc-space-3;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+
+        background: @brewcraft-white;
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-body;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+    .customer-review.view+.actions-toolbar .action.back:hover {
+        border-color: @brewcraft-coffee;
+
+        background: @brewcraft-cream;
+        color: @brewcraft-coffee;
+    }
+
+
+
+}
+
+
+/*
+ * =========================================================
+ * BrewCraft Supply
+ * Newsletter Subscription
+ * =========================================================
+ */
+
+.column.main {
+
+    /*
+     * -----------------------------------------------------
+     * Newsletter form
+     * -----------------------------------------------------
+     */
+
+    form.form-newsletter-manage {
+        width: 100%;
+        max-width: 760px;
+        padding: @bc-space-4;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-md;
+
+        background: @brewcraft-white;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Fieldset
+     * -----------------------------------------------------
+     */
+
+    form.form-newsletter-manage .fieldset {
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+    }
+
+
+    /*
+     * Subscription heading
+     */
+
+    form.form-newsletter-manage .legend {
+        display: block;
+
+        width: 100%;
+
+        margin: 0 0 24px;
+        padding: 0 0 @bc-space-2;
+
+        border-bottom: 1px solid @brewcraft-border;
+
+        color: @brewcraft-espresso;
+
+        font-family: @brewcraft-font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+
+    /*
+     * Remove Magento's <br> after legend
+     */
+
+    form.form-newsletter-manage .fieldset>br {
+        display: none;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Subscription option
+     * -----------------------------------------------------
+     */
+
+    form.form-newsletter-manage .field.choice {
+        display: flex;
+        align-items: center;
+
+        width: 100%;
+        min-height: 52px;
+
+        margin: @bc-space-3 0 0;
+        padding: @bc-space-2;
+
+        box-sizing: border-box;
+
+        transition:
+            background-color 0.15s ease,
+            border-color 0.15s ease;
+    }
+
+
+    form.form-newsletter-manage .field.choice:hover {
+        border-color: @brewcraft-coffee;
+        border: 1px solid @brewcraft-border;
+        border-radius: @bc-radius-sm;
+        background: @brewcraft-cream;
+    }
+
+
+    /*
+     * Checkbox
+     */
+
+    form.form-newsletter-manage .field.choice input[type="checkbox"] {
+
+        flex: 0 0 auto;
+
+        width: 18px;
+        height: 18px;
+
+        margin: 0 @bc-space-2 0 0;
+
+        accent-color: @brewcraft-espresso;
+
+        cursor: pointer;
+    }
+
+
+    /*
+     * Checkbox label
+     */
+
+    form.form-newsletter-manage .field.choice .label {
+
+        margin: 0;
+
+        color: @brewcraft-charcoal;
+
+        font-family: @brewcraft-font-body;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.5;
+
+        cursor: pointer;
+    }
+
+
+    /*
+     * =====================================================
+     * ACTION TOOLBAR
+     * =====================================================
+     *
+     * IMPORTANT:
+     * The toolbar is INSIDE the newsletter form.
+     */
+
+    form.form-newsletter-manage .actions-toolbar {
+
+        display: flex !important;
+        width: 100%;
+
+        margin: @bc-space-3 0 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box;
+
+        /*
+         * Override Magento's default toolbar behaviour.
+         */
+
+        text-align: initial !important;
+    }
+
+
+    /*
+     * -----------------------------------------------------
+     * Primary / Secondary wrappers
+     * -----------------------------------------------------
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.primary,
+
+    form.form-newsletter-manage .actions-toolbar>.secondary {
+
+        float: none !important;
+
+        width: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+
+    /*
+     * =====================================================
+     * SAVE BUTTON
+     * =====================================================
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.primary>button.action.save {
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: auto !important;
+        min-width: 100px;
+        min-height: 42px;
+
+        margin: 0 @bc-space-2 0 !important;
+        padding: 0 @bc-space-3 !important;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-espresso !important;
+        border-radius: @bc-radius-sm !important;
+
+        background: @brewcraft-espresso !important;
+        background-image: none !important;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+
+        text-align: center;
+
+        cursor: pointer;
+
+        box-shadow: none !important;
+    }
+
+
+    /*
+     * Save button text
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.primary>button.action.save>span {
+
+        display: inline-block;
+
+        color: @brewcraft-white !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+
+    /*
+     * Save hover
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.primary>button.action.save:hover {
+
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-coffee !important;
+
+        color: @brewcraft-white !important;
+    }
+
+
+    /*
+     * =====================================================
+     * BACK BUTTON
+     * =====================================================
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.secondary>a.action.back {
+
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+
+        width: auto !important;
+        min-width: 100px;
+        min-height: 42px;
+
+        margin: 0 !important;
+        padding: 0 @bc-space-3 !important;
+
+        box-sizing: border-box;
+
+        border: 1px solid @brewcraft-border !important;
+        border-radius: @bc-radius-sm !important;
+
+        background: @brewcraft-white !important;
+        background-image: none !important;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+
+        text-align: center;
+
+        text-decoration: none !important;
+
+        cursor: pointer;
+
+        box-shadow: none !important;
+    }
+
+
+    /*
+     * Back button text
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.secondary>a.action.back>span {
+
+        display: inline-block;
+
+        color: @brewcraft-espresso !important;
+
+        font-family: @brewcraft-font-body !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+
+    /*
+     * Back hover
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.secondary>a.action.back:hover {
+
+        border-color: @brewcraft-coffee !important;
+
+        background: @brewcraft-cream !important;
+
+        color: @brewcraft-coffee !important;
+    }
+
+
+    form.form-newsletter-manage .actions-toolbar>.secondary>a.action.back:hover>span {
+
+        color: @brewcraft-coffee !important;
+    }
+
+
+    /*
+     * Remove Magento's default back arrow
+     */
+
+    form.form-newsletter-manage .actions-toolbar>.secondary>a.action.back::before,
+
+    form.form-newsletter-manage .actions-toolbar>.secondary>a.action.back::after {
+
+        display: none !important;
+
+        content: none !important;
+    }
+
+}
