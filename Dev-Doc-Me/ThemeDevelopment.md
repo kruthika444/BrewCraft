@@ -15005,3 +15005,166 @@ The main approach used for these pages was:
 > **Style Magento's existing structure first; change the HTML structure only when the existing structure prevents the required design.**
 
 This helped keep the BrewCraft styling consistent while minimizing the risk of breaking Magento's customer-account functionality.
+
+# 18. BrewCraft Supply — My Account page - recent review and order status
+
+**Date:** 02 September 2026
+
+## 1. Recent Orders — My Account Dashboard
+
+### Work completed
+
+* Identified the Recent Orders template being used by the Magento Order Cancellation UI module.
+* Updated the Recent Orders PHTML to customize the order table.
+* Changed the Recent Orders heading for testing/customization.
+* Added custom status badge markup to the order status column.
+* Added dynamic status classes based on the order status label.
+
+### Status implementation
+
+The PHTML now generates classes such as:
+
+```text
+order-status-badge
+order-status-pending
+order-status-processing
+order-status-complete
+order-status-cancelled
+```
+
+The status class is generated dynamically using:
+
+```php
+$status = strtolower($_order->getStatusLabel());
+$statusClass = preg_replace('/[^a-z0-9]+/', '-', $status);
+```
+
+This allows CSS to style different order statuses independently.
+
+---
+
+## 2. Magento Template Override
+
+### Issue identified
+
+Initially, the override directory was created incorrectly as:
+
+```text
+Magento_Order_Cancellation_Ui
+```
+
+The actual Magento module name is:
+
+```text
+Magento_OrderCancellationUi
+```
+
+Therefore, the correct theme override path is:
+
+```text
+app/design/frontend/BrewCraft/supply/
+└── Magento_OrderCancellationUi/
+    └── templates/
+        └── order/
+            └── recent.phtml
+```
+
+The original vendor template is:
+
+```text
+vendor/magento/module-order-cancellation-ui/view/frontend/templates/order/recent.phtml
+```
+
+The vendor file should **not** be modified directly.
+
+### Result
+
+After correcting the module directory name, the custom PHTML changes were successfully picked up and the status badges became visible.
+
+---
+
+## 3. My Orders / Order History Page
+
+### Work completed
+
+Inspected the HTML structure of the **My Orders** page and identified the existing Magento elements:
+
+* `.orders-history`
+* `#my-orders-table`
+* `.col.id`
+* `.col.date`
+* `.col.total`
+* `.col.status`
+* `.col.actions`
+* `.order-status-badge`
+* `.order-products-toolbar`
+* `.pager`
+* `.pages`
+* `.limiter`
+* `.actions-toolbar`
+
+The same status badge markup is already present on the My Orders page, for example:
+
+```html
+<span class="order-status-badge order-status-pending">
+    Pending
+</span>
+```
+
+### Styling planned/implemented
+
+CSS/LESS styling was prepared for:
+
+* Order history table
+* Table headers
+* Table rows
+* Order numbers
+* Order totals
+* Status badges
+* View Order / Reorder actions
+* Pagination
+* Current page indicator
+* Show-per-page selector
+* Back button
+
+Status colors were defined for statuses including:
+
+* Pending
+* Processing
+* Complete
+* Cancelled / Canceled
+* Closed
+* On Hold
+* Received
+
+---
+
+## 4. Icons
+
+### Decision
+
+The account-page icon customization was discussed, including the possibility of using Bootstrap Icons.
+
+For today's work, **icons were intentionally not implemented** and the focus remained on the order pages and status styling.
+
+---
+
+## 5. Current Status
+
+### Completed
+
+* ✅ Recent Orders PHTML customization
+* ✅ Correct Magento module override path identified
+* ✅ Dynamic order status badge markup
+* ✅ Status badge styling
+* ✅ My Orders HTML structure inspected
+* ✅ My Orders status badge styling prepared
+* ✅ Pagination and order-history styling prepared
+
+### Important path
+
+```text
+app/design/frontend/BrewCraft/supply/Magento_OrderCancellationUi/templates/order/recent.phtml
+```
+
+This is the correct theme override location for the Recent Orders template from `Magento_OrderCancellationUi`.

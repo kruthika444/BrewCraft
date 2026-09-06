@@ -1124,3 +1124,309 @@
         font-size: 13px;
     }
 }
+
+// ============================================================
+// My Orders - Order History - status
+// ============================================================
+
+.sales-order-history {
+
+
+
+    // --------------------------------------------------------
+    // Orders table
+    // --------------------------------------------------------
+
+    .orders-history {
+
+        #my-orders-table {
+            tbody {
+
+                // ------------------------------------------------
+                // Status badges
+                // ------------------------------------------------
+
+                .col.status {
+                    white-space: nowrap;
+
+                    .order-status-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 26px;
+                        padding: 5px 11px;
+                        border: 1px solid transparent;
+                        border-radius: @bc-radius-sm;
+                        box-sizing: border-box;
+                        font-family: @brewcraft-font-body;
+                        font-size: 12px;
+                        font-weight: 600;
+                        line-height: 1.2;
+                        white-space: nowrap;
+                    }
+
+                    .order-status-pending {
+                        background: #FFF1C7;
+                        border-color: #F0D98C;
+                        color: #8A5A00;
+                    }
+
+                    .order-status-processing {
+                        background: #FFE4CC;
+                        border-color: #F2BF8A;
+                        color: #A65300;
+                    }
+
+                    .order-status-complete {
+                        background: #DFF1D8;
+                        border-color: #B9DDB0;
+                        color: #286B2B;
+                    }
+
+                    .order-status-cancelled,
+                    .order-status-canceled {
+                        background: #FCE1DE;
+                        border-color: #E9B8B2;
+                        color: #A33A32;
+                    }
+
+                    .order-status-closed {
+                        background: @brewcraft-stone;
+                        border-color: @brewcraft-border;
+                        color: @brewcraft-charcoal;
+                    }
+
+                    .order-status-holded,
+                    .order-status-on-hold {
+                        background: @brewcraft-cream;
+                        border-color: @brewcraft-border;
+                        color: @brewcraft-coffee;
+                    }
+
+                    .order-status-received {
+                        background: #DFF1D8;
+                        border-color: #B9DDB0;
+                        color: #286B2B;
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+/* =========================================================
+ * My Recent Reviews
+ * ========================================================= */
+
+.customer-account-index {
+
+    .block-reviews-dashboard {
+
+        /*
+         * Section heading
+         */
+
+        .block-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin: @bc-space-6 0 @bc-space-3;
+            padding: 0 0 @bc-space-2;
+
+            border-bottom: 1px solid @brewcraft-stone;
+
+            strong {
+                color: @brewcraft-espresso;
+
+                font-family: @brewcraft-font-heading;
+                font-size: 24px;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+
+            /*
+             * Push View All to the far right
+             */
+
+            .action.view {
+                color: @brewcraft-espresso;
+
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 600;
+
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-coffee;
+
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
+            }
+        }
+
+
+        /*
+         * Review list
+         */
+        .items {
+            margin: 0;
+            padding: @bc-space-4;
+            list-style: none;
+            border: 1px solid @brewcraft-gold;
+            border-radius: @bc-radius-md;
+
+            box-shadow: 0 5px 5px fade(@brewcraft-espresso, 5%);
+
+            box-sizing: border-box;
+        }
+
+
+        /*
+         * Individual review
+         */
+
+        .item {
+            margin: 0;
+            padding: @bc-space-2 0;
+
+            border-bottom: 1px solid @brewcraft-stone;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+        }
+
+
+        /*
+         * Product name
+         */
+
+        .product-name {
+            display: block;
+
+            margin: 0 0 @bc-space-1;
+
+            font-family: @brewcraft-font-body;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+
+            a {
+                color: @brewcraft-coffee;
+
+                text-decoration: none;
+
+                &:hover {
+                    color: @brewcraft-espresso;
+
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
+            }
+        }
+
+
+        /*
+         * Rating row
+         */
+
+        .rating-summary {
+            display: flex;
+            align-items: center;
+
+            margin: 0;
+
+            .label {
+                margin: 0 @bc-space-1 0 0;
+
+                color: @brewcraft-charcoal;
+
+                font-family: @brewcraft-font-body;
+                font-size: 13px;
+                font-weight: 500;
+            }
+        }
+
+
+        /*
+         * Rating stars
+         *
+         * IMPORTANT:
+         * Do not change Magento's rating-result width,
+         * span width, or pseudo-element sizing.
+         *
+         * Magento uses the percentage width on the inner
+         * span to determine the actual rating.
+         *
+         * Scale the complete rating visually instead.
+         */
+
+        .rating-summary .rating-result {
+            transform: scale(1.2);
+            transform-origin: left center;
+
+            margin-right: 8px;
+        }
+    }
+}
+
+
+/* =========================================================
+   RECENT ORDERS - STATUS BADGES
+   ========================================================= */
+
+.block-dashboard-orders {
+
+    .col.status {
+        white-space: nowrap;
+    }
+
+    .order-status-badge {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 4px 10px;
+
+        border-radius: 6px;
+
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 500;
+
+        white-space: nowrap;
+    }
+
+    .order-status-pending {
+        background: #FFF1C7;
+        color: #8A5A00;
+    }
+
+    .order-status-processing {
+        background: #FFE4CC;
+        color: #A65300;
+    }
+
+    .order-status-complete {
+        background: #DFF1D8;
+        color: #286B2B;
+    }
+
+    .order-status-cancelled,
+    .order-status-canceled {
+        background: #FCE1DE;
+        color: #A33A32;
+    }
+
+    .order-status-closed {
+        background: #E8E5E1;
+        color: @brewcraft-charcoal;
+    }
+}
+
+
+
